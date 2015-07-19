@@ -1,27 +1,41 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var db = require('./../helpers/mongodbConnect');
+var User = require('./../models/user');
+var Post = require('./../models/post');
 
-var Schema = mongoose.Schema;
-var PersonSchema = new Schema({
-	name: String,
-	age: String
+var pesho = new User({
+	username: "pesho2",
+	password: "12345",
+	email: "akon@abv.bg",
+	roleId: "A"
 });
-
-var db = mongoose.connect('mongodb://localhost:27017/Posts', function (error) {
-	if (error) {
-		console.log(error);
-	};
-});
-
-var Person = db.model('posts', PersonSchema);
-var pesho = new Person({name: "mitko", age: 20});
 
 pesho.save(function (err) {
   if (err) {
 		return err;
+  } else {
+  	console.log("User saved");
   }
-  else {
+});
+
+var post = new Post({
+    title: "Hello World",
+    postedBy: pesho._id,
+    comments: [{
+        text: "Nice post!",
+        postedBy: pesho._id
+    }, {
+        text: "Thanks :)",
+        postedBy: pesho._id
+    }]
+});
+
+post.save(function (err) {
+  if (err) {
+		console.log(err);
+  } else {
   	console.log("Post saved");
   }
 });
