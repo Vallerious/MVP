@@ -1,43 +1,45 @@
-/*
-	Controller for the login screen and functionality
-*/
-var mongoose = require('mongoose');
-var when = require('when');
-var db = require('./../helpers/mongodbConnect');
-var User = require('./../models/user');
+var mongoose = require( 'mongoose' );
+var when = require( 'when' );
+var db = require( './../helpers/mongodbConnect' );
+var User = require( './../models/user' );
+var userUtils = require( './../helpers/userUtils' );
 
-var getLogin = function (req, res) {
-	// get login view
-};
+var login = function ( req, res ) {
+	var userData = req.body;
 
-var postLogin = function (req, res) {
-	var user = req.body;
-
-	// username should be unique
-	if (user.username && user.password) {
-		// get user from mongo with that username and check password match
-		when.resolve(User.findOne({ username: user.username }).exec()).then(function (foundUser) {
-			if (!foundUser || (foundUser.password != user.password)) {
-				// should send error object instead of string message
-				throw new Error("Invalid username or password!");
+	if ( userData && userData.username && userData.password ) {
+		userUtils.getUser( userData.username ).then( function ( foundUser ) {
+			if ( !foundUser || ( foundUser.password != userData.password ) ) {
+				return when.reject( new Error( "Invalid username or password!" ) );
 			}
 
-			res.status(200).send({});
-		}).catch(function (err) {
-			res.status(400).send({
-				code: -1,
-				message: err
+			res.status( 200 ).json({
+				success: true,
+				payload: foundUser,
+				error: null
+			});
+		}).catch( function ( err ) {
+			res.status( 200 ).json({
+				success: false,
+				payload: {},
+				error: {
+					code: 123,
+					message: err.message
+				}
 			});
 		});
 	} else {
-		res.status(200).send({
-			code: -1,
-			message: 'Invalid input data'
+		res.status( 400 ).json({
+			success: false,
+			payload: {},
+			error: {
+				code: 124,
+				message: 'Invalid input data'
+			}
 		});
 	}
 };
 
 module.exports = {
-	getLogin: getLogin,
-	postLogin: postLogin
+	login: login
 };
