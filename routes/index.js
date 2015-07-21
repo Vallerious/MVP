@@ -9,5 +9,6 @@ router.post( '/login', loginController.login );
 router.post( '/register', registerController.register );
 router.post( '/post/add', postController.addEditPost );
 router.post( '/post/edit', postController.addEditPost );
+router.post( '/post/delete', postController.deletePost );
 
 module.exports = router;
