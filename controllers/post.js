@@ -21,10 +21,8 @@ var addEditPost = function ( req, res ) {
             if ( !postData._id ) { // no id? add new post
                 newPost.save( function ( err ) {
                     if ( err ) {
-                        error.message = "There was an error adding a post";
-                        error.code = 100;
-                        error.status = 500;
-                        throw error;
+                        err.status = 500;
+                        throw err;
                     } else {
                         res.status( 200 ).json( {
                             success: true,
@@ -48,10 +46,8 @@ var addEditPost = function ( req, res ) {
                             error: null
                         } );
                     } else {
-                        error.message = "Error during 'post' document update";
-                        error.code = 100;
-                        error.status = 500;
-                        throw error;
+                        err.status = 500;
+                        throw err;
                     }
                 });
             }
@@ -86,10 +82,8 @@ var deletePost = function ( req, res ) {
                         error: null
                     });
                 } else {
-                    error.status = 500;
-                    error.code = 100;
-                    error.message = "Couldn`t delete record!";
-                    throw error;
+                    err.status = 500;
+                    throw err;
                 }
             });
         } else {

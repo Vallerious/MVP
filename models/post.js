@@ -11,11 +11,13 @@ var PostSchema = new mongoose.Schema({
         ref: 'Users'
     },
     comments: [{
-        text: String,
+        content: String,
         postedBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users'
-        }
+        },
+        date: String,
+        likes: Number
     }],
     date: String,
     votes: Number,
