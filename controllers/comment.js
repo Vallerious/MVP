@@ -36,7 +36,7 @@ var addEditComment = function (req, res) {
                     }
                 );
             } else { // edit comment
-                Post.update( {'comments._id': commentData.commentId, 'comments.postedBy': commentData.postedBy }, {'$set': {
+                Post.update( {'comments._id': commentData.commentId }, {'$set': {
                     'comments.$.content': commentData.content
                 }}, { upsert: true }, function( err ) {
                     if ( err ) {
@@ -75,7 +75,7 @@ var deleteComment = function ( req, res ) {
     try {
         if ( commentData.commentId && commentData.postId ) {
             Post.update(
-                {'_id': commentData.postId},
+                { '_id': commentData.postId },
                 { $pull: { "comments" : { _id: commentData.commentId } } },
                 function (err) {
                     if ( err ) {
@@ -103,7 +103,39 @@ var deleteComment = function ( req, res ) {
     }
 };
 
+var likeComment = function (req, res) {
+    try {
+        var postId = req.body.postId;
+        var commentId = req.body.commentId;
+
+        Post.update( {'comments._id': commentId }, {'$set': {
+            'comments.$.content': "adsadasda"
+        }}, { upsert: true }, function( err ) {
+            if ( err ) {
+                err.status = 500;
+                throw err;
+            } else {
+                res.status( 200 ).json({
+                    success: true,
+                    payload: {},
+                    error: null
+                });
+            }
+        });
+    } catch ( err ) {
+        res.status( err.status || 400 ).json({
+            success: false,
+            payload: {},
+            error: {
+                code: err.code || 666,
+                message: err.message
+            }
+        });
+    }
+};
+
 module.exports = {
     addEditComment: addEditComment,
-    deleteComment: deleteComment
+    deleteComment: deleteComment,
+    likeComment: likeComment
 };

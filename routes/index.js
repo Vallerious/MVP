@@ -11,7 +11,10 @@ router.post( '/register', registerController.register );
 router.post( '/post/add', postController.addEditPost );
 router.post( '/post/edit', postController.addEditPost );
 router.post( '/post/delete', postController.deletePost );
-router.post( '/post/comment', commentController.addEditComment );
+router.post( '/post/like', postController.likePost );
+router.post( '/post/comment/add', commentController.addEditComment );
+router.post( '/post/comment/edit', commentController.addEditComment );
+router.post( '/post/comment/like', commentController.likeComment );
 router.post( '/post/comment/delete', commentController.deleteComment );
 
 module.exports = router;

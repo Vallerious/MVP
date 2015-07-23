@@ -96,14 +96,43 @@ var deletePost = function ( req, res ) {
             success: false,
             payload: {},
             error: {
-                code: err.code,
+                code: err.code || 666,
                 message: err.message
             }
         })
     }
 };
 
+var likePost = function (req, res) {
+    try {
+        var postId = req.body.postId;
+
+        Post.findByIdAndUpdate( postId, { $inc: { "votes" : 1 } }, function ( err ) {
+            if ( err ) {
+                err.status = 500;
+                throw err;
+            } else {
+                res.status( 200 ).json({
+                    success: true,
+                    payload: {},
+                    error: null
+                });
+            }
+        });
+    } catch ( err ) {
+        res.status( err.status || 400 ).json({
+            success: false,
+            payload: {},
+            error: {
+                code: err.code || 666,
+                message: err.message
+            }
+        });
+    }
+};
+
 module.exports = {
     addEditPost: addEditPost,
-    deletePost: deletePost
+    deletePost: deletePost,
+    likePost: likePost
 };
