@@ -108,9 +108,9 @@ var likeComment = function (req, res) {
         var postId = req.body.postId;
         var commentId = req.body.commentId;
 
-        Post.update( {'comments._id': commentId }, {'$set': {
-            'comments.$.content': "adsadasda"
-        }}, { upsert: true }, function( err ) {
+        Post.update( {'comments._id': commentId }, {'$inc': {
+            'comments.$.likes': 1
+        }}, { upsert: false }, function( err ) {
             if ( err ) {
                 err.status = 500;
                 throw err;
