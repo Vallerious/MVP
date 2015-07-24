@@ -14,7 +14,8 @@ var addEditPost = function ( req, res ) {
                 content: postData.content,
                 postedBy: postData.postedBy,
                 comments: [], // add the Comment schema in the array after it`s created : )
-                date: postData.date || Date.now(),
+                createdOn: postData.date || Date.now(),
+                editedOn: "",
                 votes: 0
             });
 
@@ -33,10 +34,12 @@ var addEditPost = function ( req, res ) {
                 });
             } else { // id provided, editing existing post
                 newPost = newPost.toObject();
+                newPost.editedOn = Date.now();
                 delete newPost._id;
                 delete newPost.votes;
                 delete newPost.date;
                 delete newPost.comments;
+                delete newPost.postedBy;
 
                 Post.update( { _id: postData._id }, newPost, { multi: false }, function ( err, post ) {
                     if ( !err ) {
@@ -103,11 +106,17 @@ var deletePost = function ( req, res ) {
     }
 };
 
-var likePost = function (req, res) {
+var votePost = function (req, res) {
     try {
-        var postId = req.body.postId;
+        var postData = req.body;
+        var postId = postData.postId;
+        var increment = 1;
 
-        Post.findByIdAndUpdate( postId, { $inc: { "votes" : 1 } }, function ( err ) {
+        if ( postData.voteDown ) {
+            increment = -1;
+        }
+
+        Post.findByIdAndUpdate( postId, { $inc: { "votes" : increment } }, function ( err ) {
             if ( err ) {
                 err.status = 500;
                 throw err;
@@ -134,5 +143,5 @@ var likePost = function (req, res) {
 module.exports = {
     addEditPost: addEditPost,
     deletePost: deletePost,
-    likePost: likePost
+    votePost: votePost
 };

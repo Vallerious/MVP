@@ -37,7 +37,8 @@ var addEditComment = function (req, res) {
                 );
             } else { // edit comment
                 Post.update( {'comments._id': commentData.commentId }, {'$set': {
-                    'comments.$.content': commentData.content
+                    'comments.$.content': commentData.content,
+                    'comments.&.editedOn': Date.now()
                 }}, { upsert: true }, function( err ) {
                     if ( err ) {
                         err.status = 500;
@@ -105,11 +106,17 @@ var deleteComment = function ( req, res ) {
 
 var likeComment = function (req, res) {
     try {
-        var postId = req.body.postId;
-        var commentId = req.body.commentId;
+        var commentData = req.body;
+        var postId = commentData.postId;
+        var commentId = commentData.commentId;
+        var increment = 1;
+
+        if ( commentData.voteDown ) {
+            increment = -1;
+        }
 
         Post.update( {'comments._id': commentId }, {'$inc': {
-            'comments.$.likes': 1
+            'comments.$.likes': increment
         }}, { upsert: false }, function( err ) {
             if ( err ) {
                 err.status = 500;

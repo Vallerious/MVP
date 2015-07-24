@@ -16,10 +16,12 @@ var PostSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users'
         },
-        date: String,
+        createdOn: String,
+        editedOn: String,
         likes: Number
     }],
-    date: String,
+    createdOn: String,
+    editedOn: String,
     votes: Number,
     // add additional properties...
 });
