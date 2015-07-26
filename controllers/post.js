@@ -140,8 +140,35 @@ var votePost = function (req, res) {
     }
 };
 
+var getAllPosts = function ( req, res ) {
+    try {
+        Post.find( {}, function ( err, data ) {
+            if ( !err ) {
+                res.status( 200 ).json({
+                    success: true,
+                    payload: data,
+                    error: null
+                });
+            } else {
+                err.status = 500;
+                throw err;
+            }
+        });
+    } catch ( err ) {
+        res.status( err.status || 400 ).json({
+            success: false,
+            payload: {},
+            error: {
+                code: err.code || 666,
+                message: err.message
+            }
+        });
+    }
+};
+
 module.exports = {
     addEditPost: addEditPost,
     deletePost: deletePost,
-    votePost: votePost
+    votePost: votePost,
+    getAllPosts: getAllPosts
 };

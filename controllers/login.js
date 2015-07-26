@@ -1,5 +1,6 @@
 var mongoose = require( 'mongoose' );
 var when = require( 'when' );
+var jwt = require( 'jsonwebtoken' );
 var db = require( './../helpers/mongodbConnect' );
 var User = require( './../models/user' );
 var userUtils = require( './../helpers/userUtils' );
@@ -18,9 +19,16 @@ var login = function ( req, res ) {
 					throw error;
 				}
 
+				// if user is found and password is right
+				// create a token
+				var token = jwt.sign(foundUser, app.get('superSecret'), {
+					expiresInMinutes: 1440 // expires in 24 hours
+				});
+
 				res.status( 200 ).json({
 					success: true,
 					payload: foundUser,
+					token: token,
 					error: null
 				});
 			}).catch( function ( err ) {
