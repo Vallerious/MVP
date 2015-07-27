@@ -1,0 +1,21 @@
+{
+  "name": "mvp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "author": "Dimitar Ruskov",
+  "dependencies": {
+    "babel": "^5.6.14",
+    "babel-core": "^5.7.4",
+    "babel-loader": "^5.3.2",
+    "flux": "^2.0.3",
+    "material-ui": "^0.10.1",
+    "node-libs-browser": "^0.5.2",
+    "object-assign": "^3.0.0",
+    "react": "^0.13.3",
+    "react-router": "^0.13.3",
+    "react-tap-event-plugin": "^0.1.7",
+    "superagent": "^1.2.0",
+    "webpack": "^1.10.1"
+  }
+}
