@@ -2,8 +2,9 @@ var mongoose = require( 'mongoose' );
 var when = require( 'when' );
 var jwt = require( 'jsonwebtoken' );
 var db = require( './../helpers/mongodbConnect' );
-var User = require( './../models/user' );
+var passHash = require('password-hash');
 var userUtils = require( './../helpers/userUtils' );
+var config = require('./../config');
 
 var login = function ( req, res ) {
 	var userData = req.body;
@@ -12,7 +13,7 @@ var login = function ( req, res ) {
 	try {
 		if ( userData && userData.username && userData.password ) {
 			userUtils.getUser( userData.username ).then(function ( foundUser ) {
-				if ( !foundUser || ( foundUser.password != userData.password )) {
+				if ( !foundUser || !( passHash.verify(userData.password, foundUser.password ))) {
 					error.status = 400;
 					error.code = 124;
 					error.message = 'Invalid username or password!';
@@ -21,7 +22,7 @@ var login = function ( req, res ) {
 
 				// if user is found and password is right
 				// create a token
-				var token = jwt.sign(foundUser, app.get('superSecret'), {
+				var token = jwt.sign(foundUser, config.secret, {
 					expiresInMinutes: 1440 // expires in 24 hours
 				});
 

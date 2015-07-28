@@ -3,6 +3,7 @@ var when = require( 'when' );
 var db = require( './../helpers/mongodbConnect' );
 var User = require( './../models/user' );
 var userUtils = require( './../helpers/userUtils' );
+var passHash = require('password-hash');
 
 var register = function ( req, res ) {
     var userData = req.body;
@@ -12,7 +13,7 @@ var register = function ( req, res ) {
             if ( !foundUser ) {
                 var newUser = new User({
                     username: userData.username,
-                    password: userData.password,
+                    password: passHash.generate(userData.password),
                     email: userData.email,
                     roleId: ''
                 });
@@ -28,8 +29,9 @@ var register = function ( req, res ) {
                             }
                         });
                     } else {
-                        // mock cookie
-                        newUser.cookie = "39je29ej0293e3209209e";
+                        delete newUser.password;
+                        delete newUser._id;
+
                         res.status( 200 ).json( {
                             success: true,
                             payload: newUser,
