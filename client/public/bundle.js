@@ -7310,7 +7310,7 @@
 	 *   < "msTransition"
 	 *
 	 * As Andi Smith suggests
-	 * (http://www.andismith.com/blog/2012/02/modernizr-prefixed/), an `-ms` prefix
+	 * (http://www.js.andismith.com/blog/2012/02/modernizr-prefixed/), an `-ms` prefix
 	 * is converted to lowercase `ms`.
 	 *
 	 * @param {string} string
@@ -7395,8 +7395,8 @@
 	  // whole string will be escaped when the attribute is injected into
 	  // the markup. If you provide unsafe user data here they can inject
 	  // arbitrary CSS which may be problematic (I couldn't repro this):
-	  // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
-	  // http://www.thespanner.co.uk/2007/11/26/ultimate-xss-css-injection/
+	  // https://www.js.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
+	  // http://www.js.thespanner.co.uk/2007/11/26/ultimate-xss-css-injection/
 	  // This is not an XSS hole but instead a potential CSS injection issue
 	  // which has lead to a greater discussion about how we're going to
 	  // trust URLs moving forward. See #2115901
@@ -9527,7 +9527,7 @@
 	   * top-level listeners to the document object only, at least for these
 	   * movement types of events and possibly all events.
 	   *
-	   * @see http://www.quirksmode.org/blog/archives/2010/09/click_event_del.html
+	   * @see http://www.js.quirksmode.org/blog/archives/2010/09/click_event_del.html
 	   *
 	   * Also, `keyup`/`keypress`/`keydown` do not bubble to the window on IE, but
 	   * they bubble to document.
@@ -9562,7 +9562,7 @@
 	            );
 	          } else {
 	            // Firefox needs to capture a different mouse scroll event.
-	            // @see http://www.quirksmode.org/dom/events/tests/scroll.html
+	            // @see http://www.js.quirksmode.org/dom/events/tests/scroll.html
 	            ReactBrowserEventEmitter.ReactEventListener.trapBubbledEvent(
 	              topLevelTypes.topWheel,
 	              'DOMMouseScroll',
@@ -9600,7 +9600,7 @@
 	            );
 	          } else if (isEventSupported('focusin')) {
 	            // IE has `focusin` and `focusout` events which bubble.
-	            // @see http://www.quirksmode.org/blog/archives/2008/04/delegating_the.html
+	            // @see http://www.js.quirksmode.org/blog/archives/2008/04/delegating_the.html
 	            ReactBrowserEventEmitter.ReactEventListener.trapBubbledEvent(
 	              topLevelTypes.topFocus,
 	              'focusin',
@@ -9651,7 +9651,7 @@
 	   *
 	   * NOTE: Scroll events do not bubble.
 	   *
-	   * @see http://www.quirksmode.org/dom/events/scroll.html
+	   * @see http://www.js.quirksmode.org/dom/events/scroll.html
 	   */
 	  ensureScrollValueMonitoring: function() {
 	    if (!isMonitoringScrollValue) {
@@ -12209,7 +12209,7 @@
 
 	// We accept any tag to be rendered but since this gets injected into abitrary
 	// HTML, we want to make sure that it's a safe tag.
-	// http://www.w3.org/TR/REC-xml/#NT-Name
+	// http://www.js.w3.org/TR/REC-xml/#NT-Name
 
 	var VALID_TAG_REGEX = /^[a-zA-Z][a-zA-Z:_\.\-\d]*$/; // Simplified subset
 	var validatedTagCache = {};
@@ -13811,7 +13811,7 @@
 
 	/**
 	 * Create an `onBeforeInput` event to match
-	 * http://www.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105/#events-inputevents.
+	 * http://www.js.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105/#events-inputevents.
 	 *
 	 * This event plugin is based on the native `textInput` event
 	 * available in Chrome, Safari, Opera, and IE. This event fires after
@@ -14168,7 +14168,7 @@
 
 	/**
 	 * @interface Event
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/#events-compositionevents
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/#events-compositionevents
 	 */
 	var CompositionEventInterface = {
 	  data: null
@@ -14221,7 +14221,7 @@
 
 	/**
 	 * @interface Event
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var EventInterface = {
 	  type: null,
@@ -14393,7 +14393,7 @@
 	function getEventTarget(nativeEvent) {
 	  var target = nativeEvent.target || nativeEvent.srcElement || window;
 	  // Safari may fire events on text nodes (Node.TEXT_NODE is 3).
-	  // @see http://www.quirksmode.org/js/events_properties.html
+	  // @see http://www.js.quirksmode.org/js/events_properties.html
 	  return target.nodeType === 3 ? target.parentNode : target;
 	}
 
@@ -14422,7 +14422,7 @@
 
 	/**
 	 * @interface Event
-	 * @see http://www.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105
+	 * @see http://www.js.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105
 	 *      /#events-inputevents
 	 */
 	var InputEventInterface = {
@@ -14854,7 +14854,7 @@
 	'use strict';
 
 	/**
-	 * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#input-type-attr-summary
+	 * @see http://www.js.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#input-type-attr-summary
 	 */
 	var supportedInputTypes = {
 	  'color': true,
@@ -15124,7 +15124,7 @@
 
 	/**
 	 * @interface MouseEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var MouseEventInterface = {
 	  screenX: null,
@@ -15208,7 +15208,7 @@
 
 	/**
 	 * @interface UIEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var UIEventInterface = {
 	  view: function(event) {
@@ -15270,7 +15270,7 @@
 
 	/**
 	 * Translation from modifier key to the associated property in the event.
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/#keys-Modifiers
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/#keys-Modifiers
 	 */
 
 	var modifierKeyToProp = {
@@ -15340,7 +15340,7 @@
 	    implementation &&
 	    implementation.hasFeature &&
 	    implementation.hasFeature(
-	      'http://www.w3.org/TR/SVG11/feature#BasicStructure',
+	      'http://www.js.w3.org/TR/SVG11/feature#BasicStructure',
 	      '1.1'
 	    )
 	  );
@@ -15503,7 +15503,7 @@
 	    autoFocus: 'autofocus',
 	    autoPlay: 'autoplay',
 	    // `encoding` is equivalent to `enctype`, IE8 lacks an `enctype` setter.
-	    // http://www.w3.org/TR/html5/forms.html#dom-fs-encoding
+	    // http://www.js.w3.org/TR/html5/forms.html#dom-fs-encoding
 	    encType: 'encoding',
 	    hrefLang: 'hreflang',
 	    radioGroup: 'radiogroup',
@@ -16164,7 +16164,7 @@
 	 * The rendered element will be initialized as unchecked (or `defaultChecked`)
 	 * with an empty value (or `defaultValue`).
 	 *
-	 * @see http://www.w3.org/TR/2012/WD-html5-20121025/the-input-element.html
+	 * @see http://www.js.w3.org/TR/2012/WD-html5-20121025/the-input-element.html
 	 */
 	var ReactDOMInput = ReactClass.createClass({
 	  displayName: 'ReactDOMInput',
@@ -17380,7 +17380,7 @@
 	 * you may not use this file except in compliance with the License.
 	 * You may obtain a copy of the License at
 	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
+	 * http://www.js.apache.org/licenses/LICENSE-2.0
 	 *
 	 * Unless required by applicable law or agreed to in writing, software
 	 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18890,7 +18890,7 @@
 	      case topLevelTypes.topReset:
 	      case topLevelTypes.topSubmit:
 	        // HTML Events
-	        // @see http://www.w3.org/TR/html5/index.html#events-0
+	        // @see http://www.js.w3.org/TR/html5/index.html#events-0
 	        EventConstructor = SyntheticEvent;
 	        break;
 	      case topLevelTypes.topKeyPress:
@@ -18995,7 +18995,7 @@
 
 	/**
 	 * @interface DragEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var DragEventInterface = {
 	  dataTransfer: null
@@ -19038,7 +19038,7 @@
 
 	/**
 	 * @interface Event
-	 * @see http://www.w3.org/TR/clipboard-apis/
+	 * @see http://www.js.w3.org/TR/clipboard-apis/
 	 */
 	var ClipboardEventInterface = {
 	  clipboardData: function(event) {
@@ -19087,7 +19087,7 @@
 
 	/**
 	 * @interface FocusEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var FocusEventInterface = {
 	  relatedTarget: null
@@ -19134,7 +19134,7 @@
 
 	/**
 	 * @interface KeyboardEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var KeyboardEventInterface = {
 	  key: getEventKey,
@@ -19388,7 +19388,7 @@
 
 	/**
 	 * @interface TouchEvent
-	 * @see http://www.w3.org/TR/touch-events/
+	 * @see http://www.js.w3.org/TR/touch-events/
 	 */
 	var TouchEventInterface = {
 	  touches: null,
@@ -19438,7 +19438,7 @@
 
 	/**
 	 * @interface WheelEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 * @see http://www.js.w3.org/TR/DOM-Level-3-Events/
 	 */
 	var WheelEventInterface = {
 	  deltaX: function(event) {
@@ -21693,7 +21693,7 @@
 	 request.serializeObject = serialize;
 
 	 /**
-	  * Parse the given x-www-form-urlencoded `str`.
+	  * Parse the given x-www.js-form-urlencoded `str`.
 	  *
 	  * @param {String} str
 	  * @return {Object}
@@ -22353,19 +22353,19 @@
 	 *         .send({ name: 'tj' })
 	 *         .end(callback)
 	 *
-	 *       // manual x-www-form-urlencoded
+	 *       // manual x-www.js-form-urlencoded
 	 *       request.post('/user')
 	 *         .type('form')
 	 *         .send('name=tj')
 	 *         .end(callback)
 	 *
-	 *       // auto x-www-form-urlencoded
+	 *       // auto x-www.js-form-urlencoded
 	 *       request.post('/user')
 	 *         .type('form')
 	 *         .send({ name: 'tj' })
 	 *         .end(callback)
 	 *
-	 *       // defaults to x-www-form-urlencoded
+	 *       // defaults to x-www.js-form-urlencoded
 	  *      request.post('/user')
 	  *        .send('name=tobi')
 	  *        .send('species=ferret')
@@ -31795,7 +31795,7 @@
 	   * - Identify why there are minor discrepancies for some use cases
 	   *   (i.e. #F0F & #FFF). Note that these cases rarely occur.
 	   *
-	   * Formula: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+	   * Formula: http://www.js.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
 	   */
 	  _luminance: function _luminance(color) {
 	    color = this._decomposeColor(color);
@@ -31910,7 +31910,7 @@
 
 	  // Calculates the contrast ratio between two colors.
 	  //
-	  // Formula: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
+	  // Formula: http://www.js.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
 	  contrastRatio: function contrastRatio(background, foreground) {
 	    var lumA = this._luminance(background);
 	    var lumB = this._luminance(foreground);
@@ -46186,7 +46186,7 @@
 	 * you may not use this file except in compliance with the License.
 	 * You may obtain a copy of the License at
 	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
+	 * http://www.js.apache.org/licenses/LICENSE-2.0
 	 *
 	 * Unless required by applicable law or agreed to in writing, software
 	 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46358,7 +46358,7 @@
 	 * you may not use this file except in compliance with the License.
 	 * You may obtain a copy of the License at
 	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
+	 * http://www.js.apache.org/licenses/LICENSE-2.0
 	 *
 	 * Unless required by applicable law or agreed to in writing, software
 	 * distributed under the License is distributed on an "AS IS" BASIS,

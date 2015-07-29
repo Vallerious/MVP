@@ -91,6 +91,11 @@ var deleteComment = function ( req, res ) {
                     }
                 }
             );
+        } else {
+            error.status = 400;
+            error.code = 124;
+            error.message = "Invalid input data!";
+            throw error;
         }
     } catch ( err ) {
         res.status( err.status || 400 ).json({
@@ -107,28 +112,36 @@ var deleteComment = function ( req, res ) {
 var likeComment = function (req, res) {
     try {
         var commentData = req.body;
-        var postId = commentData.postId;
-        var commentId = commentData.commentId;
-        var increment = 1;
 
-        if ( commentData.voteDown ) {
-            increment = -1;
-        }
+        if ( commentData.postId && commentData.commentId ) {
+            var postId = commentData.postId;
+            var commentId = commentData.commentId;
+            var increment = 1;
 
-        Post.update( {'comments._id': commentId }, {'$inc': {
-            'comments.$.likes': increment
-        }}, { upsert: false }, function( err ) {
-            if ( err ) {
-                err.status = 500;
-                throw err;
-            } else {
-                res.status( 200 ).json({
-                    success: true,
-                    payload: {},
-                    error: null
-                });
+            if ( commentData.voteDown ) {
+                increment = -1;
             }
-        });
+
+            Post.update( {'comments._id': commentId }, {'$inc': {
+                'comments.$.likes': increment
+            }}, { upsert: false }, function( err ) {
+                if ( err ) {
+                    err.status = 500;
+                    throw err;
+                } else {
+                    res.status( 200 ).json({
+                        success: true,
+                        payload: {},
+                        error: null
+                    });
+                }
+            });
+        } else {
+            error.status = 400;
+            error.code = 124;
+            error.message = "Invalid input data!";
+            throw error;
+        }
     } catch ( err ) {
         res.status( err.status || 400 ).json({
             success: false,

@@ -1,14 +1,25 @@
-var mongoose = require( 'mongoose' );
-var when = require( 'when' );
-var db = require( './../helpers/mongodbConnect' );
-var Post = require( './../models/post' );
+var mongoose = require('mongoose');
+var when = require('when');
+var db = require('./../helpers/mongodbConnect');
+var Post = require('./../models/post');
 
-var addEditPost = function ( req, res ) {
+/**
+ * Adds a Post/Article to mongoDB. If an Id is provided the method will edit the post.
+ *
+ * @author Valeri Hristov
+ * @param {string} req.body.title
+ * @param {string} req.body.content
+ * @param {Id} req.body.postedBy - The mongoDb Id of the user that submits the post.
+ * @returns {HTTP.RESPONSE}
+ * @public
+ * @version 0.1 Beta
+ */
+var addEditPost = function (req, res) {
     var postData = req.body;
     var error = new Error();
 
     try {
-        if ( postData.title && postData.content && postData.postedBy ) {
+        if (postData.title && postData.content && postData.postedBy) {
             var newPost = new Post({
                 title: postData.title,
                 content: postData.content,
@@ -19,17 +30,17 @@ var addEditPost = function ( req, res ) {
                 votes: 0
             });
 
-            if ( !postData._id ) { // no id? add new post
-                newPost.save( function ( err ) {
-                    if ( err ) {
+            if (!postData._id) { // no id? add new post
+                newPost.save(function (err) {
+                    if (err) {
                         err.status = 500;
                         throw err;
                     } else {
-                        res.status( 200 ).json( {
+                        res.status(200).json({
                             success: true,
                             payload: {},
                             error: null
-                        } );
+                        });
                     }
                 });
             } else { // id provided, editing existing post
@@ -41,13 +52,13 @@ var addEditPost = function ( req, res ) {
                 delete newPost.comments;
                 delete newPost.postedBy;
 
-                Post.update( { _id: postData._id }, newPost, { multi: false }, function ( err, post ) {
-                    if ( !err ) {
-                        res.status( 200 ).json( {
+                Post.update({_id: postData._id}, newPost, {multi: false}, function (err, post) {
+                    if (!err) {
+                        res.status(200).json({
                             success: true,
                             payload: {},
                             error: null
-                        } );
+                        });
                     } else {
                         err.status = 500;
                         throw err;
@@ -55,12 +66,12 @@ var addEditPost = function ( req, res ) {
                 });
             }
         } else {
-            error.message = "Posts should have title and content";
+            error.message = "Invalid input data";
             error.code = 124;
             throw error;
         }
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {
@@ -71,15 +82,24 @@ var addEditPost = function ( req, res ) {
     }
 };
 
-var deletePost = function ( req, res ) {
+/**
+ * Deletes a Post/Article from mongoDB by post Id.
+ *
+ * @author Valeri Hristov
+ * @param {Id} req.body.postId - The mongoDb Id of the post that is to be deleted.
+ * @returns {HTTP.RESPONSE}
+ * @public
+ * @version 0.1 Beta
+ */
+var deletePost = function (req, res) {
     var postData = req.body;
     var error = new Error();
 
     try {
-        if ( postData._id ) {
-            Post.findById( postData._id ).remove(function (err) {
-                if ( !err ) {
-                    res.status( 200 ).send({
+        if (postData.postId) {
+            Post.findById(postData.postId).remove(function (err) {
+                if (!err) {
+                    res.status(200).send({
                         success: true,
                         payload: {},
                         error: null
@@ -94,8 +114,8 @@ var deletePost = function ( req, res ) {
             error.message = "Id is required to delete a document!";
             throw error;
         }
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {
@@ -106,30 +126,46 @@ var deletePost = function ( req, res ) {
     }
 };
 
+/**
+ * Votes up or down a Post/Article from mongoDB by post Id.
+ *
+ * @author Valeri Hristov
+ * @param {Id} req.body.postId - The mongoDb Id of the post that is to be deleted.
+ * @returns {HTTP.RESPONSE}
+ * @public
+ * @version 0.1 Beta
+ */
 var votePost = function (req, res) {
     try {
         var postData = req.body;
-        var postId = postData.postId;
-        var increment = 1;
 
-        if ( postData.voteDown ) {
-            increment = -1;
-        }
+        if (postData.postId) {
+            var postId = postData.postId;
+            var increment = 1;
 
-        Post.findByIdAndUpdate( postId, { $inc: { "votes" : increment } }, function ( err ) {
-            if ( err ) {
-                err.status = 500;
-                throw err;
-            } else {
-                res.status( 200 ).json({
-                    success: true,
-                    payload: {},
-                    error: null
-                });
+            if (postData.voteDown) {
+                increment = -1;
             }
-        });
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+
+            Post.update({_id: postId}, {$inc: {votes: increment}}, {upsert: false}, function (err, model) {
+                if (err) {
+                    err.status = 500;
+                    throw err;
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        payload: {},
+                        error: null
+                    });
+                }
+            });
+        } else {
+            error.code = 124;
+            error.message = "Id is required to vote a post!";
+            throw error;
+        }
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {
@@ -140,11 +176,19 @@ var votePost = function (req, res) {
     }
 };
 
-var getAllPosts = function ( req, res ) {
+/**
+ * Gets all Posts/Articles from mongoDB.
+ *
+ * @author Valeri Hristov
+ * @returns {HTTP.RESPONSE}
+ * @public
+ * @version 0.1 Beta
+ */
+var getAllPosts = function (req, res) {
     try {
-        Post.find( {}, function ( err, data ) {
-            if ( !err ) {
-                res.status( 200 ).json({
+        Post.find({}, function (err, data) {
+            if (!err) {
+                res.status(200).json({
                     success: true,
                     payload: data,
                     error: null
@@ -154,8 +198,8 @@ var getAllPosts = function ( req, res ) {
                 throw err;
             }
         });
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {
