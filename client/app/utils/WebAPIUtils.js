@@ -18,14 +18,13 @@ var APIEndpoints = AppConstants.APIEndpoints;
 
 module.exports = {
 
-  signup: function(email, username, password, passwordConfirmation) {
+  signup: function(email, username, password) {
     request.post(APIEndpoints.REGISTRATION)
-      .send({ user: {
+      .send({
         email: email,
         username: username,
-        password: password,
-        password_confirmation: passwordConfirmation
-      }})
+        password: password
+      })
       .set('Accept', 'application/json')
       .end(function(error, res) {
         if (res) {
@@ -81,7 +80,7 @@ module.exports = {
       });
   },
 
-  createStory: function(title) {
+  createArticle: function(title) {
     request.post(APIEndpoints.ARTICLES)
       .set('Accept', 'application/json')
       .set('Authorization', sessionStorage.getItem('accessToken'))

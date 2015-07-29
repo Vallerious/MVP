@@ -43,15 +43,11 @@ var SignupPage = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
     this.setState({ errors: [] });
-    var email = this.refs.email.getDOMNode().value;
-    var username = this.refs.username.getDOMNode().value;
-    var password = this.refs.password.getDOMNode().value;
-    var passwordConfirmation = this.refs.passwordConfirmation.getDOMNode().value;
-    if (password !== passwordConfirmation) {
-      this.setState({ errors: ['Password and password confirmation should match']});
-    } else {
-      SessionActionCreators.signup(email, username, password, passwordConfirmation);
-    }
+    var email = this.refs.email.getValue();
+    var username = this.refs.username.getValue();
+    var password = this.refs.password.getValue();
+    //validate if pass and repPass match
+    SessionActionCreators.signup(email, username, password);
   },
 
   render: function() {
@@ -63,28 +59,33 @@ var SignupPage = React.createClass({
           <div className="col-md-6 col-md-offset-3">
             <form onSubmit={this._onSubmit}>
               <TextField
+                ref="username"
                 hintText="Enter a new username"
                 floatingLabelText="Username"
                 fullWidth={true} />
               <TextField
+                ref="email"
                 hintText="Enter your E-mail"
                 floatingLabelText="E-mail"
                 fullWidth={true}
                  />
               <TextField
+                ref="password"
                 hintText="Enter a new password"
                 floatingLabelText="Password"
-                fullWidth={true} >
-                  <input type="password" />
+                fullWidth={true}
+                type="password">
               </TextField>
               <TextField
+                ref="passwordConfirmation"
                 hintText="Repeat the new password"
                 floatingLabelText="Repeat password"
-                fullWidth={true}>
-                  <input type="password" />
+                fullWidth={true}
+                type="password">
               </TextField>
 
               <RaisedButton
+                type="submit"
                 label="Submit" />
             </form>
           </div>

@@ -6,15 +6,14 @@ var ActionTypes = AppConstants.ActionTypes;
 
 module.exports = {
 
-  signup: function(email, username, password, passwordConfirmation) {
+  signup: function(email, username, password) {
     AppDispatcher.handleViewAction({
       type: ActionTypes.SIGNUP_REQUEST,
       email: email,
       username: username,
-      password: password,
-      passwordConfirmation: passwordConfirmation
+      password: password
     });
-    WebAPIUtils.signup(email, username, password, passwordConfirmation);
+    WebAPIUtils.signup(email, username, password);
   },
 
   login: function(email, password) {

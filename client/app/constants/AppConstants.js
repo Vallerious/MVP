@@ -1,11 +1,10 @@
-var APIRoot = "http://localhost:3000";
+var APIRoot = "http://localhost:3000/api";
 
 module.exports = {
 
   APIEndpoints: {
-    LOGIN:          APIRoot + "/v1/login",
-    REGISTRATION:   APIRoot + "/v1/users",
-    STORIES:        APIRoot + "/v1/stories"
+    LOGIN:          APIRoot + "/login",
+    REGISTRATION:   APIRoot + "/register",
   },
 
   PayloadSources: {
@@ -14,7 +13,7 @@ module.exports = {
   },
 
   ActionTypes: {
-    // Session
+    // Session  
     LOGIN_REQUEST: 'LOGIN_REQUEST',
     LOGIN_RESPONSE: 'LOGIN_RESPONSE',
 
