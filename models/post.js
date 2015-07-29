@@ -23,6 +23,7 @@ var PostSchema = new mongoose.Schema({
     createdOn: String,
     editedOn: String,
     votes: Number,
+
     // add additional properties...
 });
 

@@ -15,7 +15,7 @@ var Post = require('./../models/post');
  * @version 0.1 Beta
  */
 var addEditPost = function (req, res) {
-    var postData = req.body;
+    var postData = req.body.post;
     var error = new Error();
 
     try {
@@ -92,7 +92,7 @@ var addEditPost = function (req, res) {
  * @version 0.1 Beta
  */
 var deletePost = function (req, res) {
-    var postData = req.body;
+    var postData = req.body.post;
     var error = new Error();
 
     try {
@@ -137,7 +137,7 @@ var deletePost = function (req, res) {
  */
 var votePost = function (req, res) {
     try {
-        var postData = req.body;
+        var postData = req.body.post;
 
         if (postData.postId) {
             var postId = postData.postId;
