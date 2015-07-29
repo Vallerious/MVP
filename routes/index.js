@@ -1,14 +1,13 @@
 var express = require( 'express' );
 var router = express.Router();
-var loginController = require( './../controllers/login' );
-var registerController = require( './../controllers/register' );
+var userController = require( './../controllers/user' );
 var postController = require( './../controllers/post' );
 var commentController = require( './../controllers/comment' );
 var config = require('./../config');
 var jwt = require( 'jsonwebtoken' );
 
-router.post( '/login', loginController.login );
-router.post( '/register', registerController.register );
+router.post( '/login', userController.login );
+router.post( '/register', userController.register );
 
 // Middleware
 //router.use(function(req, res, next) {

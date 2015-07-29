@@ -5,7 +5,7 @@ var Post = require( './../models/post' );
 var Comment = require( './../models/comment' );
 
 var addEditComment = function (req, res) {
-    var commentData = req.body;
+    var commentData = req.body.comment;
     var error = new Error();
     
     try {
@@ -71,7 +71,7 @@ var addEditComment = function (req, res) {
 };
 
 var deleteComment = function ( req, res ) {
-    var commentData = req.body;
+    var commentData = req.body.comment;
 
     try {
         if ( commentData.commentId && commentData.postId ) {
@@ -111,7 +111,7 @@ var deleteComment = function ( req, res ) {
 
 var likeComment = function (req, res) {
     try {
-        var commentData = req.body;
+        var commentData = req.body.comment;
 
         if ( commentData.postId && commentData.commentId ) {
             var postId = commentData.postId;
