@@ -30,11 +30,9 @@ var MainPage = React.createClass({
         <Header
           isLoggedIn={this.state.isLoggedIn}
           email={this.state.email} />
-        <div className="container">
-          <div className="jumbotron">
+          <div className="container">
             <RouteHandler/>
           </div>
-        </div>
       </div>
     );
   }
