@@ -23,8 +23,8 @@ var PostSchema = new mongoose.Schema({
     createdOn: String,
     editedOn: String,
     votes: Number,
-
-    // add additional properties...
+    tags: [],
+    categories: []
 });
 
 module.exports = mongoose.model("Posts", PostSchema);

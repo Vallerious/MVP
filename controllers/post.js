@@ -27,7 +27,9 @@ var addEditPost = function (req, res) {
                 comments: [], // add the Comment schema in the array after it`s created : )
                 createdOn: postData.date || Date.now(),
                 editedOn: "",
-                votes: 0
+                votes: 0,
+                tags: postData.tags.split(","),
+                categories: postData.categories.split(",")
             });
 
             if (!postData._id) { // no id? add new post

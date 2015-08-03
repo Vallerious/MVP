@@ -46283,7 +46283,7 @@
 	                'Tags'
 	              ),
 	              React.createElement('div', { className: "clearfix" }),
-	              React.createElement('input', { type: "text", className: "form-control", style: { width: '100% !important;' }, value: "", 'data-role': "tagsinput" })
+	              React.createElement('input', { type: "text", className: "form-control", style: { width: '100% !important' }, value: "", 'data-role': "tagsinput" })
 	            ),
 	            React.createElement(
 	              'div',

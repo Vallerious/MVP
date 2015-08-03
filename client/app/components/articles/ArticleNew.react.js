@@ -54,9 +54,11 @@ var ArticleNew = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
     this.setState({ errors: [] });
-    var email = this.refs.title.getValue();
-    var password = this.refs.content.getValue();
-    SessionActionCreators.login(email, password);
+    var title = this.refs.title.getValue();
+    var content = this.refs.content.getValue();
+    var tags = this.refs.tags.getValue();
+    var categories = this.refs.categories.getValue();
+    ArticleActionCreators.login(email, password);
   },
 
   render: function() {
@@ -68,7 +70,7 @@ var ArticleNew = React.createClass({
                 <div className="form-group">
                   <label for="usr">Tags</label>
                   <div className="clearfix"></div>
-                  <input type="text" className="form-control" style={{width: '100% !important;'}} value="" data-role="tagsinput" />
+                  <input type="text" className="form-control" style={{width: '100% !important'}} value="" data-role="tagsinput" />
                 </div>
                 <div className="form-group">
                   <label for="usr">Categories</label>
