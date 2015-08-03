@@ -5,6 +5,7 @@ var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var SessionStore = require('../../stores/SessionStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
+var WordpressOptions = require('../../components/common/WordpressOptions.react.js');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -12,92 +13,108 @@ var mui = require('material-ui'),
     RaisedButton = mui.RaisedButton,
     TextField = mui.TextField;
 
-// Styles
+/*
+ Styles
+ */
 var articleBox = {
-  maxWidth: '1140px !important',
-  border: '1px solid black',
-  padding: '15px',
-  margin: '0 auto'
+    maxWidth: '1140px !important',
+    border: '1px solid black',
+    padding: '15px',
+    margin: '0 auto'
 };
 
 var articleContent = {
-  width: '652.5px',
-  resize: 'none'
+    width: '652.5px',
+    resize: 'none'
 };
 
 var multiValue = {
-  width: '100% !important'
+    width: '100% !important'
+};
+
+var toggleBox = {
+    padding: '10px',
+    width: '280px',
+    borderLeft: '1px solid #c8d7e1',
+    borderRight: '1px solid #c8d7e1'
 };
 
 var ArticleNew = React.createClass({
 
-  childContextTypes: {
-    muiTheme: React.PropTypes.object
-  },
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  },
+    getChildContext() {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
 
-  _onChange: function() {
-    this.setState({ errors: SessionStore.getErrors() });
-  },
+    _onChange: function () {
+        this.setState({errors: SessionStore.getErrors()});
+    },
 
-  componentDidMount: function() {
-    if (!SessionStore.isLoggedIn()) {
-      //RouteActionCreators.redirect('main');
+    componentDidMount: function () {
+        if (!SessionStore.isLoggedIn()) {
+            //RouteActionCreators.redirect('main');
+        }
+    },
+
+    _onSubmit: function (e) {
+        e.preventDefault();
+        this.setState({errors: []});
+        var email = this.refs.title.getValue();
+        var password = this.refs.content.getValue();
+        SessionActionCreators.login(email, password);
+    },
+    renderTagsAndCategories: function () {
+        return (
+            <div style={toggleBox}>
+                <div className="form-group">
+                    <label for="usr">Tags</label>
+
+                    <div className="clearfix"></div>
+                    <input type="text" className="form-control" style={{width: '100% !important;'}} value=""
+                           data-role="tagsinput"/>
+                </div>
+                <div className="form-group">
+                    <label for="usr">Categories</label>
+
+                    <div className="clearfix"></div>
+                        <input type="text" className="form-control" value="" data-role="tagsinput"/>
+                    </div>
+                </div>
+        );
+    },
+    render: function () {
+        return (
+            <article className={articleBox}>
+                <form onSubmit={this._onSubmit}>
+                    <div className="row">
+                        <div className="col-md-5 mt10">
+                            <WordpressOptions dropdownContent={this.renderTagsAndCategories()} title="Tags & Categories" />
+                        </div>
+                        <div className="col-md-7">
+                            <TextField
+                                ref="title"
+                                hintText="Enter article title..."
+                                floatingLabelText="Title"
+                                fullWidth={true}/>
+                            <TextField
+                                ref="content"
+                                hintText="Say what`s on your mind :)"
+                                floatingLabelText="Content"
+                                multiLine={true}
+                                rows={12}
+                                fullWidth={true}/>
+                            <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true}/>
+                        </div>
+                    </div>
+                </form>
+            </article>
+        );
     }
-  },
-
-  _onSubmit: function(e) {
-    e.preventDefault();
-    this.setState({ errors: [] });
-    var title = this.refs.title.getValue();
-    var content = this.refs.content.getValue();
-    var tags = this.refs.tags.getValue();
-    var categories = this.refs.categories.getValue();
-    ArticleActionCreators.login(email, password);
-  },
-
-  render: function() {
-    return (
-        <article className={articleBox}>
-          <form onSubmit={this._onSubmit}>
-            <div className="row">
-              <div className="col-md-5 mt10">
-                <div className="form-group">
-                  <label for="usr">Tags</label>
-                  <div className="clearfix"></div>
-                  <input type="text" className="form-control" style={{width: '100% !important'}} value="" data-role="tagsinput" />
-                </div>
-                <div className="form-group">
-                  <label for="usr">Categories</label>
-                  <div className="clearfix"></div>
-                  <input type="text" className="form-control" value="" data-role="tagsinput" />
-                </div>
-              </div>
-              <div className="col-md-7">
-                <TextField
-                    ref="title"
-                    hintText="Enter article title..."
-                    floatingLabelText="Title"
-                    fullWidth={true} />
-                <TextField
-                    ref="content"
-                    hintText="Say what`s on your mind :)"
-                    floatingLabelText="Content"
-                    multiLine={true}
-                    rows={12}
-                    fullWidth={true} />
-                <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true} />
-              </div>
-            </div>
-          </form>
-        </article>
-     );
-  }
 
 });
 
