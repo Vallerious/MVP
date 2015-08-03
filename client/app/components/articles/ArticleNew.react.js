@@ -32,6 +32,13 @@ var multiValue = {
     width: '100% !important'
 };
 
+var toggleBox = {
+    padding: '10px',
+    width: '280px',
+    borderLeft: '1px solid #c8d7e1',
+    borderRight: '1px solid #c8d7e1'
+};
+
 var ArticleNew = React.createClass({
 
     childContextTypes: {
@@ -63,7 +70,7 @@ var ArticleNew = React.createClass({
     },
     renderTagsAndCategories: function () {
         return (
-            <div>
+            <div style={toggleBox}>
                 <div className="form-group">
                     <label for="usr">Tags</label>
 
@@ -86,7 +93,7 @@ var ArticleNew = React.createClass({
                 <form onSubmit={this._onSubmit}>
                     <div className="row">
                         <div className="col-md-5 mt10">
-                            <WordpressOptions dropdownContent={this.renderTagsAndCategories()}/>
+                            <WordpressOptions dropdownContent={this.renderTagsAndCategories()} title="Tags & Categories" />
                         </div>
                         <div className="col-md-7">
                             <TextField

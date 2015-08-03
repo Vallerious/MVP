@@ -46233,6 +46233,13 @@
 	    width: '100% !important'
 	};
 
+	var toggleBox = {
+	    padding: '10px',
+	    width: '280px',
+	    borderLeft: '1px solid #c8d7e1',
+	    borderRight: '1px solid #c8d7e1'
+	};
+
 	var ArticleNew = React.createClass({
 	    displayName: 'ArticleNew',
 
@@ -46266,7 +46273,7 @@
 	    renderTagsAndCategories: function renderTagsAndCategories() {
 	        return React.createElement(
 	            'div',
-	            null,
+	            { style: toggleBox },
 	            React.createElement(
 	                'div',
 	                { className: "form-group" },
@@ -46305,7 +46312,7 @@
 	                    React.createElement(
 	                        'div',
 	                        { className: "col-md-5 mt10" },
-	                        React.createElement(WordpressOptions, { dropdownContent: this.renderTagsAndCategories() })
+	                        React.createElement(WordpressOptions, { dropdownContent: this.renderTagsAndCategories(), title: "Tags & Categories" })
 	                    ),
 	                    React.createElement(
 	                        'div',
@@ -46371,14 +46378,24 @@
 
 	// External theme dependencies:
 	var Button = __webpack_require__(377).Button,
-	    Collapse = __webpack_require__(377).Collapse,
-	    Well = __webpack_require__(377).Well;
+	    Collapse = __webpack_require__(377).Collapse;
 
 	/*
 	    Styles
 	 */
-	var WordpressOptions = React.createClass({
-	    displayName: 'WordpressOptions',
+	var bar = {
+	    borderTop: '1px solid #c8d7e1',
+	    borderBottom: '1px solid #c8d7e1',
+	    padding: '10px',
+	    width: '280px',
+	    height: '69px',
+	    lineHeight: '49px',
+	    letterSpacing: '0.1em',
+	    marginBottom: '5px'
+	};
+
+	var WordpressOption = React.createClass({
+	    displayName: 'WordpressOption',
 
 	    getInitialState: function getInitialState() {
 	        return {};
@@ -46387,10 +46404,24 @@
 	        this.setState({ open: !this.state.open });
 	    },
 	    render: function render() {
+	        var optionStyle = bar;
+
+	        if (this.state.open) {
+	            optionStyle.borderLeft = '1px solid #c8d7e1';
+	        }
 	        return React.createElement(
 	            'div',
 	            null,
-	            React.createElement(WPToggleBar, { clickHandler: this.toggleBar }),
+	            React.createElement(
+	                'div',
+	                null,
+	                React.createElement(
+	                    'div',
+	                    { style: optionStyle, onClick: this.toggleBar },
+	                    React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
+	                    this.props.title || "no title"
+	                )
+	            ),
 	            React.createElement(
 	                Collapse,
 	                { 'in': this.state.open },
@@ -46400,7 +46431,7 @@
 	    }
 	});
 
-	module.exports = WordpressOptions;
+	module.exports = WordpressOption;
 
 /***/ },
 /* 376 */
@@ -46414,8 +46445,14 @@
 	    Styles
 	 */
 	var bar = {
-	    borderTop: '1px solid black',
-	    borderBottom: '1px solid black'
+	    borderTop: '1px solid #c8d7e1',
+	    borderBottom: '1px solid #c8d7e1',
+	    padding: '10px',
+	    width: '280px',
+	    height: '69px',
+	    lineHeight: '49px',
+	    letterSpacing: '0.1em',
+	    marginBottom: '5px'
 	};
 
 	var WPToggleBar = React.createClass({
@@ -46426,9 +46463,10 @@
 	            'div',
 	            null,
 	            React.createElement(
-	                'span',
+	                'div',
 	                { style: bar, onClick: this.props.clickHandler },
-	                'CLick me '
+	                React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
+	                this.props.title || "no title"
 	            )
 	        );
 	    }
