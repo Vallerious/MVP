@@ -46236,8 +46236,9 @@
 	var toggleBox = {
 	    padding: '10px',
 	    width: '280px',
-	    borderLeft: '1px solid #c8d7e1',
-	    borderRight: '1px solid #c8d7e1'
+	    borderLeft: '2px solid #c8d7e1',
+	    borderRight: '2px solid #c8d7e1',
+	    borderBottom: '2px solid #c8d7e1'
 	};
 
 	var ArticleNew = React.createClass({
@@ -46383,15 +46384,19 @@
 	/*
 	    Styles
 	 */
-	var bar = {
-	    borderTop: '1px solid #c8d7e1',
-	    borderBottom: '1px solid #c8d7e1',
+	var closedBar = {
+	    borderTop: '2px solid #c8d7e1',
+	    borderBottom: '2px solid #c8d7e1',
 	    padding: '10px',
 	    width: '280px',
 	    height: '69px',
 	    lineHeight: '49px',
-	    letterSpacing: '0.1em',
-	    marginBottom: '5px'
+	    letterSpacing: '0.1em'
+	};
+
+	var openedBar = {
+	    borderLeft: '2px solid #c8d7e1',
+	    borderRight: '2px solid #c8d7e1'
 	};
 
 	var WordpressOption = React.createClass({
@@ -46404,11 +46409,6 @@
 	        this.setState({ open: !this.state.open });
 	    },
 	    render: function render() {
-	        var optionStyle = bar;
-
-	        if (this.state.open) {
-	            optionStyle.borderLeft = '1px solid #c8d7e1';
-	        }
 	        return React.createElement(
 	            'div',
 	            null,
@@ -46417,7 +46417,7 @@
 	                null,
 	                React.createElement(
 	                    'div',
-	                    { style: optionStyle, onClick: this.toggleBar },
+	                    { style: this.state.open ? $.extend({}, closedBar, openedBar) : closedBar, onClick: this.toggleBar },
 	                    React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
 	                    this.props.title || "no title"
 	                )
@@ -46445,14 +46445,13 @@
 	    Styles
 	 */
 	var bar = {
-	    borderTop: '1px solid #c8d7e1',
-	    borderBottom: '1px solid #c8d7e1',
+	    borderTop: '2px solid #c8d7e1',
+	    borderBottom: '2px solid #c8d7e1',
 	    padding: '10px',
 	    width: '280px',
 	    height: '69px',
 	    lineHeight: '49px',
-	    letterSpacing: '0.1em',
-	    marginBottom: '5px'
+	    letterSpacing: '0.1em'
 	};
 
 	var WPToggleBar = React.createClass({

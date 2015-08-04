@@ -21,12 +21,15 @@ module.exports = {
     WebAPIUtils.loadArticle(articleId);
   },
 
-  createArticle: function(title) {
+  createArticle: function(title, content, tags, categories) {
     AppDispatcher.handleViewAction({
       type: ActionTypes.CREATE_ARTICLE,
-      title: title
+      title: title,
+      content: content,
+      tags: tags,
+      categories: categories
     });
-    WebAPIUtils.createArticle(title);
+    WebAPIUtils.createArticle(title, content, tags, categories);
   }
 
 };

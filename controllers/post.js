@@ -15,11 +15,11 @@ var Post = require('./../models/post');
  * @version 0.1 Beta
  */
 var addEditPost = function (req, res) {
-    var postData = req.body.post;
+    var postData = req.body.article;
     var error = new Error();
 
     try {
-        if (postData.title && postData.content && postData.postedBy) {
+        if (postData.title && postData.content) {
             var newPost = new Post({
                 title: postData.title,
                 content: postData.content,

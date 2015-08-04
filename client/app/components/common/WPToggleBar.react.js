@@ -4,14 +4,13 @@ var React = require('react');
     Styles
  */
 var bar = {
-    borderTop: '1px solid #c8d7e1',
-    borderBottom: '1px solid #c8d7e1',
+    borderTop: '2px solid #c8d7e1',
+    borderBottom: '2px solid #c8d7e1',
     padding: '10px',
     width: '280px',
     height: '69px',
     lineHeight: '49px',
-    letterSpacing: '0.1em',
-    marginBottom: '5px'
+    letterSpacing: '0.1em'
 };
 
 var WPToggleBar = React.createClass({

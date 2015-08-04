@@ -13,6 +13,7 @@
     "node-libs-browser": "^0.5.2",
     "object-assign": "^3.0.0",
     "react": "^0.13.3",
+    "react-bootstrap": "^0.24.3",
     "react-router": "^0.13.3",
     "react-tap-event-plugin": "^0.1.7",
     "superagent": "^1.2.0",

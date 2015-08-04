@@ -35,8 +35,10 @@ var multiValue = {
 var toggleBox = {
     padding: '10px',
     width: '280px',
-    borderLeft: '1px solid #c8d7e1',
-    borderRight: '1px solid #c8d7e1'
+    cursor: 'pointer',
+    borderLeft: '2px solid #c8d7e1',
+    borderRight: '2px solid #c8d7e1',
+    borderBottom: '2px solid #c8d7e1'
 };
 
 var ArticleNew = React.createClass({
@@ -64,9 +66,11 @@ var ArticleNew = React.createClass({
     _onSubmit: function (e) {
         e.preventDefault();
         this.setState({errors: []});
-        var email = this.refs.title.getValue();
-        var password = this.refs.content.getValue();
-        SessionActionCreators.login(email, password);
+        var title = this.refs.title.getValue();
+        var content = this.refs.content.getValue();
+        var tags = this.refs.content.getValue();
+        var categories = this.refs.categories.getValue();
+        ArticleActionCreators.createArticle(title, content, tags, categories);
     },
     renderTagsAndCategories: function () {
         return (
@@ -76,7 +80,7 @@ var ArticleNew = React.createClass({
 
                     <div className="clearfix"></div>
                     <input type="text" className="form-control" style={{width: '100% !important;'}} value=""
-                           data-role="tagsinput"/>
+                           data-role="tagsinput" />
                 </div>
                 <div className="form-group">
                     <label for="usr">Categories</label>

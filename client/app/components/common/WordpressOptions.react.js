@@ -16,17 +16,19 @@ var Button = require('react-bootstrap').Button,
     Styles
  */
 var closedBar = {
-    borderTop: '1px solid #c8d7e1',
-    borderBottom: '1px solid #c8d7e1',
+    borderTop: '2px solid #c8d7e1',
+    borderBottom: '2px solid #c8d7e1',
     padding: '10px',
     width: '280px',
     height: '69px',
     lineHeight: '49px',
-    letterSpacing: '0.1em',
-    marginBottom: '5px'
+    letterSpacing: '0.1em'
 };
 
-
+var openedBar = {
+    borderLeft: '2px solid #c8d7e1',
+    borderRight: '2px solid #c8d7e1'
+};
 
 var WordpressOption = React.createClass({
     getInitialState: function () {
@@ -36,16 +38,10 @@ var WordpressOption = React.createClass({
         this.setState({open: !this.state.open});
     },
     render: function () {
-        var optionStyle = bar;
-
-        if ( this.state.open ) { // implement this with state
-            optionStyle.borderLeft = '1px solid #c8d7e1';
-            optionStyle.borderRight = '1px solid #c8d7e1';
-        }
         return (
             <div>
                 <div>
-                    <div style={optionStyle} onClick={this.toggleBar}><span className={this.props.glyph || "glyphicon glyphicon-star"}></span>{this.props.title || "no title"}</div>
+                    <div style={this.state.open ? $.extend({}, closedBar, openedBar) : closedBar} onClick={this.toggleBar}><span className={this.props.glyph || "glyphicon glyphicon-star"}></span>{this.props.title || "no title"}</div>
                 </div>
                 <Collapse in={this.state.open}>
                     {this.props.dropdownContent}
