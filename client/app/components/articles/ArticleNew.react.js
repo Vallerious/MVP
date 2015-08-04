@@ -5,7 +5,7 @@ var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var SessionStore = require('../../stores/SessionStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
-var WordpressOptions = require('../../components/common/WordpressOptions.react.js');
+var MenuList = require('../common/MenuList.react.js');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -21,24 +21,6 @@ var articleBox = {
     border: '1px solid black',
     padding: '15px',
     margin: '0 auto'
-};
-
-var articleContent = {
-    width: '652.5px',
-    resize: 'none'
-};
-
-var multiValue = {
-    width: '100% !important'
-};
-
-var toggleBox = {
-    padding: '10px',
-    width: '280px',
-    cursor: 'pointer',
-    borderLeft: '2px solid #c8d7e1',
-    borderRight: '2px solid #c8d7e1',
-    borderBottom: '2px solid #c8d7e1'
 };
 
 var ArticleNew = React.createClass({
@@ -72,32 +54,13 @@ var ArticleNew = React.createClass({
         var categories = this.refs.categories.getValue();
         ArticleActionCreators.createArticle(title, content, tags, categories);
     },
-    renderTagsAndCategories: function () {
-        return (
-            <div style={toggleBox}>
-                <div className="form-group">
-                    <label for="usr">Tags</label>
-
-                    <div className="clearfix"></div>
-                    <input type="text" className="form-control" style={{width: '100% !important;'}} value=""
-                           data-role="tagsinput" />
-                </div>
-                <div className="form-group">
-                    <label for="usr">Categories</label>
-
-                    <div className="clearfix"></div>
-                        <input type="text" className="form-control" value="" data-role="tagsinput"/>
-                    </div>
-                </div>
-        );
-    },
     render: function () {
         return (
             <article className={articleBox}>
                 <form onSubmit={this._onSubmit}>
                     <div className="row">
                         <div className="col-md-5 mt10">
-                            <WordpressOptions dropdownContent={this.renderTagsAndCategories()} title="Tags & Categories" />
+                            <MenuList />
                         </div>
                         <div className="col-md-7">
                             <TextField
