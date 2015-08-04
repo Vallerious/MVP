@@ -46206,7 +46206,7 @@
 	var SessionStore = __webpack_require__(165);
 	var ArticleActionCreators = __webpack_require__(214);
 	var RouteActionCreators = __webpack_require__(374);
-	var WordpressOptions = __webpack_require__(375);
+	var MenuList = __webpack_require__(375);
 
 	//Theme dependencies:
 	var mui = __webpack_require__(219),
@@ -46222,22 +46222,6 @@
 	    border: '1px solid black',
 	    padding: '15px',
 	    margin: '0 auto'
-	};
-
-	var articleContent = {
-	    width: '652.5px',
-	    resize: 'none'
-	};
-
-	var multiValue = {
-	    width: '100% !important'
-	};
-
-	var toggleBox = {
-	    padding: '10px',
-	    width: '280px',
-	    borderLeft: '1px solid #c8d7e1',
-	    borderRight: '1px solid #c8d7e1'
 	};
 
 	var ArticleNew = React.createClass({
@@ -46270,35 +46254,6 @@
 	        var password = this.refs.content.getValue();
 	        SessionActionCreators.login(email, password);
 	    },
-	    renderTagsAndCategories: function renderTagsAndCategories() {
-	        return React.createElement(
-	            'div',
-	            { style: toggleBox },
-	            React.createElement(
-	                'div',
-	                { className: "form-group" },
-	                React.createElement(
-	                    'label',
-	                    { 'for': "usr" },
-	                    'Tags'
-	                ),
-	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", className: "form-control", style: { width: '100% !important;' }, value: "",
-	                    'data-role': "tagsinput" })
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: "form-group" },
-	                React.createElement(
-	                    'label',
-	                    { 'for': "usr" },
-	                    'Categories'
-	                ),
-	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", className: "form-control", value: "", 'data-role': "tagsinput" })
-	            )
-	        );
-	    },
 	    render: function render() {
 	        return React.createElement(
 	            'article',
@@ -46312,7 +46267,7 @@
 	                    React.createElement(
 	                        'div',
 	                        { className: "col-md-5 mt10" },
-	                        React.createElement(WordpressOptions, { dropdownContent: this.renderTagsAndCategories(), title: "Tags & Categories" })
+	                        React.createElement(MenuList, null)
 	                    ),
 	                    React.createElement(
 	                        'div',
@@ -46364,17 +46319,52 @@
 /* 375 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var WordpressAccordeon = __webpack_require__(376);
+
+	var MenuList = React.createClass({
+	    displayName: 'MenuList',
+
+	    getInitialState: function getInitialState() {
+	        return {
+	            menuItems: [{ dropdownContent: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags" }, { dropdownContent: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags" }]
+	        };
+	    },
+	    renderMenuItems: function renderMenuItems() {
+	        var menuItems = this.state.menuItems.map(function (item, idx) {
+	            return React.createElement(WordpressAccordeon, { title: item.title });
+	        });
+
+	        return menuItems;
+	    },
+	    render: function render() {
+	        var menuItems = this.state.menuItems.map(function (item, idx) {
+	            return React.createElement(WordpressAccordeon, { title: item.title });
+	        });
+
+	        return React.createElement(
+	            'div',
+	            null,
+	            menuItems
+	        );
+	    }
+	});
+
+	module.exports = MenuList;
+
+/***/ },
+/* 376 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/*
 	    External libraries
 	 */
 	'use strict';
 
 	var React = __webpack_require__(1);
-
-	/*
-	    Include Components
-	 */
-	var WPToggleBar = __webpack_require__(376);
 
 	// External theme dependencies:
 	var Button = __webpack_require__(377).Button,
@@ -46383,7 +46373,7 @@
 	/*
 	    Styles
 	 */
-	var bar = {
+	var closedBar = {
 	    borderTop: '1px solid #c8d7e1',
 	    borderBottom: '1px solid #c8d7e1',
 	    padding: '10px',
@@ -46394,8 +46384,15 @@
 	    marginBottom: '5px'
 	};
 
-	var WordpressOption = React.createClass({
-	    displayName: 'WordpressOption',
+	var toggleBox = {
+	    padding: '10px',
+	    width: '280px',
+	    borderLeft: '1px solid #c8d7e1',
+	    borderRight: '1px solid #c8d7e1'
+	};
+
+	var WordpressAccordeon = React.createClass({
+	    displayName: 'WordpressAccordeon',
 
 	    getInitialState: function getInitialState() {
 	        return {};
@@ -46403,12 +46400,36 @@
 	    toggleBar: function toggleBar() {
 	        this.setState({ open: !this.state.open });
 	    },
+	    renderTagsAndCategories: function renderTagsAndCategories() {
+	        return React.createElement(
+	            'div',
+	            { style: toggleBox },
+	            React.createElement(
+	                'div',
+	                { className: "form-group" },
+	                React.createElement(
+	                    'label',
+	                    { 'for': "usr" },
+	                    'Tags'
+	                ),
+	                React.createElement('div', { className: "clearfix" }),
+	                React.createElement('input', { type: "text", className: "form-control", style: { width: '100% !important;' }, value: "",
+	                    'data-role': "tagsinput" })
+	            ),
+	            React.createElement(
+	                'div',
+	                { className: "form-group" },
+	                React.createElement(
+	                    'label',
+	                    { 'for': "usr" },
+	                    'Categories'
+	                ),
+	                React.createElement('div', { className: "clearfix" }),
+	                React.createElement('input', { type: "text", className: "form-control", value: "", 'data-role': "tagsinput" })
+	            )
+	        );
+	    },
 	    render: function render() {
-	        var optionStyle = bar;
-
-	        if (this.state.open) {
-	            optionStyle.borderLeft = '1px solid #c8d7e1';
-	        }
 	        return React.createElement(
 	            'div',
 	            null,
@@ -46417,7 +46438,7 @@
 	                null,
 	                React.createElement(
 	                    'div',
-	                    { style: optionStyle, onClick: this.toggleBar },
+	                    { style: closedBar, onClick: this.toggleBar },
 	                    React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
 	                    this.props.title || "no title"
 	                )
@@ -46425,54 +46446,13 @@
 	            React.createElement(
 	                Collapse,
 	                { 'in': this.state.open },
-	                this.props.dropdownContent
+	                this.renderTagsAndCategories()
 	            )
 	        );
 	    }
 	});
 
-	module.exports = WordpressOption;
-
-/***/ },
-/* 376 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	/*
-	    Styles
-	 */
-	var bar = {
-	    borderTop: '1px solid #c8d7e1',
-	    borderBottom: '1px solid #c8d7e1',
-	    padding: '10px',
-	    width: '280px',
-	    height: '69px',
-	    lineHeight: '49px',
-	    letterSpacing: '0.1em',
-	    marginBottom: '5px'
-	};
-
-	var WPToggleBar = React.createClass({
-	    displayName: 'WPToggleBar',
-
-	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'div',
-	                { style: bar, onClick: this.props.clickHandler },
-	                React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
-	                this.props.title || "no title"
-	            )
-	        );
-	    }
-	});
-
-	module.exports = WPToggleBar;
+	module.exports = WordpressAccordeon;
 
 /***/ },
 /* 377 */
