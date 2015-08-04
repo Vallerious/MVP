@@ -25,6 +25,13 @@ var articleBox = {
 
 var ArticleNew = React.createClass({
 
+    getInitialState: function () {
+        return {
+            tags: "",
+            categories: ""
+        }
+    },
+
     childContextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -50,9 +57,13 @@ var ArticleNew = React.createClass({
         this.setState({errors: []});
         var title = this.refs.title.getValue();
         var content = this.refs.content.getValue();
-        var tags = this.refs.content.getValue();
-        var categories = this.refs.categories.getValue();
+        var tags = this.state.tags;
+        var categories = this.state.categories;
         ArticleActionCreators.createArticle(title, content, tags, categories);
+    },
+    getChildInput: function (refs) {
+        this.state.tags = refs.tags.getValue();
+        this.state.categories = refs.categories.getValue();
     },
     render: function () {
         return (
@@ -60,7 +71,7 @@ var ArticleNew = React.createClass({
                 <form onSubmit={this._onSubmit}>
                     <div className="row">
                         <div className="col-md-5 mt10">
-                            <MenuList />
+                            <MenuList onInputUpdate={this.getChildInput} />
                         </div>
                         <div className="col-md-7">
                             <TextField

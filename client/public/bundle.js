@@ -20863,7 +20863,8 @@
 
 	  APIEndpoints: {
 	    LOGIN: APIRoot + "/login",
-	    REGISTRATION: APIRoot + "/register"
+	    REGISTRATION: APIRoot + "/register",
+	    ARTICLES: APIRoot + "/post/list"
 	  },
 
 	  PayloadSources: {
@@ -21463,11 +21464,11 @@
 	module.exports = {
 
 	  signup: function signup(email, username, password) {
-	    request.post(APIEndpoints.REGISTRATION).send({
-	      email: email,
-	      username: username,
-	      password: password
-	    }).set('Accept', 'application/json').end(function (error, res) {
+	    request.post(APIEndpoints.REGISTRATION).send({ user: {
+	        email: email,
+	        username: username,
+	        password: password
+	      } }).set('Accept', 'application/json').end(function (error, res) {
 	      if (res) {
 	        if (res.error) {
 	          var errorMsgs = _getErrors(res);
@@ -21480,8 +21481,8 @@
 	    });
 	  },
 
-	  login: function login(email, password) {
-	    request.post(APIEndpoints.LOGIN).send({ email: email, password: password, grant_type: 'password' }).set('Accept', 'application/json').end(function (error, res) {
+	  login: function login(username, password, email) {
+	    request.post(APIEndpoints.LOGIN).send({ user: { email: email, username: username, password: password, grant_type: 'password' } }).set('Accept', 'application/json').end(function (error, res) {
 	      if (res) {
 	        if (res.error) {
 	          var errorMsgs = _getErrors(res);
@@ -21497,7 +21498,7 @@
 	  loadArticles: function loadArticles() {
 	    request.get(APIEndpoints.ARTICLES).set('Accept', 'application/json').set('Authorization', sessionStorage.getItem('accessToken')).end(function (error, res) {
 	      if (res) {
-	        json = JSON.parse(res.text);
+	        json = JSON.parse(res.payload);
 	        ServerActionCreators.receiveStories(json);
 	      }
 	    });
@@ -21512,8 +21513,8 @@
 	    });
 	  },
 
-	  createArticle: function createArticle(title) {
-	    request.post(APIEndpoints.ARTICLES).set('Accept', 'application/json').set('Authorization', sessionStorage.getItem('accessToken')).send({ story: { title: title } }).end(function (error, res) {
+	  createArticle: function createArticle(title, content, tags, categories) {
+	    request.post(APIEndpoints.ARTICLES).set('Accept', 'application/json').set('Authorization', sessionStorage.getItem('accessToken')).send({ article: { title: title, content: content, tags: tags, categories: categories } }).end(function (error, res) {
 	      if (res) {
 	        if (res.error) {
 	          var errorMsgs = _getErrors(res);
@@ -26082,11 +26083,23 @@
 	  },
 
 	  render: function render() {
+	    var articles = this.state.articles.map(function (article, idx) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        article.title
+	      );
+	    });
 	    var errors = this.state.errors.length > 0 ? React.createElement(ErrorNotice, { errors: this.state.errors }) : React.createElement('div', null);
 	    return React.createElement(
-	      'h1',
+	      'div',
 	      null,
-	      'Articles Page'
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Articles Page'
+	      ),
+	      articles
 	    );
 	  }
 	});
@@ -26154,12 +26167,15 @@
 	    WebAPIUtils.loadArticle(articleId);
 	  },
 
-	  createArticle: function createArticle(title) {
+	  createArticle: function createArticle(title, content, tags, categories) {
 	    AppDispatcher.handleViewAction({
 	      type: ActionTypes.CREATE_ARTICLE,
-	      title: title
+	      title: title,
+	      content: content,
+	      tags: tags,
+	      categories: categories
 	    });
-	    WebAPIUtils.createArticle(title);
+	    WebAPIUtils.createArticle(title, content, tags, categories);
 	  }
 
 	};
@@ -26336,13 +26352,14 @@
 	    WebAPIUtils.signup(email, username, password);
 	  },
 
-	  login: function login(email, password) {
+	  login: function login(username, password, email) {
 	    AppDispatcher.handleViewAction({
 	      type: ActionTypes.LOGIN_REQUEST,
+	      username: username,
 	      email: email,
 	      password: password
 	    });
-	    WebAPIUtils.login(email, password);
+	    WebAPIUtils.login(username, password, email);
 	  },
 
 	  logout: function logout() {
@@ -46224,25 +46241,15 @@
 	    margin: '0 auto'
 	};
 
-	var articleContent = {
-	    width: '652.5px',
-	    resize: 'none'
-	};
-
-	var multiValue = {
-	    width: '100% !important'
-	};
-
-	var toggleBox = {
-	    padding: '10px',
-	    width: '280px',
-	    borderLeft: '2px solid #c8d7e1',
-	    borderRight: '2px solid #c8d7e1',
-	    borderBottom: '2px solid #c8d7e1'
-	};
-
 	var ArticleNew = React.createClass({
 	    displayName: 'ArticleNew',
+
+	    getInitialState: function getInitialState() {
+	        return {
+	            tags: "",
+	            categories: ""
+	        };
+	    },
 
 	    childContextTypes: {
 	        muiTheme: React.PropTypes.object
@@ -46267,9 +46274,15 @@
 	    _onSubmit: function _onSubmit(e) {
 	        e.preventDefault();
 	        this.setState({ errors: [] });
-	        var email = this.refs.title.getValue();
-	        var password = this.refs.content.getValue();
-	        SessionActionCreators.login(email, password);
+	        var title = this.refs.title.getValue();
+	        var content = this.refs.content.getValue();
+	        var tags = this.state.tags;
+	        var categories = this.state.categories;
+	        ArticleActionCreators.createArticle(title, content, tags, categories);
+	    },
+	    getChildInput: function getChildInput(refs) {
+	        this.state.tags = refs.tags.getValue();
+	        this.state.categories = refs.categories.getValue();
 	    },
 	    render: function render() {
 	        return React.createElement(
@@ -46284,7 +46297,7 @@
 	                    React.createElement(
 	                        'div',
 	                        { className: "col-md-5 mt10" },
-	                        React.createElement(MenuList, null)
+	                        React.createElement(MenuList, { onInputUpdate: this.getChildInput })
 	                    ),
 	                    React.createElement(
 	                        'div',
@@ -46347,19 +46360,13 @@
 
 	    getInitialState: function getInitialState() {
 	        return {
-	            menuItems: [{ dropdownContent: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags" }, { dropdownContent: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags" }]
+	            menuItems: [{ content: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags" }, { content: "renderTagsAndCategories", title: "Article Photo", glyph: "glyphicon glyphicon-picture" }]
 	        };
 	    },
-	    renderMenuItems: function renderMenuItems() {
-	        var menuItems = this.state.menuItems.map(function (item, idx) {
-	            return React.createElement(WordpressAccordeon, { title: item.title });
-	        });
-
-	        return menuItems;
-	    },
 	    render: function render() {
+	        var self = this;
 	        var menuItems = this.state.menuItems.map(function (item, idx) {
-	            return React.createElement(WordpressAccordeon, { title: item.title });
+	            return React.createElement(WordpressAccordeon, { onInputUpdate: self.props.onInputUpdate, title: item.title, glyph: item.glyph, content: item.content, key: idx });
 	        });
 
 	        return React.createElement(
@@ -46393,9 +46400,6 @@
 	var closedBar = {
 	    borderTop: '2px solid #c8d7e1',
 	    borderBottom: '2px solid #c8d7e1',
-	var closedBar = {
-	    borderTop: '1px solid #c8d7e1',
-	    borderBottom: '1px solid #c8d7e1',
 	    padding: '10px',
 	    width: '280px',
 	    height: '69px',
@@ -46408,13 +46412,11 @@
 	    borderRight: '2px solid #c8d7e1'
 	};
 
-	var WordpressOption = React.createClass({
-	    displayName: 'WordpressOption',
 	var toggleBox = {
 	    padding: '10px',
 	    width: '280px',
-	    borderLeft: '1px solid #c8d7e1',
-	    borderRight: '1px solid #c8d7e1'
+	    borderLeft: '2px solid #c8d7e1',
+	    borderRight: '2px solid #c8d7e1'
 	};
 
 	var WordpressAccordeon = React.createClass({
@@ -46425,6 +46427,9 @@
 	    },
 	    toggleBar: function toggleBar() {
 	        this.setState({ open: !this.state.open });
+	    },
+	    propagadeInputChange: function propagadeInputChange() {
+	        this.props.onInputUpdate(this.refs);
 	    },
 	    renderTagsAndCategories: function renderTagsAndCategories() {
 	        return React.createElement(
@@ -46439,7 +46444,7 @@
 	                    'Tags'
 	                ),
 	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", className: "form-control", style: { width: '100% !important;' }, value: "",
+	                React.createElement('input', { type: "text", ref: "tags", onChange: this.propagadeInputChange, className: "form-control", style: { width: '100% !important;' },
 	                    'data-role': "tagsinput" })
 	            ),
 	            React.createElement(
@@ -46451,7 +46456,7 @@
 	                    'Categories'
 	                ),
 	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", className: "form-control", value: "", 'data-role': "tagsinput" })
+	                React.createElement('input', { type: "text", ref: "categories", onChange: this.propagadeInputChange, className: "form-control", 'data-role': "tagsinput" })
 	            )
 	        );
 	    },
@@ -46465,62 +46470,24 @@
 	                React.createElement(
 	                    'div',
 	                    { style: this.state.open ? $.extend({}, closedBar, openedBar) : closedBar, onClick: this.toggleBar },
-	                    { style: closedBar, onClick: this.toggleBar },
 	                    React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
-	                    this.props.title || "no title"
+	                    React.createElement(
+	                        'span',
+	                        { className: "ml12" },
+	                        this.props.title || "no title"
+	                    )
 	                )
 	            ),
 	            React.createElement(
 	                Collapse,
 	                { 'in': this.state.open },
-	                this.renderTagsAndCategories()
+	                this[this.props.content]()
 	            )
 	        );
 	    }
 	});
 
-	module.exports = WordpressOption;
-
-/***/ },
-/* 376 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	/*
-	    Styles
-	 */
-	var bar = {
-	    borderTop: '1px solid #c8d7e1',
-	    borderBottom: '1px solid #c8d7e1',
-	    padding: '10px',
-	    width: '280px',
-	    height: '69px',
-	    lineHeight: '49px',
-	    letterSpacing: '0.1em',
-	    marginBottom: '5px'
-	};
-
-	var WPToggleBar = React.createClass({
-	    displayName: 'WPToggleBar',
-
-	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'div',
-	                { style: bar, onClick: this.props.clickHandler },
-	                React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
-	                this.props.title || "no title"
-	            )
-	        );
-	    }
-	});
-
-	module.exports = WPToggleBar;
+	module.exports = WordpressAccordeon;
 
 /***/ },
 /* 377 */

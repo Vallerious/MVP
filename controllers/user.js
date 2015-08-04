@@ -62,36 +62,49 @@ var login = function (req, res) {
 };
 
 var register = function (req, res) {
-    var userData = req.body.user;
+    var userData = req.body;
 
     if (userData && userData.username && userData.password && userData.email) {
-        userUtils.getUser(userData.username).then(function (foundUser) {
-            if (!foundUser) {
-                var newUser = new User({
-                    username: userData.username,
-                    password: passHash.generate(userData.password),
-                    email: userData.email,
-                    roleId: ''
-                });
+        when.resolve(User.findOne({email: userData.email}).exec()).then(function (foundUser) {
+            if ( !foundUser ) {
+                userUtils.getUser(userData.username).then(function (foundUser) {
+                    if (!foundUser) {
+                        var newUser = new User({
+                            username: userData.username,
+                            password: passHash.generate(userData.password),
+                            email: userData.email,
+                            roleId: ''
+                        });
 
-                newUser.save(function (err) {
-                    if (err) {
-                        res.status(500).json({
-                            success: false,
-                            payload: {},
-                            error: {
-                                code: 100,
-                                message: "There was an error creating a user. Please contact your administrator!"
+                        newUser.save(function (err) {
+                            if (err) {
+                                res.status(500).json({
+                                    success: false,
+                                    payload: {},
+                                    error: {
+                                        code: 100,
+                                        message: "There was an error creating a user. Please contact your administrator!"
+                                    }
+                                });
+                            } else {
+                                delete newUser.password;
+                                delete newUser._id;
+
+                                res.status(200).json({
+                                    success: true,
+                                    payload: newUser,
+                                    error: null
+                                });
                             }
                         });
                     } else {
-                        delete newUser.password;
-                        delete newUser._id;
-
                         res.status(200).json({
-                            success: true,
-                            payload: newUser,
-                            error: null
+                            success: false,
+                            payload: {},
+                            error: {
+                                code: 124,
+                                message: "User already exists with that username!"
+                            }
                         });
                     }
                 });
@@ -101,7 +114,7 @@ var register = function (req, res) {
                     payload: {},
                     error: {
                         code: 124,
-                        message: "User already exists with that username!"
+                        message: "User already exists with that email!"
                     }
                 });
             }

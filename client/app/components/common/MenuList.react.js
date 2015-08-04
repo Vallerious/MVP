@@ -6,21 +6,15 @@ var MenuList = React.createClass({
     getInitialState: function () {
         return {
             menuItems: [
-                {dropdownContent: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags"},
-                {dropdownContent: "renderTagsAndCategories", title: "Article Photo", glyph: "glyphicon glyphicon-picture"}
+                {content: "renderTagsAndCategories", title: "Tags & Categories", glyph: "glyphicon glyphicon-tags"},
+                {content: "renderTagsAndCategories", title: "Article Photo", glyph: "glyphicon glyphicon-picture"}
             ]
         }
     },
-    renderMenuItems: function () {
-        var menuItems = this.state.menuItems.map(function (item, idx) {
-            return <WordpressAccordeon title={item.title} />
-        });
-
-        return menuItems;
-    },
     render: function () {
+        var self = this;
         var menuItems = this.state.menuItems.map(function (item, idx) {
-            return <WordpressAccordeon title={item.title} />
+            return <WordpressAccordeon onInputUpdate={self.props.onInputUpdate} title={item.title} glyph={item.glyph} content={item.content} key={idx} />
         });
 
         return (

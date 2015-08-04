@@ -11,21 +11,25 @@ var Button = require('react-bootstrap').Button,
     Styles
  */
 var closedBar = {
-    borderTop: '1px solid #c8d7e1',
-    borderBottom: '1px solid #c8d7e1',
+    borderTop: '2px solid #c8d7e1',
+    borderBottom: '2px solid #c8d7e1',
     padding: '10px',
     width: '280px',
     height: '69px',
     lineHeight: '49px',
-    letterSpacing: '0.1em',
-    marginBottom: '5px'
+    letterSpacing: '0.1em'
+};
+
+var openedBar = {
+    borderLeft: '2px solid #c8d7e1',
+    borderRight: '2px solid #c8d7e1'
 };
 
 var toggleBox = {
     padding: '10px',
     width: '280px',
-    borderLeft: '1px solid #c8d7e1',
-    borderRight: '1px solid #c8d7e1'
+    borderLeft: '2px solid #c8d7e1',
+    borderRight: '2px solid #c8d7e1'
 };
 
 var WordpressAccordeon = React.createClass({
@@ -35,6 +39,9 @@ var WordpressAccordeon = React.createClass({
     toggleBar: function () {
         this.setState({open: !this.state.open});
     },
+    propagadeInputChange: function () {
+        this.props.onInputUpdate(this.refs);
+    },
     renderTagsAndCategories: function () {
         return (
             <div style={toggleBox}>
@@ -42,14 +49,14 @@ var WordpressAccordeon = React.createClass({
                     <label for="usr">Tags</label>
 
                     <div className="clearfix"></div>
-                    <input type="text" className="form-control" style={{width: '100% !important;'}} value=""
-                           data-role="tagsinput"/>
+                    <input type="text" ref="tags" onChange={this.propagadeInputChange} className="form-control" style={{width: '100% !important;'}}
+                           data-role="tagsinput" />
                 </div>
                 <div className="form-group">
                     <label for="usr">Categories</label>
 
                     <div className="clearfix"></div>
-                    <input type="text" className="form-control" value="" data-role="tagsinput"/>
+                    <input type="text" ref="categories" onChange={this.propagadeInputChange} className="form-control" data-role="tagsinput" />
                 </div>
             </div>
         );
@@ -58,10 +65,10 @@ var WordpressAccordeon = React.createClass({
         return (
             <div>
                 <div>
-                    <div style={closedBar} onClick={this.toggleBar}><span className={this.props.glyph || "glyphicon glyphicon-star"}></span>{this.props.title || "no title"}</div>
+                    <div style={this.state.open ? $.extend({}, closedBar, openedBar) : closedBar} onClick={this.toggleBar}><span className={this.props.glyph || "glyphicon glyphicon-star"}></span><span className="ml12">{this.props.title || "no title"}</span></div>
                 </div>
                 <Collapse in={this.state.open}>
-                    {this.renderTagsAndCategories()}
+                    {this[this.props.content]()}
                 </Collapse>
             </div>
         );

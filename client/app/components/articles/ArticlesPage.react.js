@@ -32,9 +32,16 @@ var ArticlesPage = React.createClass({
  },
 
   render: function() {
+      var articles = this.state.articles.map(function (article, idx) {
+          return <div>{article.title}</div>
+      });
     var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
     return (
-      <h1>Articles Page</h1>
+      <div>
+          <h1>Articles Page</h1>
+          {articles}
+      </div>
+
     );
   }
 });
