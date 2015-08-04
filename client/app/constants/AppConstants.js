@@ -5,6 +5,7 @@ module.exports = {
   APIEndpoints: {
     LOGIN:          APIRoot + "/login",
     REGISTRATION:   APIRoot + "/register",
+    ARTICLES: APIRoot + "/post/list"
   },
 
   PayloadSources: {

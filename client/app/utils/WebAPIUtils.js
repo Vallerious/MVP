@@ -62,7 +62,7 @@ module.exports = {
       .set('Authorization', sessionStorage.getItem('accessToken'))
       .end(function(error, res){
         if (res) {
-          json = JSON.parse(res.text);
+          json = JSON.parse(res.payload);
           ServerActionCreators.receiveStories(json);
         }
       });
