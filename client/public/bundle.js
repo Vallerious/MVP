@@ -46224,6 +46224,23 @@
 	    margin: '0 auto'
 	};
 
+	var articleContent = {
+	    width: '652.5px',
+	    resize: 'none'
+	};
+
+	var multiValue = {
+	    width: '100% !important'
+	};
+
+	var toggleBox = {
+	    padding: '10px',
+	    width: '280px',
+	    borderLeft: '2px solid #c8d7e1',
+	    borderRight: '2px solid #c8d7e1',
+	    borderBottom: '2px solid #c8d7e1'
+	};
+
 	var ArticleNew = React.createClass({
 	    displayName: 'ArticleNew',
 
@@ -46374,16 +46391,25 @@
 	    Styles
 	 */
 	var closedBar = {
+	    borderTop: '2px solid #c8d7e1',
+	    borderBottom: '2px solid #c8d7e1',
+	var closedBar = {
 	    borderTop: '1px solid #c8d7e1',
 	    borderBottom: '1px solid #c8d7e1',
 	    padding: '10px',
 	    width: '280px',
 	    height: '69px',
 	    lineHeight: '49px',
-	    letterSpacing: '0.1em',
-	    marginBottom: '5px'
+	    letterSpacing: '0.1em'
 	};
 
+	var openedBar = {
+	    borderLeft: '2px solid #c8d7e1',
+	    borderRight: '2px solid #c8d7e1'
+	};
+
+	var WordpressOption = React.createClass({
+	    displayName: 'WordpressOption',
 	var toggleBox = {
 	    padding: '10px',
 	    width: '280px',
@@ -46438,6 +46464,7 @@
 	                null,
 	                React.createElement(
 	                    'div',
+	                    { style: this.state.open ? $.extend({}, closedBar, openedBar) : closedBar, onClick: this.toggleBar },
 	                    { style: closedBar, onClick: this.toggleBar },
 	                    React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
 	                    this.props.title || "no title"
@@ -46452,7 +46479,48 @@
 	    }
 	});
 
-	module.exports = WordpressAccordeon;
+	module.exports = WordpressOption;
+
+/***/ },
+/* 376 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	/*
+	    Styles
+	 */
+	var bar = {
+	    borderTop: '1px solid #c8d7e1',
+	    borderBottom: '1px solid #c8d7e1',
+	    padding: '10px',
+	    width: '280px',
+	    height: '69px',
+	    lineHeight: '49px',
+	    letterSpacing: '0.1em',
+	    marginBottom: '5px'
+	};
+
+	var WPToggleBar = React.createClass({
+	    displayName: 'WPToggleBar',
+
+	    render: function render() {
+	        return React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	                'div',
+	                { style: bar, onClick: this.props.clickHandler },
+	                React.createElement('span', { className: this.props.glyph || "glyphicon glyphicon-star" }),
+	                this.props.title || "no title"
+	            )
+	        );
+	    }
+	});
+
+	module.exports = WPToggleBar;
 
 /***/ },
 /* 377 */

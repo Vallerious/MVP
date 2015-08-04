@@ -20,11 +20,11 @@ module.exports = {
 
   signup: function(email, username, password) {
     request.post(APIEndpoints.REGISTRATION)
-      .send({
+      .send({user: {
         email: email,
         username: username,
         password: password
-      })
+      }})
       .set('Accept', 'application/json')
       .end(function(error, res) {
         if (res) {
@@ -80,11 +80,11 @@ module.exports = {
       });
   },
 
-  createArticle: function(title) {
+  createArticle: function(title, content, tags, categories) {
     request.post(APIEndpoints.ARTICLES)
       .set('Accept', 'application/json')
       .set('Authorization', sessionStorage.getItem('accessToken'))
-      .send({ story: { title: title } })
+      .send({ article: { title: title, content: content, tags: tags, categories: categories } })
       .end(function(error, res){
         if (res) {
           if (res.error) {

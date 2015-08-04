@@ -48,9 +48,11 @@ var ArticleNew = React.createClass({
     _onSubmit: function (e) {
         e.preventDefault();
         this.setState({errors: []});
-        var email = this.refs.title.getValue();
-        var password = this.refs.content.getValue();
-        SessionActionCreators.login(email, password);
+        var title = this.refs.title.getValue();
+        var content = this.refs.content.getValue();
+        var tags = this.refs.content.getValue();
+        var categories = this.refs.categories.getValue();
+        ArticleActionCreators.createArticle(title, content, tags, categories);
     },
     render: function () {
         return (
