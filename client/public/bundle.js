@@ -20857,14 +20857,15 @@
 
 	"use strict";
 
-	var APIRoot = "http://localhost:3000/api";
+	var APIRoot = "http://127.0.0.1:3000/api";
 
 	module.exports = {
 
 	  APIEndpoints: {
 	    LOGIN: APIRoot + "/login",
 	    REGISTRATION: APIRoot + "/register",
-	    ARTICLES: APIRoot + "/post/list"
+	    ARTICLES: APIRoot + "/post/list",
+	    CREATE_ARTICLE: APIRoot + "/post/add"
 	  },
 
 	  PayloadSources: {
@@ -21496,10 +21497,10 @@
 	  },
 
 	  loadArticles: function loadArticles() {
-	    request.get(APIEndpoints.ARTICLES).set('Accept', 'application/json').set('Authorization', sessionStorage.getItem('accessToken')).end(function (error, res) {
+	    request.get(APIEndpoints.ARTICLES).set('Accept', 'application/json').end(function (error, res) {
 	      if (res) {
-	        json = JSON.parse(res.payload);
-	        ServerActionCreators.receiveStories(json);
+	        var json = res.body.payload;
+	        ServerActionCreators.receiveArticles(json);
 	      }
 	    });
 	  },
@@ -21514,13 +21515,15 @@
 	  },
 
 	  createArticle: function createArticle(title, content, tags, categories) {
-	    request.post(APIEndpoints.ARTICLES).set('Accept', 'application/json').set('Authorization', sessionStorage.getItem('accessToken')).send({ article: { title: title, content: content, tags: tags, categories: categories } }).end(function (error, res) {
+	    request.post(APIEndpoints.CREATE_ARTICLE).set('Accept', 'application/json')
+	    //.set('Authorization', sessionStorage.getItem('accessToken'))
+	    .send({ article: { title: title, content: content, tags: tags, categories: categories } }).end(function (error, res) {
 	      if (res) {
 	        if (res.error) {
 	          var errorMsgs = _getErrors(res);
 	          ServerActionCreators.receiveCreatedArticle(null, errorMsgs);
 	        } else {
-	          json = JSON.parse(res.text);
+	          json = JSON.parse(res.body.payload);
 	          ServerActionCreators.receiveCreatedArticle(json, null);
 	        }
 	      }
@@ -26068,7 +26071,7 @@
 
 	  componentDidMount: function componentDidMount() {
 	    ArticleStore.addChangeListener(this._onChange);
-	    //ArticleActionCreators.loadArticles();
+	    ArticleActionCreators.loadArticles();
 	  },
 
 	  componentWillUnmount: function componentWillUnmount() {
@@ -46276,13 +46279,9 @@
 	        this.setState({ errors: [] });
 	        var title = this.refs.title.getValue();
 	        var content = this.refs.content.getValue();
-	        var tags = this.state.tags;
-	        var categories = this.state.categories;
+	        var tags = $('#input__tags').val();
+	        var categories = $('#input__categories').val();
 	        ArticleActionCreators.createArticle(title, content, tags, categories);
-	    },
-	    getChildInput: function getChildInput(refs) {
-	        this.state.tags = refs.tags.getValue();
-	        this.state.categories = refs.categories.getValue();
 	    },
 	    render: function render() {
 	        return React.createElement(
@@ -46297,7 +46296,7 @@
 	                    React.createElement(
 	                        'div',
 	                        { className: "col-md-5 mt10" },
-	                        React.createElement(MenuList, { onInputUpdate: this.getChildInput })
+	                        React.createElement(MenuList, null)
 	                    ),
 	                    React.createElement(
 	                        'div',
@@ -46353,7 +46352,7 @@
 
 	var React = __webpack_require__(1);
 
-	var WordpressAccordeon = __webpack_require__(376);
+	var MenuItem = __webpack_require__(376);
 
 	var MenuList = React.createClass({
 	    displayName: 'MenuList',
@@ -46366,7 +46365,7 @@
 	    render: function render() {
 	        var self = this;
 	        var menuItems = this.state.menuItems.map(function (item, idx) {
-	            return React.createElement(WordpressAccordeon, { onInputUpdate: self.props.onInputUpdate, title: item.title, glyph: item.glyph, content: item.content, key: idx });
+	            return React.createElement(MenuItem, { title: item.title, glyph: item.glyph, content: item.content, key: idx });
 	        });
 
 	        return React.createElement(
@@ -46419,17 +46418,14 @@
 	    borderRight: '2px solid #c8d7e1'
 	};
 
-	var WordpressAccordeon = React.createClass({
-	    displayName: 'WordpressAccordeon',
+	var MenuItem = React.createClass({
+	    displayName: 'MenuItem',
 
 	    getInitialState: function getInitialState() {
 	        return {};
 	    },
 	    toggleBar: function toggleBar() {
 	        this.setState({ open: !this.state.open });
-	    },
-	    propagadeInputChange: function propagadeInputChange() {
-	        this.props.onInputUpdate(this.refs);
 	    },
 	    renderTagsAndCategories: function renderTagsAndCategories() {
 	        return React.createElement(
@@ -46444,8 +46440,8 @@
 	                    'Tags'
 	                ),
 	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", ref: "tags", onChange: this.propagadeInputChange, className: "form-control", style: { width: '100% !important;' },
-	                    'data-role': "tagsinput" })
+	                React.createElement('input', { type: "text", ref: "tags", className: "form-control",
+	                    'data-role': "tagsinput", id: "input__tags" })
 	            ),
 	            React.createElement(
 	                'div',
@@ -46456,7 +46452,7 @@
 	                    'Categories'
 	                ),
 	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", ref: "categories", onChange: this.propagadeInputChange, className: "form-control", 'data-role': "tagsinput" })
+	                React.createElement('input', { type: "text", ref: "categories", className: "form-control", 'data-role': "tagsinput", id: "input__categories" })
 	            )
 	        );
 	    },
@@ -46487,7 +46483,7 @@
 	    }
 	});
 
-	module.exports = WordpressAccordeon;
+	module.exports = MenuItem;
 
 /***/ },
 /* 377 */

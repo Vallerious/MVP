@@ -1,6 +1,6 @@
 var React = require('react');
 
-var WordpressAccordeon = require('../common/WordpressAccordeon.react.js');
+var MenuItem = require('../common/MenuItem.react.js');
 
 var MenuList = React.createClass({
     getInitialState: function () {
@@ -14,7 +14,7 @@ var MenuList = React.createClass({
     render: function () {
         var self = this;
         var menuItems = this.state.menuItems.map(function (item, idx) {
-            return <WordpressAccordeon onInputUpdate={self.props.onInputUpdate} title={item.title} glyph={item.glyph} content={item.content} key={idx} />
+            return <MenuItem title={item.title} glyph={item.glyph} content={item.content} key={idx} />
         });
 
         return (

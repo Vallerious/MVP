@@ -32,15 +32,12 @@ var toggleBox = {
     borderRight: '2px solid #c8d7e1'
 };
 
-var WordpressAccordeon = React.createClass({
+var MenuItem = React.createClass({
     getInitialState: function () {
         return {};
     },
     toggleBar: function () {
         this.setState({open: !this.state.open});
-    },
-    propagadeInputChange: function () {
-        this.props.onInputUpdate(this.refs);
     },
     renderTagsAndCategories: function () {
         return (
@@ -49,14 +46,14 @@ var WordpressAccordeon = React.createClass({
                     <label for="usr">Tags</label>
 
                     <div className="clearfix"></div>
-                    <input type="text" ref="tags" onChange={this.propagadeInputChange} className="form-control" style={{width: '100% !important;'}}
-                           data-role="tagsinput" />
+                    <input type="text" ref="tags" className="form-control"
+                           data-role="tagsinput" id="input__tags" />
                 </div>
                 <div className="form-group">
                     <label for="usr">Categories</label>
 
                     <div className="clearfix"></div>
-                    <input type="text" ref="categories" onChange={this.propagadeInputChange} className="form-control" data-role="tagsinput" />
+                    <input type="text" ref="categories" className="form-control" data-role="tagsinput" id="input__categories" />
                 </div>
             </div>
         );
@@ -75,4 +72,4 @@ var WordpressAccordeon = React.createClass({
     }
 });
 
-module.exports = WordpressAccordeon;
+module.exports = MenuItem;

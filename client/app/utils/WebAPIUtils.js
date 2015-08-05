@@ -59,11 +59,10 @@ module.exports = {
   loadArticles: function() {
     request.get(APIEndpoints.ARTICLES)
       .set('Accept', 'application/json')
-      .set('Authorization', sessionStorage.getItem('accessToken'))
       .end(function(error, res){
         if (res) {
-          json = JSON.parse(res.payload);
-          ServerActionCreators.receiveStories(json);
+          var json = res.body.payload;
+          ServerActionCreators.receiveArticles(json);
         }
       });
   },
@@ -81,17 +80,17 @@ module.exports = {
   },
 
   createArticle: function(title, content, tags, categories) {
-    request.post(APIEndpoints.ARTICLES)
+    request.post(APIEndpoints.CREATE_ARTICLE)
       .set('Accept', 'application/json')
-      .set('Authorization', sessionStorage.getItem('accessToken'))
+      //.set('Authorization', sessionStorage.getItem('accessToken'))
       .send({ article: { title: title, content: content, tags: tags, categories: categories } })
-      .end(function(error, res){
+      .end(function(error, res) {
         if (res) {
           if (res.error) {
             var errorMsgs = _getErrors(res);
             ServerActionCreators.receiveCreatedArticle(null, errorMsgs);
           } else {
-            json = JSON.parse(res.text);
+            json = JSON.parse(res.body.payload);
             ServerActionCreators.receiveCreatedArticle(json, null);
           }
         }

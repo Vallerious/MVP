@@ -17,7 +17,7 @@ var ArticlesPage = React.createClass({
 
   componentDidMount: function() {
     ArticleStore.addChangeListener(this._onChange);
-    //ArticleActionCreators.loadArticles();
+    ArticleActionCreators.loadArticles();
   },
 
   componentWillUnmount: function() {
@@ -33,7 +33,7 @@ var ArticlesPage = React.createClass({
 
   render: function() {
       var articles = this.state.articles.map(function (article, idx) {
-          return <div>{article.title}</div>
+          return <div>{article.title} - {article.content}</div>
       });
     var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
     return (

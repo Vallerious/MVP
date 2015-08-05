@@ -1,11 +1,12 @@
-var APIRoot = "http://localhost:3000/api";
+var APIRoot = "http://127.0.0.1:3000/api";
 
 module.exports = {
 
   APIEndpoints: {
     LOGIN:          APIRoot + "/login",
     REGISTRATION:   APIRoot + "/register",
-    ARTICLES: APIRoot + "/post/list"
+    ARTICLES: APIRoot + "/post/list",
+    CREATE_ARTICLE: APIRoot + "/post/add"
   },
 
   PayloadSources: {
