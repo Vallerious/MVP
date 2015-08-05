@@ -39,9 +39,9 @@ module.exports = {
       });
   },
 
-  login: function(username, password, email) {
+  login: function(username, password) {
     request.post(APIEndpoints.LOGIN)
-      .send({user: { email: email, username: username, password: password, grant_type: 'password' }})
+      .send({user: {username: username, password: password, grant_type: 'password' }})
       .set('Accept', 'application/json')
       .end(function(error, res){
         if (res) {
@@ -49,8 +49,7 @@ module.exports = {
             var errorMsgs = _getErrors(res);
             ServerActionCreators.receiveLogin(null, errorMsgs);
           } else {
-            json = JSON.parse(res.text);
-            ServerActionCreators.receiveLogin(json, null);
+            ServerActionCreators.receiveLogin(res.body, null);
           }
         }
       });

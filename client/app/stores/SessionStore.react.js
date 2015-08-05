@@ -50,12 +50,12 @@ SessionStore.dispatchToken = AppDispatcher.register(function(payload) {
   switch(action.type) {
 
     case ActionTypes.LOGIN_RESPONSE:
-      if (action.json && action.json.access_token) {
-        _accessToken = action.json.access_token;
-        _email = action.json.email;
+      if (action.json && action.json.token) {
+        var _accessToken = action.json.token;
+        var _username = action.json.payload.username;
         // Token will always live in the session, so that the API can grab it with no hassle
         sessionStorage.setItem('accessToken', _accessToken);
-        sessionStorage.setItem('email', _email);
+        sessionStorage.setItem('username', _username);
       }
       if (action.errors) {
         _errors = action.errors;
@@ -65,9 +65,9 @@ SessionStore.dispatchToken = AppDispatcher.register(function(payload) {
 
     case ActionTypes.LOGOUT:
       _accessToken = null;
-      _email = null;
+      _username = null;
       sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('email');
+      sessionStorage.removeItem('username');
       SessionStore.emitChange();
       break;
 

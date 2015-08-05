@@ -62,7 +62,7 @@ var login = function (req, res) {
 };
 
 var register = function (req, res) {
-    var userData = req.body;
+    var userData = req.body.user;
 
     if (userData && userData.username && userData.password && userData.email) {
         when.resolve(User.findOne({email: userData.email}).exec()).then(function (foundUser) {

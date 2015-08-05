@@ -195,7 +195,7 @@ var getAllPosts = function (req, res) {
     try {
         var dataParams = req.body.dataParams;
         var articlesPerPage = config.articlesPerPage;
-        var pageNumber = 1;
+        var pageNumber = 3;
         var sortBy = {field: 'content', order: 1}; // Object - name of the field and -1 or 1 for asc and desc
 
         if ( sortBy.field == "content" || sortBy.field == "title" ) {
@@ -210,7 +210,8 @@ var getAllPosts = function (req, res) {
             .limit(pageNumber * articlesPerPage)
             .exec(function(err, articles) {
                 if (!err) {
-                    articles = articles.slice(articles.length - articlesPerPage);
+
+                    articles = articles.slice(articles.length - articlesPerPage < 0 ? 0 : articles.length - articlesPerPage);
 
                     res.status(200).json({
                         success: true,

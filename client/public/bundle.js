@@ -21325,12 +21325,12 @@
 	  switch (action.type) {
 
 	    case ActionTypes.LOGIN_RESPONSE:
-	      if (action.json && action.json.access_token) {
-	        _accessToken = action.json.access_token;
-	        _email = action.json.email;
+	      if (action.json && action.json.token) {
+	        var _accessToken = action.json.token;
+	        var _username = action.json.payload.username;
 	        // Token will always live in the session, so that the API can grab it with no hassle
 	        sessionStorage.setItem('accessToken', _accessToken);
-	        sessionStorage.setItem('email', _email);
+	        sessionStorage.setItem('username', _username);
 	      }
 	      if (action.errors) {
 	        _errors = action.errors;
@@ -21340,9 +21340,9 @@
 
 	    case ActionTypes.LOGOUT:
 	      _accessToken = null;
-	      _email = null;
+	      _username = null;
 	      sessionStorage.removeItem('accessToken');
-	      sessionStorage.removeItem('email');
+	      sessionStorage.removeItem('username');
 	      SessionStore.emitChange();
 	      break;
 
@@ -21482,15 +21482,14 @@
 	    });
 	  },
 
-	  login: function login(username, password, email) {
-	    request.post(APIEndpoints.LOGIN).send({ user: { email: email, username: username, password: password, grant_type: 'password' } }).set('Accept', 'application/json').end(function (error, res) {
+	  login: function login(username, password) {
+	    request.post(APIEndpoints.LOGIN).send({ user: { username: username, password: password, grant_type: 'password' } }).set('Accept', 'application/json').end(function (error, res) {
 	      if (res) {
 	        if (res.error) {
 	          var errorMsgs = _getErrors(res);
 	          ServerActionCreators.receiveLogin(null, errorMsgs);
 	        } else {
-	          json = JSON.parse(res.text);
-	          ServerActionCreators.receiveLogin(json, null);
+	          ServerActionCreators.receiveLogin(res.body, null);
 	        }
 	      }
 	    });
@@ -26085,6 +26084,11 @@
 	    });
 	  },
 
+	  sortArticles: function sortArticles() {
+	    this.state.articles = this.state.articles.sort(function (a1, a2) {
+	      return a1.title.localeCompare(a2.title);
+	    });
+	  },
 	  render: function render() {
 	    var articles = this.state.articles.map(function (article, idx) {
 	      return React.createElement(
@@ -26103,6 +26107,54 @@
 	        'h1',
 	        null,
 	        'Articles Page'
+	      ),
+	      React.createElement(
+	        'label',
+	        { 'for': "articles__sortBy" },
+	        'Sort by:'
+	      ),
+	      React.createElement(
+	        'select',
+	        { name: "articlesSortBy", id: "articles__sortBy", ref: "articlesSortBy" },
+	        React.createElement(
+	          'option',
+	          { value: "content" },
+	          'Content'
+	        ),
+	        React.createElement(
+	          'option',
+	          { value: "title" },
+	          'Title'
+	        ),
+	        React.createElement(
+	          'option',
+	          { value: "createdOn" },
+	          'Date Created'
+	        )
+	      ),
+	      React.createElement(
+	        'label',
+	        { 'for': "articles__order" },
+	        'Order:'
+	      ),
+	      React.createElement(
+	        'select',
+	        { name: "articlesOrder", id: "articles__order", ref: "articlesOrder" },
+	        React.createElement(
+	          'option',
+	          { value: "1" },
+	          'Ascending'
+	        ),
+	        React.createElement(
+	          'option',
+	          { value: "-1" },
+	          'Descending'
+	        )
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.sortArticles },
+	        'Filter'
 	      ),
 	      articles
 	    );
@@ -26357,14 +26409,13 @@
 	    WebAPIUtils.signup(email, username, password);
 	  },
 
-	  login: function login(username, password, email) {
+	  login: function login(username, password) {
 	    AppDispatcher.handleViewAction({
 	      type: ActionTypes.LOGIN_REQUEST,
 	      username: username,
-	      email: email,
 	      password: password
 	    });
-	    WebAPIUtils.login(username, password, email);
+	    WebAPIUtils.login(username, password);
 	  },
 
 	  logout: function logout() {
@@ -26423,9 +26474,9 @@
 	  _onSubmit: function _onSubmit(e) {
 	    e.preventDefault();
 	    this.setState({ errors: [] });
-	    var email = this.refs.email.getDOMNode().value;
-	    var password = this.refs.password.getDOMNode().value;
-	    SessionActionCreators.login(email, password);
+	    var username = this.refs.username.getValue();
+	    var password = this.refs.password.getValue();
+	    SessionActionCreators.login(username, password);
 	  },
 
 	  render: function render() {
@@ -26444,18 +26495,18 @@
 	            'form',
 	            { onSubmit: this._onSubmit },
 	            React.createElement(TextField, {
+	              ref: "username",
 	              hintText: "Enter your username",
 	              floatingLabelText: "Username",
 	              fullWidth: true }),
-	            React.createElement(
-	              TextField,
-	              {
-	                hintText: "Enter your password",
-	                floatingLabelText: "Password",
-	                fullWidth: true },
-	              React.createElement('input', { type: "password" })
-	            ),
+	            React.createElement(TextField, {
+	              ref: "password",
+	              hintText: "Enter your password",
+	              floatingLabelText: "Password",
+	              fullWidth: true,
+	              type: "password" }),
 	            React.createElement(RaisedButton, {
+	              type: "submit",
 	              label: "Submit" })
 	          )
 	        )

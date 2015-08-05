@@ -16,14 +16,13 @@ module.exports = {
     WebAPIUtils.signup(email, username, password);
   },
 
-  login: function(username, password, email) {
+  login: function(username, password) {
     AppDispatcher.handleViewAction({
       type: ActionTypes.LOGIN_REQUEST,
       username: username,
-      email: email,
       password: password
     });
-    WebAPIUtils.login(username, password, email);
+    WebAPIUtils.login(username, password);
   },
 
   logout: function() {

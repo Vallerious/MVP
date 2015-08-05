@@ -39,9 +39,9 @@ var LoginPage = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
     this.setState({ errors: [] });
-    var email = this.refs.email.getDOMNode().value;
-    var password = this.refs.password.getDOMNode().value;
-    SessionActionCreators.login(email, password);
+    var username = this.refs.username.getValue();
+    var password = this.refs.password.getValue();
+    SessionActionCreators.login(username, password);
   },
 
   render: function() {
@@ -53,16 +53,19 @@ var LoginPage = React.createClass({
           <div className="col-md-6 col-md-offset-3">
             <form onSubmit={this._onSubmit}>
               <TextField
+                ref="username"
                 hintText="Enter your username"
                 floatingLabelText="Username"
                 fullWidth={true} />
               <TextField
-                hintText="Enter your password"
-                floatingLabelText="Password"
-                fullWidth={true} >
-                  <input type="password" />
+                  ref="password"
+                  hintText="Enter your password"
+                  floatingLabelText="Password"
+                  fullWidth={true}
+                  type="password">
               </TextField>
               <RaisedButton
+                  type="submit"
                 label="Submit" />
             </form>
           </div>
