@@ -26090,7 +26090,9 @@
 	      return React.createElement(
 	        'div',
 	        null,
-	        article.title
+	        article.title,
+	        ' - ',
+	        article.content
 	      );
 	    });
 	    var errors = this.state.errors.length > 0 ? React.createElement(ErrorNotice, { errors: this.state.errors }) : React.createElement('div', null);
@@ -46282,6 +46284,7 @@
 	        var tags = $('#input__tags').val();
 	        var categories = $('#input__categories').val();
 	        ArticleActionCreators.createArticle(title, content, tags, categories);
+	        RouteActionCreators.redirect('main');
 	    },
 	    render: function render() {
 	        return React.createElement(

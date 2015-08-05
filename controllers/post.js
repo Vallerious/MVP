@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var when = require('when');
 var db = require('./../helpers/mongodbConnect');
+var config = require('./../config');
 var Post = require('./../models/post');
 
 /**
@@ -15,21 +16,23 @@ var Post = require('./../models/post');
  * @version 0.1 Beta
  */
 var addEditPost = function (req, res) {
-    var postData = req.body.article;
+    var postData = req.body;
     var error = new Error();
 
     try {
         if (postData.title && postData.content) {
             var newPost = new Post({
                 title: postData.title,
+                title_normalized: postData.title.toLowerCase(),
                 content: postData.content,
+                content_normalized: postData.content.toLowerCase(),
                 postedBy: postData.postedBy,
                 comments: [], // add the Comment schema in the array after it`s created : )
-                createdOn: postData.date || Date.now(),
+                createdOn: Date.now(),
                 editedOn: "",
                 votes: 0,
-                tags: postData.tags.split(","),
-                categories: postData.categories.split(",")
+                tags: postData.tags ? postData.tags.split(",") : "",
+                categories: postData.categories ? postData.categories.split(",") : ""
             });
 
             if (!postData._id) { // no id? add new post
@@ -182,24 +185,43 @@ var votePost = function (req, res) {
  * Gets all Posts/Articles from mongoDB.
  *
  * @author Valeri Hristov
+ * @param {Number} req.body.dataParams.pageNumber - the number of the required page
+ * @param {Object} req.body.dataParams.sortBy - {field: 'content', order: 1}
  * @returns {HTTP.RESPONSE}
  * @public
  * @version 0.1 Beta
  */
 var getAllPosts = function (req, res) {
     try {
-        Post.find({}, function (err, data) {
-            if (!err) {
-                res.status(200).json({
-                    success: true,
-                    payload: data,
-                    error: null
-                });
-            } else {
-                err.status = 500;
-                throw err;
-            }
-        });
+        var dataParams = req.body.dataParams;
+        var articlesPerPage = config.articlesPerPage;
+        var pageNumber = 1;
+        var sortBy = {field: 'content', order: 1}; // Object - name of the field and -1 or 1 for asc and desc
+
+        if ( sortBy.field == "content" || sortBy.field == "title" ) {
+            sortBy.field += "_normalized";
+        }
+
+        var mongoSortObj = {};
+        mongoSortObj[sortBy.field] = sortBy.order;
+
+        Post.find({})
+            .sort(mongoSortObj)
+            .limit(pageNumber * articlesPerPage)
+            .exec(function(err, articles) {
+                if (!err) {
+                    articles = articles.slice(articles.length - articlesPerPage);
+
+                    res.status(200).json({
+                        success: true,
+                        payload: articles,
+                        error: null
+                    });
+                } else {
+                    err.status = 500;
+                    throw err;
+                }
+            });
     } catch (err) {
         res.status(err.status || 400).json({
             success: false,

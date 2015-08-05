@@ -5,22 +5,25 @@ var mongoose = require('mongoose');
 
 var PostSchema = new mongoose.Schema({
     title: String,
+    title_normalized: String,
     content: String,
+    content_normalized: String,
     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
     comments: [{
         content: String,
+        content_normalized: String,
         postedBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users'
         },
-        createdOn: String,
+        createdOn: Number,
         editedOn: String,
         likes: Number
     }],
-    createdOn: String,
+    createdOn: Number,
     editedOn: String,
     votes: Number,
     tags: [],
