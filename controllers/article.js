@@ -2,41 +2,41 @@ var mongoose = require('mongoose');
 var when = require('when');
 var db = require('./../helpers/mongodbConnect');
 var config = require('./../config');
-var Post = require('./../models/post');
+var Article = require('./../models/article');
 
 /**
- * Adds a Post/Article to mongoDB. If an Id is provided the method will edit the post.
+ * Adds a Post/Article to mongoDB. If an Id is provided the method will edit the article.
  *
  * @author Valeri Hristov
  * @param {string} req.body.title
  * @param {string} req.body.content
- * @param {Id} req.body.postedBy - The mongoDb Id of the user that submits the post.
+ * @param {Id} req.body.postedBy - The mongoDb Id of the user that submits the article.
  * @returns {HTTP.RESPONSE}
  * @public
  * @version 0.1 Beta
  */
-var addEditPost = function (req, res) {
-    var postData = req.body;
+var addEditArticle = function (req, res) {
+    var articleData = req.body;
     var error = new Error();
 
     try {
-        if (postData.title && postData.content) {
-            var newPost = new Post({
-                title: postData.title,
-                title_normalized: postData.title.toLowerCase(),
-                content: postData.content,
-                content_normalized: postData.content.toLowerCase(),
-                postedBy: postData.postedBy,
+        if (articleData.title && articleData.content) {
+            var newArticle = new Article({
+                title: articleData.title,
+                title_normalized: articleData.title.toLowerCase(),
+                content: articleData.content,
+                content_normalized: articleData.content.toLowerCase(),
+                postedBy: articleData.postedBy,
                 comments: [], // add the Comment schema in the array after it`s created : )
                 createdOn: Date.now(),
                 editedOn: "",
                 votes: 0,
-                tags: postData.tags ? postData.tags.split(",") : "",
-                categories: postData.categories ? postData.categories.split(",") : ""
+                tags: articleData.tags ? articleData.tags.split(",") : "",
+                categories: articleData.categories ? articleData.categories.split(",") : ""
             });
 
-            if (!postData._id) { // no id? add new post
-                newPost.save(function (err) {
+            if (!articleData._id) { // no id? add new article
+                newArticle.save(function (err) {
                     if (err) {
                         err.status = 500;
                         throw err;
@@ -48,16 +48,16 @@ var addEditPost = function (req, res) {
                         });
                     }
                 });
-            } else { // id provided, editing existing post
-                newPost = newPost.toObject();
-                newPost.editedOn = Date.now();
-                delete newPost._id;
-                delete newPost.votes;
-                delete newPost.date;
-                delete newPost.comments;
-                delete newPost.postedBy;
+            } else { // id provided, editing existing article
+                newArticle = newArticle.toObject();
+                newArticle.editedOn = Date.now();
+                delete newArticle._id;
+                delete newArticle.votes;
+                delete newArticle.date;
+                delete newArticle.comments;
+                delete newArticle.postedBy;
 
-                Post.update({_id: postData._id}, newPost, {multi: false}, function (err, post) {
+                Article.update({_id: articleData._id}, newArticle, {multi: false}, function (err, article) {
                     if (!err) {
                         res.status(200).json({
                             success: true,
@@ -88,21 +88,21 @@ var addEditPost = function (req, res) {
 };
 
 /**
- * Deletes a Post/Article from mongoDB by post Id.
+ * Deletes a Article from mongoDB by article Id.
  *
  * @author Valeri Hristov
- * @param {Id} req.body.postId - The mongoDb Id of the post that is to be deleted.
+ * @param {Id} req.body.articleId - The mongoDb Id of the article that is to be deleted.
  * @returns {HTTP.RESPONSE}
  * @public
  * @version 0.1 Beta
  */
-var deletePost = function (req, res) {
-    var postData = req.body.post;
+var deleteArticle = function (req, res) {
+    var articleData = req.body.article;
     var error = new Error();
 
     try {
-        if (postData.postId) {
-            Post.findById(postData.postId).remove(function (err) {
+        if (articleData.articleId) {
+            Article.findById(articleData.articleId).remove(function (err) {
                 if (!err) {
                     res.status(200).send({
                         success: true,
@@ -135,24 +135,24 @@ var deletePost = function (req, res) {
  * Votes up or down a Post/Article from mongoDB by post Id.
  *
  * @author Valeri Hristov
- * @param {Id} req.body.postId - The mongoDb Id of the post that is to be deleted.
+ * @param {Id} req.body.articleId - The mongoDb Id of the article that is to be deleted.
  * @returns {HTTP.RESPONSE}
  * @public
  * @version 0.1 Beta
  */
-var votePost = function (req, res) {
+var voteArticle = function (req, res) {
     try {
-        var postData = req.body.post;
+        var articleData = req.body.article;
 
-        if (postData.postId) {
-            var postId = postData.postId;
+        if (articleData.articleId) {
+            var articleId = articleData.articleId;
             var increment = 1;
 
-            if (postData.voteDown) {
+            if (articleData.voteDown) {
                 increment = -1;
             }
 
-            Post.update({_id: postId}, {$inc: {votes: increment}}, {upsert: false}, function (err, model) {
+            Article.update({_id: articleId}, {$inc: {votes: increment}}, {upsert: false}, function (err) {
                 if (err) {
                     err.status = 500;
                     throw err;
@@ -166,7 +166,7 @@ var votePost = function (req, res) {
             });
         } else {
             error.code = 124;
-            error.message = "Id is required to vote a post!";
+            error.message = "Id is required to vote an article!";
             throw error;
         }
     } catch (err) {
@@ -191,9 +191,8 @@ var votePost = function (req, res) {
  * @public
  * @version 0.1 Beta
  */
-var getAllPosts = function (req, res) {
+var getAllArticles = function (req, res) {
     try {
-        var dataParams = req.body.dataParams;
         var articlesPerPage = config.articlesPerPage;
         var pageNumber = 3;
         var sortBy = {field: 'content', order: 1}; // Object - name of the field and -1 or 1 for asc and desc
@@ -203,9 +202,12 @@ var getAllPosts = function (req, res) {
         }
 
         var mongoSortObj = {};
-        mongoSortObj[sortBy.field] = sortBy.order;
 
-        Post.find({})
+        if ( sortBy.field ) {
+            mongoSortObj[sortBy.field] = sortBy.order;
+        }
+
+        Article.find({})
             .sort(mongoSortObj)
             .limit(pageNumber * articlesPerPage)
             .exec(function(err, articles) {
@@ -235,9 +237,38 @@ var getAllPosts = function (req, res) {
     }
 };
 
+var filterArticles = function (req, res) {
+    try {
+        var filterText = req.query.filterText;
+
+        Article.find({title_normalized: new RegExp(filterText, "i")}, function (err, articles) {
+            if ( !err ) {
+                res.status(200).json({
+                    success: true,
+                    payload: articles,
+                    error: null
+                });
+            } else {
+                err.status = 500;
+                throw err;
+            }
+        });
+    } catch (err) {
+        res.status(err.status || 400).json({
+            success: false,
+            payload: {},
+            error: {
+                code: err.code || 666,
+                message: err.message
+            }
+        });
+    }
+};
+
 module.exports = {
-    addEditPost: addEditPost,
-    deletePost: deletePost,
-    votePost: votePost,
-    getAllPosts: getAllPosts
+    addEditArticle: addEditArticle,
+    deleteArticle: deleteArticle,
+    voteArticle: voteArticle,
+    getAllArticles: getAllArticles,
+    filterArticles: filterArticles
 };

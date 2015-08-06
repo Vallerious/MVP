@@ -3,7 +3,7 @@
 */
 var mongoose = require('mongoose');
 
-var PostSchema = new mongoose.Schema({
+var ArticleSchema = new mongoose.Schema({
     title: String,
     title_normalized: String,
     content: String,
@@ -30,4 +30,4 @@ var PostSchema = new mongoose.Schema({
     categories: []
 });
 
-module.exports = mongoose.model("Posts", PostSchema);
+module.exports = mongoose.model("Articles", ArticleSchema);

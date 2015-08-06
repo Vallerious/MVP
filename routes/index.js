@@ -1,13 +1,13 @@
-var express = require( 'express' );
+var express = require('express');
 var router = express.Router();
-var userController = require( './../controllers/user' );
-var postController = require( './../controllers/post' );
-var commentController = require( './../controllers/comment' );
+var userController = require('./../controllers/user');
+var articleController = require('./../controllers/article');
+var commentController = require('./../controllers/comment');
 var config = require('./../config');
-var jwt = require( 'jsonwebtoken' );
+var jwt = require('jsonwebtoken');
 
-router.post( '/login', userController.login );
-router.post( '/register', userController.register );
+router.post('/login', userController.login);
+router.post('/register', userController.register);
 
 // Middleware
 //router.use(function(req, res, next) {
@@ -34,14 +34,15 @@ router.post( '/register', userController.register );
 //    }
 //});
 
-router.get( '/post/list', postController.getAllPosts );
-router.post( '/post/add', postController.addEditPost );
-router.post( '/post/edit', postController.addEditPost );
-router.post( '/post/delete', postController.deletePost );
-router.post( '/post/vote', postController.votePost );
-router.post( '/post/comment/add', commentController.addEditComment );
-router.post( '/post/comment/edit', commentController.addEditComment );
-router.post( '/post/comment/like', commentController.likeComment );
-router.post( '/post/comment/delete', commentController.deleteComment );
+router.get('/article/list', articleController.getAllArticles);
+router.get('/article/filter', articleController.filterArticles);
+router.post('/article/add', articleController.addEditArticle);
+router.post('/article/edit', articleController.addEditArticle);
+router.post('/article/delete', articleController.deleteArticle);
+router.post('/article/vote', articleController.voteArticle);
+router.post('/article/comment/add', commentController.addEditComment);
+router.post('/article/comment/edit', commentController.addEditComment);
+router.post('/article/comment/like', commentController.likeComment);
+router.post('/article/comment/delete', commentController.deleteComment);
 
 module.exports = router;

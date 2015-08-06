@@ -1,7 +1,7 @@
 var mongoose = require( 'mongoose' );
 var when = require( 'when' );
 var db = require( './../helpers/mongodbConnect' );
-var Post = require( './../models/post' );
+var Post = require( './../models/article' );
 var Comment = require( './../models/comment' );
 
 var addEditComment = function (req, res) {
