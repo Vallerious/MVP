@@ -31,8 +31,8 @@ var addEditArticle = function (req, res) {
                 createdOn: Date.now(),
                 editedOn: "",
                 votes: 0,
-                tags: articleData.tags ? articleData.tags.split(",") : "",
-                categories: articleData.categories ? articleData.categories.split(",") : ""
+                tags: articleData.tags,
+                categories: articleData.categories
             });
 
             if (!articleData._id) { // no id? add new article

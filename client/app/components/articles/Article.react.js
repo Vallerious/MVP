@@ -11,6 +11,8 @@ var mui = require('material-ui'),
     CardActions = mui.CardActions,
     CardHeader = mui.CardHeader,
     CardText = mui.CardText,
+    CardTitle = mui.CardTitle,
+    CardMedia = mui.CardMedia,
     FlatButton = mui.FlatButton,
     Avatar = mui.Avatar;
 
@@ -33,6 +35,9 @@ var Article = React.createClass({
                     subtitle="Subtitle"
                     avatar={<Avatar style={{color:'#e8f0f5'}}>A</Avatar>}>
                 </CardHeader>
+                <CardMedia overlay={<CardTitle title="Title" subtitle="Subtitle"/>}>
+                    <img src="http://lorempixel.com/600/337/nature/"/>
+                </CardMedia>
                 <CardText expandable={true}>
                     {this.props.content}
                 </CardText>
