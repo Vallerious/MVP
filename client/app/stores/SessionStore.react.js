@@ -14,67 +14,67 @@ var _errors = [];
 
 var SessionStore = assign({}, EventEmitter.prototype, {
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+    emitChange: function () {
+        this.emit(CHANGE_EVENT);
+    },
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
 
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
 
-  isLoggedIn: function() {
-    return _accessToken ? true : false;
-  },
+    isLoggedIn: function () {
+        return _accessToken ? true : false;
+    },
 
-  getAccessToken: function() {
-    return _accessToken;
-  },
+    getAccessToken: function () {
+        return _accessToken;
+    },
 
-  getEmail: function() {
-    return _email;
-  },
+    getEmail: function () {
+        return _email;
+    },
 
-  getErrors: function() {
-    return _errors;
-  }
+    getErrors: function () {
+        return _errors;
+    }
 
 });
 
-SessionStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
+SessionStore.dispatchToken = AppDispatcher.register(function (payload) {
+    var action = payload.action;
 
-  switch(action.type) {
+    switch (action.type) {
 
-    case ActionTypes.LOGIN_RESPONSE:
-      if (action.json && action.json.token) {
-        var _accessToken = action.json.token;
-        var _username = action.json.payload.username;
-        // Token will always live in the session, so that the API can grab it with no hassle
-        sessionStorage.setItem('accessToken', _accessToken);
-        sessionStorage.setItem('username', _username);
-      }
-      if (action.errors) {
-        _errors = action.errors;
-      }
-      SessionStore.emitChange();
-      break;
+        case ActionTypes.LOGIN_RESPONSE:
+            if (action.json && action.json.token) {
+                var _accessToken = action.json.token;
+                var _username = action.json.payload.username;
+                // Token will always live in the session, so that the API can grab it with no hassle
+                sessionStorage.setItem('accessToken', _accessToken);
+                sessionStorage.setItem('username', _username);
+            }
+            if (action.errors) {
+                _errors = action.errors;
+            }
+            SessionStore.emitChange();
+            break;
 
-    case ActionTypes.LOGOUT:
-      _accessToken = null;
-      _username = null;
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('username');
-      SessionStore.emitChange();
-      break;
+        case ActionTypes.LOGOUT:
+            _accessToken = null;
+            _username = null;
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('username');
+            SessionStore.emitChange();
+            break;
 
-    default:
-  }
+        default:
+    }
 
-  return true;
+    return true;
 });
 
 module.exports = SessionStore;

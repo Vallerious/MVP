@@ -7,7 +7,7 @@ var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.j
 var Router = require('react-router');
 var Link = Router.Link;
 
-var Pager = require( 'react-pager' );
+var Pager = require('react-pager');
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
     DropDownMenu = mui.DropDownMenu,
@@ -27,8 +27,15 @@ var ArticlesPage = React.createClass({
         };
     },
 
-    handlePageChanged: function ( newPage ) {
-        this.setState({ current : newPage });
+    handlePageChanged: function (newPage) {
+        this.setState({current: newPage});
+        ArticleActionCreators.loadArticles(newPage + 1);
+        this.setState({
+            articles: ArticleStore.getAllArticles().data,
+            total: ArticleStore.getAllArticles().pageCount,
+            visiblePages: ArticleStore.getAllArticles().pageCount,
+            errors: ArticleStore.getErrors()
+        });
     },
 
     getInitialState: function () {
@@ -36,16 +43,13 @@ var ArticlesPage = React.createClass({
             articles: [],
             errors: [],
             sortingMenuItems: [
-                { payload: '', text: 'None' },
-                { payload: 'title', text: 'Title' },
-                { payload: 'content', text: 'Content' },
-                { payload: 'createdOn', text: 'Date Created' },
-                { payload: 'votes', text: 'Votes' }
+                {payload: '', text: 'None'},
+                {payload: 'title', text: 'Title'},
+                {payload: 'content', text: 'Content'},
+                {payload: 'createdOn', text: 'Date Created'},
+                {payload: 'votes', text: 'Votes'}
             ],
-            total:        11,
-            current:      7,
-            visiblePages: 6
-
+            current: 0
         };
     },
 
@@ -60,7 +64,9 @@ var ArticlesPage = React.createClass({
 
     _onChange: function () {
         this.setState({
-            articles: ArticleStore.getAllArticles(),
+            articles: ArticleStore.getAllArticles().data,
+            total: ArticleStore.getAllArticles().pageCount,
+            visiblePages: ArticleStore.getAllArticles().pageCount,
             errors: ArticleStore.getErrors()
         });
     },
@@ -79,31 +85,30 @@ var ArticlesPage = React.createClass({
             <div>
                 <div className="row">
                     <div className="col-md-3">
-                        <DropDownMenu ref="sortBy" menuItems={this.state.sortingMenuItems} />
+                        <DropDownMenu ref="sortBy" menuItems={this.state.sortingMenuItems}/>
                     </div>
                     <div className="col-md-2">
                         <RadioButtonGroup name="articleOrder" defaultSelected="1" ref="articleOrder">
                             <RadioButton
                                 value="1"
                                 label="Ascending"
-                                style={{marginBottom:16}} />
+                                style={{marginBottom:16}}/>
                             <RadioButton
                                 value="-1"
-                                label="Descending" />
+                                label="Descending"/>
                         </RadioButtonGroup>
                     </div>
                     <div className="col-md-3 col-md-offset-1">
                         <DatePicker
                             ref="createdOn"
                             hintText="Created On"
-                            mode="landscape" />
+                            mode="landscape"/>
                     </div>
                 </div>
                 <div className="clearfix mb15"></div>
                 {articles.length ? articles : "No articles match your criteria."}
                 <Pager total={this.state.total}
                        current={this.state.current}
-
                        visiblePages={this.state.visiblePages}
                        onPageChanged={this.handlePageChanged}/>
             </div>

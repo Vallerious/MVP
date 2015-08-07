@@ -14,7 +14,7 @@ var MenuList = React.createClass({
     render: function () {
         var self = this;
         var menuItems = this.state.menuItems.map(function (item, idx) {
-            return <MenuItem title={item.title} glyph={item.glyph} content={item.content} key={idx} />
+            return <MenuItem title={item.title} glyph={item.glyph} content={item.content} key={idx}/>
         });
 
         return (

@@ -6,30 +6,30 @@ var ActionTypes = AppConstants.ActionTypes;
 
 module.exports = {
 
-  loadArticles: function() {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.LOAD_ARTICLES
-    });
-    WebAPIUtils.loadArticles();
-  },
+    loadArticles: function (pageNum) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOAD_ARTICLES
+        });
+        WebAPIUtils.loadArticles(pageNum);
+    },
 
-  loadArticle: function(articleId) {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.LOAD_ARTICLE,
-      articleId: articleId
-    });
-    WebAPIUtils.loadArticle(articleId);
-  },
+    loadArticle: function (articleId) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOAD_ARTICLE,
+            articleId: articleId
+        });
+        WebAPIUtils.loadArticle(articleId);
+    },
 
-  createArticle: function(title, content, tags, categories) {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.CREATE_ARTICLE,
-      title: title,
-      content: content,
-      tags: tags,
-      categories: categories
-    });
-    WebAPIUtils.createArticle(title, content, tags, categories);
-  }
+    createArticle: function (title, content, tags, categories) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.CREATE_ARTICLE,
+            title: title,
+            content: content,
+            tags: tags,
+            categories: categories
+        });
+        WebAPIUtils.createArticle(title, content, tags, categories);
+    }
 
 };

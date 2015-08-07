@@ -1,15 +1,15 @@
-var mongoose = require( 'mongoose' );
-var when = require( 'when' );
-var db = require( './../helpers/mongodbConnect' );
-var Post = require( './../models/article' );
-var Comment = require( './../models/comment' );
+var mongoose = require('mongoose');
+var when = require('when');
+var db = require('./../helpers/mongodbConnect');
+var Post = require('./../models/article');
+var Comment = require('./../models/comment');
 
 var addEditComment = function (req, res) {
     var commentData = req.body.comment;
     var error = new Error();
-    
+
     try {
-        if ( commentData.postId && commentData.content && commentData.postedBy ) { // postId should be sent from the front-end
+        if (commentData.postId && commentData.content && commentData.postedBy) { // postId should be sent from the front-end
             var newComment = new Comment({
                 content: commentData.content,
                 postedBy: commentData.postedBy,
@@ -17,17 +17,17 @@ var addEditComment = function (req, res) {
                 likes: 0
             });
 
-            if ( !commentData.commentId ) {
+            if (!commentData.commentId) {
                 Post.findByIdAndUpdate(
                     commentData.postId,
-                    { $push: { "comments": newComment } },
+                    {$push: {"comments": newComment}},
                     {new: true},
-                    function( err, model ) {
-                        if ( err ) {
+                    function (err, model) {
+                        if (err) {
                             err.status = 500;
                             throw err;
                         } else {
-                            res.status( 200 ).json({
+                            res.status(200).json({
                                 success: true,
                                 payload: {},
                                 error: null
@@ -36,15 +36,17 @@ var addEditComment = function (req, res) {
                     }
                 );
             } else { // edit comment
-                Post.update( {'comments._id': commentData.commentId }, {'$set': {
-                    'comments.$.content': commentData.content,
-                    'comments.&.editedOn': Date.now()
-                }}, { upsert: true }, function( err ) {
-                    if ( err ) {
+                Post.update({'comments._id': commentData.commentId}, {
+                    '$set': {
+                        'comments.$.content': commentData.content,
+                        'comments.&.editedOn': Date.now()
+                    }
+                }, {upsert: true}, function (err) {
+                    if (err) {
                         err.status = 500;
                         throw err;
                     } else {
-                        res.status( 200 ).json({
+                        res.status(200).json({
                             success: true,
                             payload: {},
                             error: null
@@ -58,8 +60,8 @@ var addEditComment = function (req, res) {
             error.message = "Invalid input data!";
             throw error;
         }
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {
@@ -70,20 +72,20 @@ var addEditComment = function (req, res) {
     }
 };
 
-var deleteComment = function ( req, res ) {
+var deleteComment = function (req, res) {
     var commentData = req.body.comment;
 
     try {
-        if ( commentData.commentId && commentData.postId ) {
+        if (commentData.commentId && commentData.postId) {
             Post.update(
-                { '_id': commentData.postId },
-                { $pull: { "comments" : { _id: commentData.commentId } } },
+                {'_id': commentData.postId},
+                {$pull: {"comments": {_id: commentData.commentId}}},
                 function (err) {
-                    if ( err ) {
+                    if (err) {
                         err.status = 500;
                         throw err;
                     } else {
-                        res.status( 200 ).json({
+                        res.status(200).json({
                             success: true,
                             payload: {},
                             error: null
@@ -97,8 +99,8 @@ var deleteComment = function ( req, res ) {
             error.message = "Invalid input data!";
             throw error;
         }
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {
@@ -113,23 +115,25 @@ var likeComment = function (req, res) {
     try {
         var commentData = req.body.comment;
 
-        if ( commentData.postId && commentData.commentId ) {
+        if (commentData.postId && commentData.commentId) {
             var postId = commentData.postId;
             var commentId = commentData.commentId;
             var increment = 1;
 
-            if ( commentData.voteDown ) {
+            if (commentData.voteDown) {
                 increment = -1;
             }
 
-            Post.update( {'comments._id': commentId }, {'$inc': {
-                'comments.$.likes': increment
-            }}, { upsert: false }, function( err ) {
-                if ( err ) {
+            Post.update({'comments._id': commentId}, {
+                '$inc': {
+                    'comments.$.likes': increment
+                }
+            }, {upsert: false}, function (err) {
+                if (err) {
                     err.status = 500;
                     throw err;
                 } else {
-                    res.status( 200 ).json({
+                    res.status(200).json({
                         success: true,
                         payload: {},
                         error: null
@@ -142,8 +146,8 @@ var likeComment = function (req, res) {
             error.message = "Invalid input data!";
             throw error;
         }
-    } catch ( err ) {
-        res.status( err.status || 400 ).json({
+    } catch (err) {
+        res.status(err.status || 400).json({
             success: false,
             payload: {},
             error: {

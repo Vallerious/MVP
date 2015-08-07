@@ -12,87 +12,87 @@ var mui = require('material-ui'),
 
 var SignupPage = React.createClass({
 
-  childContextTypes: {
-    muiTheme: React.PropTypes.object
-  },
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  },
+    getChildContext() {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
 
-  getInitialState: function() {
-    return {
-      errors: []
-     };
-  },
+    getInitialState: function () {
+        return {
+            errors: []
+        };
+    },
 
-  componentDidMount: function() {
-    SessionStore.addChangeListener(this._onChange);
-  },
+    componentDidMount: function () {
+        SessionStore.addChangeListener(this._onChange);
+    },
 
-  componentWillUnmount: function() {
-    SessionStore.removeChangeListener(this._onChange);
-  },
+    componentWillUnmount: function () {
+        SessionStore.removeChangeListener(this._onChange);
+    },
 
-  _onChange: function() {
-    this.setState({ errors: SessionStore.getErrors() });
-  },
+    _onChange: function () {
+        this.setState({errors: SessionStore.getErrors()});
+    },
 
-  _onSubmit: function(e) {
-    e.preventDefault();
-    this.setState({ errors: [] });
-    var email = this.refs.email.getValue();
-    var username = this.refs.username.getValue();
-    var password = this.refs.password.getValue();
-    //validate if pass and repPass match
-    SessionActionCreators.signup(email, username, password);
-  },
+    _onSubmit: function (e) {
+        e.preventDefault();
+        this.setState({errors: []});
+        var email = this.refs.email.getValue();
+        var username = this.refs.username.getValue();
+        var password = this.refs.password.getValue();
+        //validate if pass and repPass match
+        SessionActionCreators.signup(email, username, password);
+    },
 
-  render: function() {
-    var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
-    return (
-      <div>
-        {errors}
-        <div className="row">
-          <div className="col-md-6 col-md-offset-3">
-            <form onSubmit={this._onSubmit}>
-              <TextField
-                ref="username"
-                hintText="Enter a new username"
-                floatingLabelText="Username"
-                fullWidth={true} />
-              <TextField
-                ref="email"
-                hintText="Enter your E-mail"
-                floatingLabelText="E-mail"
-                fullWidth={true}
-                 />
-              <TextField
-                ref="password"
-                hintText="Enter a new password"
-                floatingLabelText="Password"
-                fullWidth={true}
-                type="password">
-              </TextField>
-              <TextField
-                ref="passwordConfirmation"
-                hintText="Repeat the new password"
-                floatingLabelText="Repeat password"
-                fullWidth={true}
-                type="password">
-              </TextField>
+    render: function () {
+        var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
+        return (
+            <div>
+                {errors}
+                <div className="row">
+                    <div className="col-md-6 col-md-offset-3">
+                        <form onSubmit={this._onSubmit}>
+                            <TextField
+                                ref="username"
+                                hintText="Enter a new username"
+                                floatingLabelText="Username"
+                                fullWidth={true}/>
+                            <TextField
+                                ref="email"
+                                hintText="Enter your E-mail"
+                                floatingLabelText="E-mail"
+                                fullWidth={true}
+                                />
+                            <TextField
+                                ref="password"
+                                hintText="Enter a new password"
+                                floatingLabelText="Password"
+                                fullWidth={true}
+                                type="password">
+                            </TextField>
+                            <TextField
+                                ref="passwordConfirmation"
+                                hintText="Repeat the new password"
+                                floatingLabelText="Repeat password"
+                                fullWidth={true}
+                                type="password">
+                            </TextField>
 
-              <RaisedButton
-                type="submit"
-                label="Submit" />
-            </form>
-          </div>
-        </div>
-      </div>
-    );
-  }
+                            <RaisedButton
+                                type="submit"
+                                label="Submit"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 });
 
 module.exports = SignupPage;

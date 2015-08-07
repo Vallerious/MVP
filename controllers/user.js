@@ -66,7 +66,7 @@ var register = function (req, res) {
 
     if (userData && userData.username && userData.password && userData.email) {
         when.resolve(User.findOne({email: userData.email}).exec()).then(function (foundUser) {
-            if ( !foundUser ) {
+            if (!foundUser) {
                 userUtils.getUser(userData.username).then(function (foundUser) {
                     if (!foundUser) {
                         var newUser = new User({

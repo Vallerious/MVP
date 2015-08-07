@@ -5,37 +5,36 @@ var SessionStore = require('../stores/SessionStore.react.js');
 var RouteStore = require('../stores/RouteStore.react.js');
 
 function getStateFromStores() {
-  return {
-
-  };
+    return {};
 }
 
 var MainPage = React.createClass({
 
-  getInitialState: function() {
-    return getStateFromStores();
-  },
+    getInitialState: function () {
+        return getStateFromStores();
+    },
 
-  componentDidMount: function() {
-    SessionStore.addChangeListener(this._onChange);
-  },
+    componentDidMount: function () {
+        SessionStore.addChangeListener(this._onChange);
+    },
 
-  componentWillUnmount: function() {
-    SessionStore.removeChangeListener(this._onChange);
-  },
+    componentWillUnmount: function () {
+        SessionStore.removeChangeListener(this._onChange);
+    },
 
-  render: function() {
-    return (
-      <div>
-        <Header
-          isLoggedIn={this.state.isLoggedIn}
-          email={this.state.email} />
-          <div className="container">
-            <RouteHandler/>
-          </div>
-      </div>
-    );
-  }
+    render: function () {
+        return (
+            <div>
+                <Header
+                    isLoggedIn={this.state.isLoggedIn}
+                    email={this.state.email}/>
+
+                <div className="container">
+                    <RouteHandler/>
+                </div>
+            </div>
+        );
+    }
 
 });
 

@@ -1,5 +1,5 @@
 /*
-    External libraries
+ External libraries
  */
 var React = require('react');
 
@@ -8,7 +8,7 @@ var Button = require('react-bootstrap').Button,
     Collapse = require('react-bootstrap').Collapse;
 
 /*
-    Styles
+ Styles
  */
 var closedBar = {
     borderTop: '2px solid #c8d7e1',
@@ -47,13 +47,14 @@ var MenuItem = React.createClass({
 
                     <div className="clearfix"></div>
                     <input type="text" ref="tags" className="form-control"
-                           data-role="tagsinput" id="input__tags" />
+                           data-role="tagsinput" id="input__tags"/>
                 </div>
                 <div className="form-group">
                     <label for="usr">Categories</label>
 
                     <div className="clearfix"></div>
-                    <input type="text" ref="categories" className="form-control" data-role="tagsinput" id="input__categories" />
+                    <input type="text" ref="categories" className="form-control" data-role="tagsinput"
+                           id="input__categories"/>
                 </div>
             </div>
         );
@@ -62,7 +63,10 @@ var MenuItem = React.createClass({
         return (
             <div>
                 <div>
-                    <div style={this.state.open ? $.extend({}, closedBar, openedBar) : closedBar} onClick={this.toggleBar}><span className={this.props.glyph || "glyphicon glyphicon-star"}></span><span className="ml12">{this.props.title || "no title"}</span></div>
+                    <div style={this.state.open ? $.extend({}, closedBar, openedBar) : closedBar}
+                         onClick={this.toggleBar}><span
+                        className={this.props.glyph || "glyphicon glyphicon-star"}></span><span
+                        className="ml12">{this.props.title || "no title"}</span></div>
                 </div>
                 <Collapse in={this.state.open}>
                     {this[this.props.content]()}

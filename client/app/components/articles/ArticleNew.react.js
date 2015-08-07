@@ -70,7 +70,7 @@ var ArticleNew = React.createClass({
     render: function () {
         return (
             <Tabs>
-                <Tab label="Title & Content" >
+                <Tab label="Title & Content">
                     <TextField
                         ref="title"
                         hintText="Enter article title..."
@@ -84,21 +84,25 @@ var ArticleNew = React.createClass({
                         rows={12}
                         fullWidth={true}/>
                 </Tab>
-                <Tab label="Tags & Categories" >
+                <Tab label="Tags & Categories">
                     <div>
                         <h2>Tags</h2>
+
                         <p>
-                            <TagsInput ref="tags" />
+                            <TagsInput ref="tags"/>
                         </p>
+
                         <h2>Categories</h2>
+
                         <p>
-                            <TagsInput ref="categories" />
+                            <TagsInput ref="categories"/>
                         </p>
                     </div>
                 </Tab>
-                <Tab label="Cover Photo" >
+                <Tab label="Cover Photo">
                     <div>
                         <h2>Upload Photo</h2>
+
                         <p>
                             Place image upload here
                         </p>

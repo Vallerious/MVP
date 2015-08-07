@@ -194,37 +194,39 @@ var voteArticle = function (req, res) {
 var getAllArticles = function (req, res) {
     try {
         var articlesPerPage = config.articlesPerPage;
-        var pageNumber = 3;
+        var pageNumber = req.query.page;
         var sortBy = {field: 'content', order: 1}; // Object - name of the field and -1 or 1 for asc and desc
 
-        if ( sortBy.field == "content" || sortBy.field == "title" ) {
+        if (sortBy.field == "content" || sortBy.field == "title") {
             sortBy.field += "_normalized";
         }
 
         var mongoSortObj = {};
 
-        if ( sortBy.field ) {
+        if (sortBy.field) {
             mongoSortObj[sortBy.field] = sortBy.order;
         }
 
-        Article.find({})
-            .sort(mongoSortObj)
-            .limit(pageNumber * articlesPerPage)
-            .exec(function(err, articles) {
-                if (!err) {
-
-                    articles = articles.slice(articles.length - articlesPerPage < 0 ? 0 : articles.length - articlesPerPage);
-
-                    res.status(200).json({
-                        success: true,
-                        payload: articles,
-                        error: null
-                    });
-                } else {
-                    err.status = 500;
-                    throw err;
-                }
-            });
+        Article.paginate({}, {
+            page: pageNumber,
+            limit: articlesPerPage,
+            sortBy: mongoSortObj
+        }, function (err, results, pageCount, itemCount) {
+            if (!err) {
+                res.status(200).json({
+                    success: true,
+                    payload: {
+                        data: results,
+                        pageCount: pageCount,
+                        itemCount: itemCount
+                    },
+                    error: null
+                });
+            } else {
+                err.status = 500;
+                throw err;
+            }
+        });
     } catch (err) {
         res.status(err.status || 400).json({
             success: false,
@@ -242,7 +244,7 @@ var filterArticles = function (req, res) {
         var filterText = req.query.filterText;
 
         Article.find({title_normalized: new RegExp(filterText, "i")}, function (err, articles) {
-            if ( !err ) {
+            if (!err) {
                 res.status(200).json({
                     success: true,
                     payload: articles,

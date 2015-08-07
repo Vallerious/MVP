@@ -7,5 +7,5 @@ injectTapEventPlugin();
 window.React = React;
 
 router.run(function (Handler, state) {
-  React.render(<Handler/>, document.getElementById('main'));
+    React.render(<Handler/>, document.getElementById('main'));
 });

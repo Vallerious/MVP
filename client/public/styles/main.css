@@ -1,9 +1,13 @@
 body {
-  padding-top: 70px;
-  font-family: 'Roboto', sans-serif;
-  background-color: #e8f0f5;
+    padding-top: 70px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #e8f0f5;
 }
 
 .bootstrap-tagsinput {
-  width: 100% !important;
+    width: 100% !important;
+}
+
+.btn-numbered-page, .btn-first-page, .btn-last-page, .btn-prev-page, .btn-next-page  {
+    cursor: pointer;
 }

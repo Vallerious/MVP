@@ -1,7 +1,8 @@
 /*
-	A mongoose model of the 'Post' object
-*/
+ A mongoose model of the 'Post' object
+ */
 var mongoose = require('mongoose');
+var mongoosePaging = require('mongoose-paginate');
 
 var ArticleSchema = new mongoose.Schema({
     title: String,
@@ -29,5 +30,7 @@ var ArticleSchema = new mongoose.Schema({
     tags: [],
     categories: []
 });
+
+ArticleSchema.plugin(mongoosePaging);
 
 module.exports = mongoose.model("Articles", ArticleSchema);
