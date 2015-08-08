@@ -31,5 +31,4 @@ module.exports = {
         });
         WebAPIUtils.createArticle(title, content, tags, categories);
     }
-
 };

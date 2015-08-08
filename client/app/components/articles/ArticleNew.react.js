@@ -7,7 +7,6 @@ var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.j
 var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
 var MenuList = require('../common/MenuList.react.js');
 var TagsInput = require('react-tagsinput');
-var TaggedInput = require('react-tagged-input');
 
 //Theme dependencies:
 var mui = require('material-ui'),

@@ -23,9 +23,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'client/public')));
 
 app.get('/', function (req, res) {
-    res.sendfile('public/index.html');
+	res.sendfile('public/index.html');
 });
-
 
 // prefix routes with 'api'
 app.use('/api', routes);

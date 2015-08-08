@@ -14,9 +14,17 @@ var mui = require('material-ui'),
     CardTitle = mui.CardTitle,
     CardMedia = mui.CardMedia,
     FlatButton = mui.FlatButton,
-    Avatar = mui.Avatar;
+    Avatar = mui.Avatar,
+    Dialog = mui.Dialog;
 
 var Article = React.createClass({
+
+    getInitialState: function () {
+        return {
+            
+        }    
+    },
+
     childContextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -27,30 +35,58 @@ var Article = React.createClass({
         };
     },
 
+    openArticleModal: function () {
+        this.refs.showArticle.show();
+    },
+
     render: function () {
+        var standardActions = [
+              { text: 'Cancel' }
+        ];
+
         return (
             <Card initiallyExpanded={true} className="mb15">
                 <CardHeader
                     title={this.props.title}
-                    subtitle="Subtitle"
-                    avatar={<Avatar style={{color:'#e8f0f5'}}>A</Avatar>}>
+                    subtitle={new Date(this.props.date).toDateString()}
+                    avatar="http://lorempixel.com/600/337/nature/">
                 </CardHeader>
-                <CardMedia overlay={<CardTitle title="Title" subtitle="Subtitle"/>}>
-                    <img src="http://lorempixel.com/600/337/nature/"/>
-                </CardMedia>
                 <CardText expandable={true}>
-                    {this.props.content}
+                    {this.props.content.substring(0, 140) + "..."}
                 </CardText>
                 <CardActions expandable={true}>
-                    <FlatButton label="Action1"/>
-                    <FlatButton label="Action2"/>
+                    <FlatButton label="Read more..." onClick={this.openArticleModal}/>
                 </CardActions>
-                <CardText expandable={true}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                    Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                    Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                </CardText>
+                <Dialog
+                    ref="showArticle"
+                    actions={standardActions}
+                    autoDetectWindowHeight={true} autoScrollBodyContent={true}>
+                    <div style={{height: 'auto'}}>
+                        <Card initiallyExpanded={true}>
+                              <CardHeader
+                                title={this.props.title}
+                                subtitle={new Date(this.props.date).toDateString()}
+                                avatar="http://lorempixel.com/600/337/nature/"
+                                showExpandableButton={false} />
+                                <CardMedia overlay={<CardTitle title={this.props.title} subtitle={new Date(this.props.date).toDateString()} />}>
+                                    <img src="http://lorempixel.com/600/337/nature/"/>
+                                </CardMedia>
+                              <CardText expandable={true}>
+                                {this.props.content}
+                              </CardText>
+                              <CardActions expandable={true}>
+                                <FlatButton label="Vote Up"/>
+                                <FlatButton label="Vote Down"/>
+                                <FlatButton label="+ Favorites"/>
+                              </CardActions>
+                              {
+                                    this.props.comments.map(function(comment, idx) {
+                                        
+                                    });    
+                              }
+                        </Card>
+                    </div>
+                </Dialog>
             </Card>
         );
     }

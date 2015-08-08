@@ -15,6 +15,13 @@ var mui = require('material-ui'),
     RadioButton = mui.RadioButton,
     DatePicker = mui.DatePicker;
 
+// Styles
+var pagination = {
+  display: 'block',
+  marginLeft: 'auto',
+  marginRight: 'auto'
+}; 
+
 var ArticlesPage = React.createClass({
 
     childContextTypes: {
@@ -78,14 +85,14 @@ var ArticlesPage = React.createClass({
     },
     render: function () {
         var articles = this.state.articles.map(function (article, idx) {
-            return <Article title={article.title} content={article.content}/>
+            return <Article title={article.title} content={article.content} date={article.createdOn} />
         });
-        var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
+        var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;
         return (
             <div>
                 <div className="row">
                     <div className="col-md-3">
-                        <DropDownMenu ref="sortBy" menuItems={this.state.sortingMenuItems}/>
+                        <DropDownMenu ref="sortBy" menuItems={this.state.sortingMenuItems} />
                     </div>
                     <div className="col-md-2">
                         <RadioButtonGroup name="articleOrder" defaultSelected="1" ref="articleOrder">
@@ -107,10 +114,12 @@ var ArticlesPage = React.createClass({
                 </div>
                 <div className="clearfix mb15"></div>
                 {articles.length ? articles : "No articles match your criteria."}
-                <Pager total={this.state.total}
+                <div style={pagination}>
+                    <Pager total={this.state.total}
                        current={this.state.current}
                        visiblePages={this.state.visiblePages}
                        onPageChanged={this.handlePageChanged}/>
+                </div>
             </div>
 
         );
