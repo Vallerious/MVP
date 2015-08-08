@@ -22070,7 +22070,7 @@
 	    new_err.response = res;
 	    new_err.status = res.status;
 
-	    self.callback(err || new_err, res);
+	    self.callback(new_err, res);
 	  });
 	}
 
@@ -22543,7 +22543,8 @@
 	  // body
 	  if ('GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !isHost(data)) {
 	    // serialize stuff
-	    var serialize = request.serialize[this.getHeader('Content-Type')];
+	    var contentType = this.getHeader('Content-Type');
+	    var serialize = request.serialize[contentType ? contentType.split(';')[0] : ''];
 	    if (serialize) data = serialize(data);
 	  }
 
@@ -22558,6 +22559,20 @@
 	  xhr.send(data);
 	  return this;
 	};
+
+	/**
+	 * Faux promise support
+	 *
+	 * @param {Function} fulfill
+	 * @param {Function} reject
+	 * @return {Request}
+	 */
+
+	Request.prototype.then = function (fulfill, reject) {
+	  return this.end(function(err, res) {
+	    err ? reject(err) : fulfill(res);
+	  });
+	}
 
 	/**
 	 * Expose `Request`.
@@ -26036,13 +26051,13 @@
 
 	module.exports = React.createElement(
 	    Route,
-	    { name: "main", path: "/", handler: MainPage },
+	    { name: 'main', path: '/', handler: MainPage },
 	    React.createElement(DefaultRoute, { handler: ArticlesPage }),
-	    React.createElement(Route, { name: "login", path: "/login", handler: LoginPage }),
-	    React.createElement(Route, { name: "signup", path: "/signup", handler: SignupPage }),
-	    React.createElement(Route, { name: "articles", path: "/articles", handler: ArticlesPage }),
-	    React.createElement(Route, { name: "article", path: "/articles/:articleId", handler: ArticlePage }),
-	    React.createElement(Route, { name: "new-article", path: "/article/new", handler: ArticleNew })
+	    React.createElement(Route, { name: 'login', path: '/login', handler: LoginPage }),
+	    React.createElement(Route, { name: 'signup', path: '/signup', handler: SignupPage }),
+	    React.createElement(Route, { name: 'articles', path: '/articles', handler: ArticlesPage }),
+	    React.createElement(Route, { name: 'article', path: '/articles/:articleId', handler: ArticlePage }),
+	    React.createElement(Route, { name: 'new-article', path: '/article/new', handler: ArticleNew })
 	);
 
 /***/ },
@@ -26141,37 +26156,37 @@
 	            null,
 	            React.createElement(
 	                'div',
-	                { className: "row" },
+	                { className: 'row' },
 	                React.createElement(
 	                    'div',
-	                    { className: "col-md-3" },
-	                    React.createElement(DropDownMenu, { ref: "sortBy", menuItems: this.state.sortingMenuItems })
+	                    { className: 'col-md-3' },
+	                    React.createElement(DropDownMenu, { ref: 'sortBy', menuItems: this.state.sortingMenuItems })
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { className: "col-md-2" },
+	                    { className: 'col-md-2' },
 	                    React.createElement(
 	                        RadioButtonGroup,
-	                        { name: "articleOrder", defaultSelected: "1", ref: "articleOrder" },
+	                        { name: 'articleOrder', defaultSelected: '1', ref: 'articleOrder' },
 	                        React.createElement(RadioButton, {
-	                            value: "1",
-	                            label: "Ascending",
+	                            value: '1',
+	                            label: 'Ascending',
 	                            style: { marginBottom: 16 } }),
 	                        React.createElement(RadioButton, {
-	                            value: "-1",
-	                            label: "Descending" })
+	                            value: '-1',
+	                            label: 'Descending' })
 	                    )
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { className: "col-md-3 col-md-offset-1" },
+	                    { className: 'col-md-3 col-md-offset-1' },
 	                    React.createElement(DatePicker, {
-	                        ref: "createdOn",
-	                        hintText: "Created On",
-	                        mode: "landscape" })
+	                        ref: 'createdOn',
+	                        hintText: 'Created On',
+	                        mode: 'landscape' })
 	                )
 	            ),
-	            React.createElement('div', { className: "clearfix mb15" }),
+	            React.createElement('div', { className: 'clearfix mb15' }),
 	            articles.length ? articles : "No articles match your criteria.",
 	            React.createElement(
 	                'div',
@@ -26267,13 +26282,14 @@
 
 	    render: function render() {
 	        var standardActions = [{ text: 'Cancel' }];
+
 	        return React.createElement(
 	            Card,
-	            { initiallyExpanded: true, className: "mb15" },
+	            { initiallyExpanded: true, className: 'mb15' },
 	            React.createElement(CardHeader, {
 	                title: this.props.title,
 	                subtitle: new Date(this.props.date).toDateString(),
-	                avatar: "http://lorempixel.com/600/337/nature/" }),
+	                avatar: 'http://lorempixel.com/600/337/nature/' }),
 	            React.createElement(
 	                CardText,
 	                { expandable: true },
@@ -26282,12 +26298,12 @@
 	            React.createElement(
 	                CardActions,
 	                { expandable: true },
-	                React.createElement(FlatButton, { label: "Read more...", onClick: this.openArticleModal })
+	                React.createElement(FlatButton, { label: 'Read more...', onClick: this.openArticleModal })
 	            ),
 	            React.createElement(
 	                Dialog,
 	                {
-	                    ref: "showArticle",
+	                    ref: 'showArticle',
 	                    actions: standardActions,
 	                    autoDetectWindowHeight: true, autoScrollBodyContent: true },
 	                React.createElement(
@@ -26299,12 +26315,12 @@
 	                        React.createElement(CardHeader, {
 	                            title: this.props.title,
 	                            subtitle: new Date(this.props.date).toDateString(),
-	                            avatar: "http://lorempixel.com/600/337/nature/",
+	                            avatar: 'http://lorempixel.com/600/337/nature/',
 	                            showExpandableButton: false }),
 	                        React.createElement(
 	                            CardMedia,
 	                            { overlay: React.createElement(CardTitle, { title: this.props.title, subtitle: new Date(this.props.date).toDateString() }) },
-	                            React.createElement('img', { src: "http://lorempixel.com/600/337/nature/" })
+	                            React.createElement('img', { src: 'http://lorempixel.com/600/337/nature/' })
 	                        ),
 	                        React.createElement(
 	                            CardText,
@@ -26314,9 +26330,9 @@
 	                        React.createElement(
 	                            CardActions,
 	                            { expandable: true },
-	                            React.createElement(FlatButton, { label: "Vote Up" }),
-	                            React.createElement(FlatButton, { label: "Vote Down" }),
-	                            React.createElement(FlatButton, { label: "+ Favorites" })
+	                            React.createElement(FlatButton, { label: 'Vote Up' }),
+	                            React.createElement(FlatButton, { label: 'Vote Down' }),
+	                            React.createElement(FlatButton, { label: '+ Favorites' })
 	                        )
 	                    )
 	                )
@@ -46377,7 +46393,7 @@
 	                email: this.state.email }),
 	            React.createElement(
 	                'div',
-	                { className: "container" },
+	                { className: 'container' },
 	                React.createElement(RouteHandler, null)
 	            )
 	        );
@@ -46405,44 +46421,44 @@
 	    render: function render() {
 	        return React.createElement(
 	            'nav',
-	            { className: "navbar navbar-default navbar-fixed-top" },
+	            { className: 'navbar navbar-default navbar-fixed-top' },
 	            React.createElement(
 	                'div',
-	                { className: "container" },
+	                { className: 'container' },
 	                React.createElement(
 	                    'div',
-	                    { className: "navbar-header" },
+	                    { className: 'navbar-header' },
 	                    React.createElement(
 	                        'button',
-	                        { type: "button", className: "navbar-toggle collapsed", 'data-toggle': "collapse",
-	                            'data-target': "#navbar", 'aria-expanded': "false", 'aria-controls': "navbar" },
+	                        { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse',
+	                            'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
 	                        React.createElement(
 	                            'span',
-	                            { className: "sr-only" },
+	                            { className: 'sr-only' },
 	                            'Toggle navigation'
 	                        ),
-	                        React.createElement('span', { className: "icon-bar" }),
-	                        React.createElement('span', { className: "icon-bar" }),
-	                        React.createElement('span', { className: "icon-bar" })
+	                        React.createElement('span', { className: 'icon-bar' }),
+	                        React.createElement('span', { className: 'icon-bar' }),
+	                        React.createElement('span', { className: 'icon-bar' })
 	                    ),
 	                    React.createElement(
 	                        'a',
-	                        { className: "navbar-brand", href: "#" },
+	                        { className: 'navbar-brand', href: '#' },
 	                        'RSD Blog'
 	                    )
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { id: "navbar", className: "navbar-collapse collapse" },
+	                    { id: 'navbar', className: 'navbar-collapse collapse' },
 	                    React.createElement(
 	                        'ul',
-	                        { className: "nav navbar-nav" },
+	                        { className: 'nav navbar-nav' },
 	                        React.createElement(
 	                            'li',
 	                            null,
 	                            React.createElement(
 	                                Link,
-	                                { to: "articles" },
+	                                { to: 'articles' },
 	                                'Articles'
 	                            )
 	                        ),
@@ -46451,20 +46467,20 @@
 	                            null,
 	                            React.createElement(
 	                                Link,
-	                                { to: "new-article" },
+	                                { to: 'new-article' },
 	                                'New article'
 	                            )
 	                        )
 	                    ),
 	                    React.createElement(
 	                        'ul',
-	                        { className: "nav navbar-nav navbar-right" },
+	                        { className: 'nav navbar-nav navbar-right' },
 	                        React.createElement(
 	                            'li',
 	                            null,
 	                            React.createElement(
 	                                Link,
-	                                { to: "login" },
+	                                { to: 'login' },
 	                                'Sign in'
 	                            )
 	                        ),
@@ -46473,7 +46489,7 @@
 	                            null,
 	                            React.createElement(
 	                                Link,
-	                                { to: "signup" },
+	                                { to: 'signup' },
 	                                'Sign up'
 	                            )
 	                        )
@@ -46588,27 +46604,27 @@
 	            errors,
 	            React.createElement(
 	                'div',
-	                { className: "row" },
+	                { className: 'row' },
 	                React.createElement(
 	                    'div',
-	                    { className: "col-md-6 col-md-offset-3" },
+	                    { className: 'col-md-6 col-md-offset-3' },
 	                    React.createElement(
 	                        'form',
 	                        { onSubmit: this._onSubmit },
 	                        React.createElement(TextField, {
-	                            ref: "username",
-	                            hintText: "Enter your username",
-	                            floatingLabelText: "Username",
+	                            ref: 'username',
+	                            hintText: 'Enter your username',
+	                            floatingLabelText: 'Username',
 	                            fullWidth: true }),
 	                        React.createElement(TextField, {
-	                            ref: "password",
-	                            hintText: "Enter your password",
-	                            floatingLabelText: "Password",
+	                            ref: 'password',
+	                            hintText: 'Enter your password',
+	                            floatingLabelText: 'Password',
 	                            fullWidth: true,
-	                            type: "password" }),
+	                            type: 'password' }),
 	                        React.createElement(RaisedButton, {
-	                            type: "submit",
-	                            label: "Submit" })
+	                            type: 'submit',
+	                            label: 'Submit' })
 	                    )
 	                )
 	            )
@@ -46741,23 +46757,23 @@
 	            null,
 	            React.createElement(
 	                Tab,
-	                { label: "Title & Content" },
+	                { label: 'Title & Content' },
 	                React.createElement(TextField, {
-	                    ref: "title",
-	                    hintText: "Enter article title...",
-	                    floatingLabelText: "Title",
+	                    ref: 'title',
+	                    hintText: 'Enter article title...',
+	                    floatingLabelText: 'Title',
 	                    fullWidth: true }),
 	                React.createElement(TextField, {
-	                    ref: "content",
-	                    hintText: "Say what`s on your mind :)",
-	                    floatingLabelText: "Content",
+	                    ref: 'content',
+	                    hintText: 'Say what`s on your mind :)',
+	                    floatingLabelText: 'Content',
 	                    multiLine: true,
 	                    rows: 12,
 	                    fullWidth: true })
 	            ),
 	            React.createElement(
 	                Tab,
-	                { label: "Tags & Categories" },
+	                { label: 'Tags & Categories' },
 	                React.createElement(
 	                    'div',
 	                    null,
@@ -46769,7 +46785,7 @@
 	                    React.createElement(
 	                        'p',
 	                        null,
-	                        React.createElement(TagsInput, { ref: "tags" })
+	                        React.createElement(TagsInput, { ref: 'tags' })
 	                    ),
 	                    React.createElement(
 	                        'h2',
@@ -46779,13 +46795,13 @@
 	                    React.createElement(
 	                        'p',
 	                        null,
-	                        React.createElement(TagsInput, { ref: "categories" })
+	                        React.createElement(TagsInput, { ref: 'categories' })
 	                    )
 	                )
 	            ),
 	            React.createElement(
 	                Tab,
-	                { label: "Cover Photo" },
+	                { label: 'Cover Photo' },
 	                React.createElement(
 	                    'div',
 	                    null,
@@ -46800,7 +46816,7 @@
 	                        'Place image upload here'
 	                    )
 	                ),
-	                React.createElement(RaisedButton, { type: "submit", className: "pull-right", label: "Publish", secondary: true })
+	                React.createElement(RaisedButton, { type: 'submit', className: 'pull-right', label: 'Publish', secondary: true })
 	            )
 	        );
 	    }
@@ -46917,27 +46933,27 @@
 	            { style: toggleBox },
 	            React.createElement(
 	                'div',
-	                { className: "form-group" },
+	                { className: 'form-group' },
 	                React.createElement(
 	                    'label',
-	                    { 'for': "usr" },
+	                    { 'for': 'usr' },
 	                    'Tags'
 	                ),
-	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", ref: "tags", className: "form-control",
-	                    'data-role': "tagsinput", id: "input__tags" })
+	                React.createElement('div', { className: 'clearfix' }),
+	                React.createElement('input', { type: 'text', ref: 'tags', className: 'form-control',
+	                    'data-role': 'tagsinput', id: 'input__tags' })
 	            ),
 	            React.createElement(
 	                'div',
-	                { className: "form-group" },
+	                { className: 'form-group' },
 	                React.createElement(
 	                    'label',
-	                    { 'for': "usr" },
+	                    { 'for': 'usr' },
 	                    'Categories'
 	                ),
-	                React.createElement('div', { className: "clearfix" }),
-	                React.createElement('input', { type: "text", ref: "categories", className: "form-control", 'data-role': "tagsinput",
-	                    id: "input__categories" })
+	                React.createElement('div', { className: 'clearfix' }),
+	                React.createElement('input', { type: 'text', ref: 'categories', className: 'form-control', 'data-role': 'tagsinput',
+	                    id: 'input__categories' })
 	            )
 	        );
 	    },
@@ -46957,7 +46973,7 @@
 	                    React.createElement(
 	                        'span',
 	                        {
-	                            className: "ml12" },
+	                            className: 'ml12' },
 	                        this.props.title || "no title"
 	                    )
 	                )
@@ -55371,7 +55387,7 @@
 	/**
 	 * Creates an object composed of the picked `object` properties. Property
 	 * names may be specified as individual arguments or as arrays of property
-	 * names. If `predicate` is provided it is invoked for each property of `object`
+	 * names. If `predicate` is provided it's invoked for each property of `object`
 	 * picking the properties `predicate` returns truthy for. The predicate is
 	 * bound to `thisArg` and invoked with three arguments: (value, key, object).
 	 *
@@ -55784,7 +55800,7 @@
 	function isFunction(value) {
 	  // The use of `Object#toString` avoids issues with the `typeof` operator
 	  // in older versions of Chrome and Safari which return 'function' for regexes
-	  // and Safari 8 equivalents which return 'object' for typed array constructors.
+	  // and Safari 8 which returns 'object' for typed array constructors.
 	  return isObject(value) && objToString.call(value) == funcTag;
 	}
 
@@ -56171,7 +56187,7 @@
 	 * Creates a function that invokes `func` with the `this` binding of the
 	 * created function and arguments from `start` and beyond provided as an array.
 	 *
-	 * **Note:** This method is based on the [rest parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
+	 * **Note:** This method is based on the [rest parameter](https://developer.mozilla.org/Web/JavaScript/Reference/Functions/rest_parameters).
 	 *
 	 * @static
 	 * @memberOf _
@@ -58711,39 +58727,39 @@
 	            errors,
 	            React.createElement(
 	                'div',
-	                { className: "row" },
+	                { className: 'row' },
 	                React.createElement(
 	                    'div',
-	                    { className: "col-md-6 col-md-offset-3" },
+	                    { className: 'col-md-6 col-md-offset-3' },
 	                    React.createElement(
 	                        'form',
 	                        { onSubmit: this._onSubmit },
 	                        React.createElement(TextField, {
-	                            ref: "username",
-	                            hintText: "Enter a new username",
-	                            floatingLabelText: "Username",
+	                            ref: 'username',
+	                            hintText: 'Enter a new username',
+	                            floatingLabelText: 'Username',
 	                            fullWidth: true }),
 	                        React.createElement(TextField, {
-	                            ref: "email",
-	                            hintText: "Enter your E-mail",
-	                            floatingLabelText: "E-mail",
+	                            ref: 'email',
+	                            hintText: 'Enter your E-mail',
+	                            floatingLabelText: 'E-mail',
 	                            fullWidth: true
 	                        }),
 	                        React.createElement(TextField, {
-	                            ref: "password",
-	                            hintText: "Enter a new password",
-	                            floatingLabelText: "Password",
+	                            ref: 'password',
+	                            hintText: 'Enter a new password',
+	                            floatingLabelText: 'Password',
 	                            fullWidth: true,
-	                            type: "password" }),
+	                            type: 'password' }),
 	                        React.createElement(TextField, {
-	                            ref: "passwordConfirmation",
-	                            hintText: "Repeat the new password",
-	                            floatingLabelText: "Repeat password",
+	                            ref: 'passwordConfirmation',
+	                            hintText: 'Repeat the new password',
+	                            floatingLabelText: 'Repeat password',
 	                            fullWidth: true,
-	                            type: "password" }),
+	                            type: 'password' }),
 	                        React.createElement(RaisedButton, {
-	                            type: "submit",
-	                            label: "Submit" })
+	                            type: 'submit',
+	                            label: 'Submit' })
 	                    )
 	                )
 	            )

@@ -21,8 +21,8 @@ var Article = React.createClass({
 
     getInitialState: function () {
         return {
-            
-        }    
+
+        }
     },
 
     childContextTypes: {
@@ -79,11 +79,6 @@ var Article = React.createClass({
                                 <FlatButton label="Vote Down"/>
                                 <FlatButton label="+ Favorites"/>
                               </CardActions>
-                              {
-                                    this.props.comments.map(function(comment, idx) {
-                                        
-                                    });    
-                              }
                         </Card>
                     </div>
                 </Dialog>
