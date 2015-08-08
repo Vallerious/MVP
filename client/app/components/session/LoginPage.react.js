@@ -38,7 +38,7 @@ var LoginPage = React.createClass({
 
     _onSubmit: function (e) {
         e.preventDefault();
-        this.setState({errors: []});
+        this.setState({ errors: [] });
         var username = this.refs.username.getValue();
         var password = this.refs.password.getValue();
         SessionActionCreators.login(username, password);

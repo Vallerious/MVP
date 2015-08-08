@@ -5,7 +5,10 @@ var SessionStore = require('../stores/SessionStore.react.js');
 var RouteStore = require('../stores/RouteStore.react.js');
 
 function getStateFromStores() {
-    return {};
+    return {
+      isLoggedIn: SessionStore.isLoggedIn(),
+      username: SessionStore.getUsername()
+    };
 }
 
 var MainPage = React.createClass({
@@ -22,12 +25,16 @@ var MainPage = React.createClass({
         SessionStore.removeChangeListener(this._onChange);
     },
 
+    _onChange: function() {
+      this.setState(getStateFromStores());
+    },
+
     render: function () {
         return (
-            <div>
+            <div className="main">
                 <Header
                     isLoggedIn={this.state.isLoggedIn}
-                    email={this.state.email}/>
+                    username={this.state.username}/>
 
                 <div className="container">
                     <RouteHandler/>

@@ -20495,7 +20495,7 @@
 	            if (SessionStore.isLoggedIn()) {
 	                router.transitionTo('main');
 	                // Dirty hack, need to figure this out
-	                $(document).foundation();
+	                //$(document).foundation();
 	            }
 	            break;
 
@@ -21285,7 +21285,7 @@
 	// Load an access token from the session storage, you might want to implement
 	// a 'remember me' using localSgorage
 	var _accessToken = sessionStorage.getItem('accessToken');
-	var _email = sessionStorage.getItem('email');
+	var _username = sessionStorage.getItem('username');
 	var _errors = [];
 
 	var SessionStore = assign({}, EventEmitter.prototype, {
@@ -21310,8 +21310,8 @@
 	        return _accessToken;
 	    },
 
-	    getEmail: function getEmail() {
-	        return _email;
+	    getUsername: function getUsername() {
+	        return _username;
 	    },
 
 	    getErrors: function getErrors() {
@@ -21324,11 +21324,10 @@
 	    var action = payload.action;
 
 	    switch (action.type) {
-
 	        case ActionTypes.LOGIN_RESPONSE:
 	            if (action.json && action.json.token) {
-	                var _accessToken = action.json.token;
-	                var _username = action.json.payload.username;
+	                _accessToken = action.json.token;
+	                _username = action.json.payload.username;
 	                // Token will always live in the session, so that the API can grab it with no hassle
 	                sessionStorage.setItem('accessToken', _accessToken);
 	                sessionStorage.setItem('username', _username);
@@ -21451,7 +21450,7 @@
 
 	function _getErrors(res) {
 	    var errorMsgs = ["Something went wrong, please try again"];
-	    if (json = JSON.parse(res.text)) {
+	    if (json = res.body) {
 	        if (json['errors']) {
 	            errorMsgs = json['errors'];
 	        } else if (json['error']) {
@@ -46366,7 +46365,10 @@
 	var RouteStore = __webpack_require__(157);
 
 	function getStateFromStores() {
-	    return {};
+	    return {
+	        isLoggedIn: SessionStore.isLoggedIn(),
+	        username: SessionStore.getUsername()
+	    };
 	}
 
 	var MainPage = React.createClass({
@@ -46384,13 +46386,17 @@
 	        SessionStore.removeChangeListener(this._onChange);
 	    },
 
+	    _onChange: function _onChange() {
+	        this.setState(getStateFromStores());
+	    },
+
 	    render: function render() {
 	        return React.createElement(
 	            'div',
-	            null,
+	            { className: 'main' },
 	            React.createElement(Header, {
 	                isLoggedIn: this.state.isLoggedIn,
-	                email: this.state.email }),
+	                username: this.state.username }),
 	            React.createElement(
 	                'div',
 	                { className: 'container' },
@@ -46413,91 +46419,138 @@
 
 	var Router = __webpack_require__(172);
 	var Link = Router.Link;
+	var ReactPropTypes = React.PropTypes;
 	var SessionActionCreators = __webpack_require__(372);
 
 	var Header = React.createClass({
-	    displayName: 'Header',
+	  displayName: 'Header',
 
-	    render: function render() {
-	        return React.createElement(
-	            'nav',
-	            { className: 'navbar navbar-default navbar-fixed-top' },
+	  propTypes: {
+	    isLoggedIn: ReactPropTypes.bool,
+	    username: ReactPropTypes.string
+	  },
+	  logout: function logout(e) {
+	    e.preventDefault();
+	    SessionActionCreators.logout();
+	  },
+	  render: function render() {
+
+	    var rightNav = this.props.isLoggedIn ? React.createElement(
+	      'ul',
+	      { className: 'nav navbar-nav navbar-right' },
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { href: '#' },
+	          this.props.username
+	        )
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { href: '#', onClick: this.logout },
+	          'Logout'
+	        )
+	      )
+	    ) : React.createElement(
+	      'ul',
+	      { className: 'nav navbar-nav navbar-right' },
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: 'login' },
+	          'Sign in'
+	        )
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: 'signup' },
+	          'Sign up'
+	        )
+	      )
+	    );
+
+	    var leftNav = this.props.isLoggedIn ? React.createElement(
+	      'ul',
+	      { className: 'nav navbar-nav' },
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: 'articles' },
+	          'Articles'
+	        )
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: 'new-article' },
+	          'New article'
+	        )
+	      )
+	    ) : React.createElement(
+	      'ul',
+	      { className: 'nav navbar-nav' },
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: 'articles' },
+	          'Articles'
+	        )
+	      )
+	    );
+
+	    return React.createElement(
+	      'nav',
+	      { className: 'navbar navbar-default navbar-fixed-top' },
+	      React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement(
+	          'div',
+	          { className: 'navbar-header' },
+	          React.createElement(
+	            'button',
+	            { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse',
+	              'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
 	            React.createElement(
-	                'div',
-	                { className: 'container' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'navbar-header' },
-	                    React.createElement(
-	                        'button',
-	                        { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse',
-	                            'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
-	                        React.createElement(
-	                            'span',
-	                            { className: 'sr-only' },
-	                            'Toggle navigation'
-	                        ),
-	                        React.createElement('span', { className: 'icon-bar' }),
-	                        React.createElement('span', { className: 'icon-bar' }),
-	                        React.createElement('span', { className: 'icon-bar' })
-	                    ),
-	                    React.createElement(
-	                        'a',
-	                        { className: 'navbar-brand', href: '#' },
-	                        'RSD Blog'
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { id: 'navbar', className: 'navbar-collapse collapse' },
-	                    React.createElement(
-	                        'ul',
-	                        { className: 'nav navbar-nav' },
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                Link,
-	                                { to: 'articles' },
-	                                'Articles'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                Link,
-	                                { to: 'new-article' },
-	                                'New article'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'ul',
-	                        { className: 'nav navbar-nav navbar-right' },
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                Link,
-	                                { to: 'login' },
-	                                'Sign in'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                Link,
-	                                { to: 'signup' },
-	                                'Sign up'
-	                            )
-	                        )
-	                    )
-	                )
-	            )
-	        );
-	    }
+	              'span',
+	              { className: 'sr-only' },
+	              'Toggle navigation'
+	            ),
+	            React.createElement('span', { className: 'icon-bar' }),
+	            React.createElement('span', { className: 'icon-bar' }),
+	            React.createElement('span', { className: 'icon-bar' })
+	          ),
+	          React.createElement(
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            'RSD Blog'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { id: 'navbar', className: 'navbar-collapse collapse' },
+	          leftNav,
+	          rightNav
+	        )
+	      )
+	    );
+	  }
 	});
 
 	module.exports = Header;

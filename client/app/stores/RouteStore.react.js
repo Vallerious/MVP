@@ -57,7 +57,7 @@ RouteStore.dispatchToken = AppDispatcher.register(function (payload) {
             if (SessionStore.isLoggedIn()) {
                 router.transitionTo('main');
                 // Dirty hack, need to figure this out
-                $(document).foundation();
+                //$(document).foundation();
             }
             break;
 

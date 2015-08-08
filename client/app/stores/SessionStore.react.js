@@ -9,7 +9,7 @@ var CHANGE_EVENT = 'change';
 // Load an access token from the session storage, you might want to implement
 // a 'remember me' using localSgorage
 var _accessToken = sessionStorage.getItem('accessToken');
-var _email = sessionStorage.getItem('email');
+var _username = sessionStorage.getItem('username');
 var _errors = [];
 
 var SessionStore = assign({}, EventEmitter.prototype, {
@@ -34,8 +34,8 @@ var SessionStore = assign({}, EventEmitter.prototype, {
         return _accessToken;
     },
 
-    getEmail: function () {
-        return _email;
+    getUsername: function () {
+        return _username;
     },
 
     getErrors: function () {
@@ -48,11 +48,10 @@ SessionStore.dispatchToken = AppDispatcher.register(function (payload) {
     var action = payload.action;
 
     switch (action.type) {
-
         case ActionTypes.LOGIN_RESPONSE:
             if (action.json && action.json.token) {
-                var _accessToken = action.json.token;
-                var _username = action.json.payload.username;
+                _accessToken = action.json.token;
+                _username = action.json.payload.username;
                 // Token will always live in the session, so that the API can grab it with no hassle
                 sessionStorage.setItem('accessToken', _accessToken);
                 sessionStorage.setItem('username', _username);

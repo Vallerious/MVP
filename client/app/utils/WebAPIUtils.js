@@ -4,7 +4,7 @@ var request = require('superagent');
 
 function _getErrors(res) {
     var errorMsgs = ["Something went wrong, please try again"];
-    if ((json = JSON.parse(res.text))) {
+    if (json = res.body) {
         if (json['errors']) {
             errorMsgs = json['errors'];
         } else if (json['error']) {
