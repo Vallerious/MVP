@@ -20503,6 +20503,10 @@
 	            router.transitionTo('main');
 	            break;
 
+	        case ActionTypes.LOGOUT:
+	            router.transitionTo('main');
+	            break;
+
 	        default:
 	    }
 
@@ -46422,135 +46426,156 @@
 	var ReactPropTypes = React.PropTypes;
 	var SessionActionCreators = __webpack_require__(372);
 
+	var mui = __webpack_require__(216),
+	    ThemeManager = new mui.Styles.ThemeManager(),
+	    Avatar = mui.Avatar;
+
 	var Header = React.createClass({
-	  displayName: 'Header',
+	    displayName: 'Header',
 
-	  propTypes: {
-	    isLoggedIn: ReactPropTypes.bool,
-	    username: ReactPropTypes.string
-	  },
-	  logout: function logout(e) {
-	    e.preventDefault();
-	    SessionActionCreators.logout();
-	  },
-	  render: function render() {
+	    childContextTypes: {
+	        muiTheme: React.PropTypes.object
+	    },
 
-	    var rightNav = this.props.isLoggedIn ? React.createElement(
-	      'ul',
-	      { className: 'nav navbar-nav navbar-right' },
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { href: '#' },
-	          this.props.username
-	        )
-	      ),
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { href: '#', onClick: this.logout },
-	          'Logout'
-	        )
-	      )
-	    ) : React.createElement(
-	      'ul',
-	      { className: 'nav navbar-nav navbar-right' },
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: 'login' },
-	          'Sign in'
-	        )
-	      ),
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: 'signup' },
-	          'Sign up'
-	        )
-	      )
-	    );
+	    getChildContext: function getChildContext() {
+	        return {
+	            muiTheme: ThemeManager.getCurrentTheme()
+	        };
+	    },
 
-	    var leftNav = this.props.isLoggedIn ? React.createElement(
-	      'ul',
-	      { className: 'nav navbar-nav' },
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: 'articles' },
-	          'Articles'
-	        )
-	      ),
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: 'new-article' },
-	          'New article'
-	        )
-	      )
-	    ) : React.createElement(
-	      'ul',
-	      { className: 'nav navbar-nav' },
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: 'articles' },
-	          'Articles'
-	        )
-	      )
-	    );
+	    propTypes: {
+	        isLoggedIn: ReactPropTypes.bool,
+	        username: ReactPropTypes.string
+	    },
 
-	    return React.createElement(
-	      'nav',
-	      { className: 'navbar navbar-default navbar-fixed-top' },
-	      React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement(
-	          'div',
-	          { className: 'navbar-header' },
-	          React.createElement(
-	            'button',
-	            { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse',
-	              'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
+	    logout: function logout(e) {
+	        e.preventDefault();
+	        SessionActionCreators.logout();
+	    },
+
+	    render: function render() {
+
+	        var rightNav = this.props.isLoggedIn ? React.createElement(
+	            'ul',
+	            { className: 'nav navbar-nav navbar-right' },
 	            React.createElement(
-	              'span',
-	              { className: 'sr-only' },
-	              'Toggle navigation'
+	                'li',
+	                null,
+	                React.createElement(Avatar, { className: 'avatar', src: 'images/kenny.jpg' })
 	            ),
-	            React.createElement('span', { className: 'icon-bar' }),
-	            React.createElement('span', { className: 'icon-bar' }),
-	            React.createElement('span', { className: 'icon-bar' })
-	          ),
-	          React.createElement(
-	            'a',
-	            { className: 'navbar-brand', href: '#' },
-	            'RSD Blog'
-	          )
-	        ),
-	        React.createElement(
-	          'div',
-	          { id: 'navbar', className: 'navbar-collapse collapse' },
-	          leftNav,
-	          rightNav
-	        )
-	      )
-	    );
-	  }
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    this.props.username
+	                )
+	            ),
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    'a',
+	                    { href: '#', onClick: this.logout },
+	                    'Logout'
+	                )
+	            )
+	        ) : React.createElement(
+	            'ul',
+	            { className: 'nav navbar-nav navbar-right' },
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: 'login' },
+	                    'Sign in'
+	                )
+	            ),
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: 'signup' },
+	                    'Sign up'
+	                )
+	            )
+	        );
+
+	        var leftNav = this.props.isLoggedIn ? React.createElement(
+	            'ul',
+	            { className: 'nav navbar-nav' },
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: 'articles' },
+	                    'Articles'
+	                )
+	            ),
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: 'new-article' },
+	                    'New article'
+	                )
+	            )
+	        ) : React.createElement(
+	            'ul',
+	            { className: 'nav navbar-nav' },
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: 'articles' },
+	                    'Articles'
+	                )
+	            )
+	        );
+
+	        return React.createElement(
+	            'nav',
+	            { className: 'navbar navbar-default navbar-fixed-top' },
+	            React.createElement(
+	                'div',
+	                { className: 'container' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'navbar-header' },
+	                    React.createElement(
+	                        'button',
+	                        { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse',
+	                            'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
+	                        React.createElement(
+	                            'span',
+	                            { className: 'sr-only' },
+	                            'Toggle navigation'
+	                        ),
+	                        React.createElement('span', { className: 'icon-bar' }),
+	                        React.createElement('span', { className: 'icon-bar' }),
+	                        React.createElement('span', { className: 'icon-bar' })
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { className: 'navbar-brand', href: '#' },
+	                        'RSD Blog'
+	                    )
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { id: 'navbar', className: 'navbar-collapse collapse' },
+	                    leftNav,
+	                    rightNav
+	                )
+	            )
+	        );
+	    }
 	});
 
 	module.exports = Header;
@@ -46610,7 +46635,8 @@
 	var mui = __webpack_require__(216),
 	    ThemeManager = new mui.Styles.ThemeManager(),
 	    RaisedButton = mui.RaisedButton,
-	    TextField = mui.TextField;
+	    TextField = mui.TextField,
+	    Paper = mui.Paper;
 
 	var LoginPage = React.createClass({
 	    displayName: 'LoginPage',
@@ -46662,22 +46688,33 @@
 	                    'div',
 	                    { className: 'col-md-6 col-md-offset-3' },
 	                    React.createElement(
-	                        'form',
-	                        { onSubmit: this._onSubmit },
-	                        React.createElement(TextField, {
-	                            ref: 'username',
-	                            hintText: 'Enter your username',
-	                            floatingLabelText: 'Username',
-	                            fullWidth: true }),
-	                        React.createElement(TextField, {
-	                            ref: 'password',
-	                            hintText: 'Enter your password',
-	                            floatingLabelText: 'Password',
-	                            fullWidth: true,
-	                            type: 'password' }),
-	                        React.createElement(RaisedButton, {
-	                            type: 'submit',
-	                            label: 'Submit' })
+	                        Paper,
+	                        { className: 'form-container', zDepth: 2 },
+	                        React.createElement(
+	                            'form',
+	                            { onSubmit: this._onSubmit },
+	                            React.createElement(
+	                                'h1',
+	                                { className: 'form-heading' },
+	                                'Sign In'
+	                            ),
+	                            React.createElement(TextField, {
+	                                ref: 'username',
+	                                hintText: 'Enter your username',
+	                                floatingLabelText: 'Username',
+	                                fullWidth: true }),
+	                            React.createElement(TextField, {
+	                                className: 'mb20',
+	                                ref: 'password',
+	                                hintText: 'Enter your password',
+	                                floatingLabelText: 'Password',
+	                                fullWidth: true,
+	                                type: 'password' }),
+	                            React.createElement(RaisedButton, {
+	                                type: 'submit',
+	                                label: 'Login',
+	                                secondary: true })
+	                        )
 	                    )
 	                )
 	            )
@@ -58729,7 +58766,8 @@
 	var mui = __webpack_require__(216),
 	    ThemeManager = new mui.Styles.ThemeManager(),
 	    RaisedButton = mui.RaisedButton,
-	    TextField = mui.TextField;
+	    TextField = mui.TextField,
+	    Paper = mui.Paper;
 
 	var SignupPage = React.createClass({
 	    displayName: 'SignupPage',
@@ -58785,34 +58823,45 @@
 	                    'div',
 	                    { className: 'col-md-6 col-md-offset-3' },
 	                    React.createElement(
-	                        'form',
-	                        { onSubmit: this._onSubmit },
-	                        React.createElement(TextField, {
-	                            ref: 'username',
-	                            hintText: 'Enter a new username',
-	                            floatingLabelText: 'Username',
-	                            fullWidth: true }),
-	                        React.createElement(TextField, {
-	                            ref: 'email',
-	                            hintText: 'Enter your E-mail',
-	                            floatingLabelText: 'E-mail',
-	                            fullWidth: true
-	                        }),
-	                        React.createElement(TextField, {
-	                            ref: 'password',
-	                            hintText: 'Enter a new password',
-	                            floatingLabelText: 'Password',
-	                            fullWidth: true,
-	                            type: 'password' }),
-	                        React.createElement(TextField, {
-	                            ref: 'passwordConfirmation',
-	                            hintText: 'Repeat the new password',
-	                            floatingLabelText: 'Repeat password',
-	                            fullWidth: true,
-	                            type: 'password' }),
-	                        React.createElement(RaisedButton, {
-	                            type: 'submit',
-	                            label: 'Submit' })
+	                        Paper,
+	                        { className: 'form-container', zDepth: 2 },
+	                        React.createElement(
+	                            'form',
+	                            { onSubmit: this._onSubmit },
+	                            React.createElement(
+	                                'h1',
+	                                { className: 'form-heading' },
+	                                'Sign Up'
+	                            ),
+	                            React.createElement(TextField, {
+	                                ref: 'username',
+	                                hintText: 'Enter a new username',
+	                                floatingLabelText: 'Username',
+	                                fullWidth: true }),
+	                            React.createElement(TextField, {
+	                                ref: 'email',
+	                                hintText: 'Enter your E-mail',
+	                                floatingLabelText: 'E-mail',
+	                                fullWidth: true
+	                            }),
+	                            React.createElement(TextField, {
+	                                ref: 'password',
+	                                hintText: 'Enter a new password',
+	                                floatingLabelText: 'Password',
+	                                fullWidth: true,
+	                                type: 'password' }),
+	                            React.createElement(TextField, {
+	                                className: 'mb20',
+	                                ref: 'passwordConfirmation',
+	                                hintText: 'Repeat the new password',
+	                                floatingLabelText: 'Repeat password',
+	                                fullWidth: true,
+	                                type: 'password' }),
+	                            React.createElement(RaisedButton, {
+	                                type: 'submit',
+	                                label: 'Sign Up',
+	                                secondary: true })
+	                        )
 	                    )
 	                )
 	            )

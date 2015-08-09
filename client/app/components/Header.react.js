@@ -5,19 +5,37 @@ var Link = Router.Link;
 var ReactPropTypes = React.PropTypes;
 var SessionActionCreators = require('../actions/SessionActionCreators.react.js');
 
+var mui = require('material-ui'),
+    ThemeManager = new mui.Styles.ThemeManager(),
+    Avatar = mui.Avatar;
+
 var Header = React.createClass({
+
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+
+    getChildContext() {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
+
     propTypes: {
       isLoggedIn: ReactPropTypes.bool,
       username: ReactPropTypes.string
     },
+
     logout: function(e) {
       e.preventDefault();
       SessionActionCreators.logout();
     },
+
     render() {
 
         var rightNav = this.props.isLoggedIn ? (
           <ul className="nav navbar-nav navbar-right">
+            <li><Avatar className="avatar" src="images/kenny.jpg" /></li>
             <li><a href="#">{this.props.username}</a></li>
             <li><a href='#' onClick={this.logout}>Logout</a></li>
           </ul>

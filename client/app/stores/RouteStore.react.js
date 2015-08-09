@@ -65,6 +65,10 @@ RouteStore.dispatchToken = AppDispatcher.register(function (payload) {
             router.transitionTo('main');
             break;
 
+        case ActionTypes.LOGOUT:
+            router.transitionTo('main');
+            break;
+
         default:
     }
 

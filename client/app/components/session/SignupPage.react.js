@@ -8,7 +8,8 @@ var ReactPropTypes = React.PropTypes;
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
     RaisedButton = mui.RaisedButton,
-    TextField = mui.TextField;
+    TextField = mui.TextField,
+    Paper = mui.Paper;
 
 var SignupPage = React.createClass({
 
@@ -57,37 +58,41 @@ var SignupPage = React.createClass({
                 {errors}
                 <div className="row">
                     <div className="col-md-6 col-md-offset-3">
-                        <form onSubmit={this._onSubmit}>
-                            <TextField
-                                ref="username"
-                                hintText="Enter a new username"
-                                floatingLabelText="Username"
-                                fullWidth={true}/>
-                            <TextField
-                                ref="email"
-                                hintText="Enter your E-mail"
-                                floatingLabelText="E-mail"
-                                fullWidth={true}
-                                />
-                            <TextField
-                                ref="password"
-                                hintText="Enter a new password"
-                                floatingLabelText="Password"
-                                fullWidth={true}
-                                type="password">
-                            </TextField>
-                            <TextField
-                                ref="passwordConfirmation"
-                                hintText="Repeat the new password"
-                                floatingLabelText="Repeat password"
-                                fullWidth={true}
-                                type="password">
-                            </TextField>
-
-                            <RaisedButton
-                                type="submit"
-                                label="Submit"/>
-                        </form>
+                        <Paper className="form-container" zDepth={2}>
+                            <form onSubmit={this._onSubmit}>
+                                <h1 className="form-heading">Sign Up</h1>
+                                <TextField
+                                    ref="username"
+                                    hintText="Enter a new username"
+                                    floatingLabelText="Username"
+                                    fullWidth={true}/>
+                                <TextField
+                                    ref="email"
+                                    hintText="Enter your E-mail"
+                                    floatingLabelText="E-mail"
+                                    fullWidth={true}
+                                    />
+                                <TextField
+                                    ref="password"
+                                    hintText="Enter a new password"
+                                    floatingLabelText="Password"
+                                    fullWidth={true}
+                                    type="password">
+                                </TextField>
+                                <TextField
+                                    className="mb20"
+                                    ref="passwordConfirmation"
+                                    hintText="Repeat the new password"
+                                    floatingLabelText="Repeat password"
+                                    fullWidth={true}
+                                    type="password">
+                                </TextField>
+                                <RaisedButton
+                                    type="submit"
+                                    label="Sign Up"
+                                    secondary={true}/>
+                            </form>
+                        </Paper>
                     </div>
                 </div>
             </div>

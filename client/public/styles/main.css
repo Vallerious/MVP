@@ -14,3 +14,19 @@ body {
 .btn-numbered-page, .btn-first-page, .btn-last-page, .btn-prev-page, .btn-next-page  {
     cursor: pointer;
 }
+
+/*Login page*/
+
+.form-container {
+    padding: 50px;
+}
+
+.form-heading {
+    color: rgb(0, 188, 212);
+}
+
+/*Header*/
+
+.avatar {
+  margin: 7px 0 7px 0;
+}

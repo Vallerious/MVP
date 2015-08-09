@@ -6,7 +6,8 @@ var ErrorNotice = require('../../components/common/ErrorNotice.react.js');
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
     RaisedButton = mui.RaisedButton,
-    TextField = mui.TextField;
+    TextField = mui.TextField,
+    Paper = mui.Paper;
 
 var LoginPage = React.createClass({
 
@@ -48,28 +49,33 @@ var LoginPage = React.createClass({
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
         return (
             <div>
-                {errors}
-                <div className="row">
-                    <div className="col-md-6 col-md-offset-3">
-                        <form onSubmit={this._onSubmit}>
-                            <TextField
-                                ref="username"
-                                hintText="Enter your username"
-                                floatingLabelText="Username"
-                                fullWidth={true}/>
-                            <TextField
-                                ref="password"
-                                hintText="Enter your password"
-                                floatingLabelText="Password"
-                                fullWidth={true}
-                                type="password">
-                            </TextField>
-                            <RaisedButton
-                                type="submit"
-                                label="Submit"/>
-                        </form>
-                    </div>
+              {errors}
+              <div className="row">
+                <div className="col-md-6 col-md-offset-3">
+                  <Paper className="form-container" zDepth={2}>
+                    <form onSubmit={this._onSubmit}>
+                        <h1 className="form-heading">Sign In</h1>
+                        <TextField
+                            ref="username"
+                            hintText="Enter your username"
+                            floatingLabelText="Username"
+                            fullWidth={true}/>
+                        <TextField
+                            className="mb20"
+                            ref="password"
+                            hintText="Enter your password"
+                            floatingLabelText="Password"
+                            fullWidth={true}
+                            type="password">
+                        </TextField>
+                        <RaisedButton
+                            type="submit"
+                            label="Login"
+                            secondary={true}/>
+                    </form>
+                  </Paper>
                 </div>
+              </div>
             </div>
         );
     }
