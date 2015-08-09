@@ -80,11 +80,11 @@ module.exports = {
             });
     },
 
-    createArticle: function (title, content, tags, categories) {
+    createArticle: function (title, content, createdBy, tags, categories) {
         request.post(APIEndpoints.CREATE_ARTICLE)
             .set('Accept', 'application/json')
             //.set('Authorization', sessionStorage.getItem('accessToken'))
-            .send({article: {title: title, content: content, tags: tags, categories: categories}})
+            .send({article: {title: title, content: content, createdBy: createdBy, tags: tags, categories: categories}})
             .end(function (error, res) {
                 if (res) {
                     if (res.error) {
@@ -96,5 +96,20 @@ module.exports = {
                     }
                 }
             });
+    },
+
+    voteArticle: function (articleId, voteValue, user) {
+        request.post(APIEndpoints.VOTE_ARTICLE)
+        .set('Accept', 'application/json')
+        .send({ article: {articleId: articleId, voteValue: voteValue, user: user}})
+        .end(function (error, res) {
+            if (res.error) {
+                var errorMsgs = _getErrors(res);
+                ServerActionCreators.reciveVotedArticle(null, errorMsgs);
+            } else {
+                json = JSON.parse(res.body.payload);
+                ServerActionCreators.reciveVotedArticle(json, null);
+            }
+        })
     }
 };

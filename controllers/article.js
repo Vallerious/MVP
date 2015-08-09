@@ -16,17 +16,17 @@ var Article = require('./../models/article');
  * @version 0.1 Beta
  */
 var addEditArticle = function (req, res) {
-    var articleData = req.body;
+    var articleData = req.body.article;
     var error = new Error();
 
     try {
-        if (articleData.title && articleData.content) {
+        if (articleData.title && articleData.content && articleData.createdBy) {
             var newArticle = new Article({
                 title: articleData.title,
                 title_normalized: articleData.title.toLowerCase(),
                 content: articleData.content,
                 content_normalized: articleData.content.toLowerCase(),
-                postedBy: articleData.postedBy,
+                postedBy: articleData.createdBy,
                 comments: [], // add the Comment schema in the array after it`s created : )
                 createdOn: Date.now(),
                 editedOn: "",
@@ -144,13 +144,10 @@ var voteArticle = function (req, res) {
     try {
         var articleData = req.body.article;
 
-        if (articleData.articleId) {
+        if (articleData.articleId && articleData.votedBy) {
             var articleId = articleData.articleId;
-            var increment = 1;
-
-            if (articleData.voteDown) {
-                increment = -1;
-            }
+            var votedBy = articleData.votedBy;
+            var increment = articleData.voteValue;
 
             Article.update({_id: articleId}, {$inc: {votes: increment}}, {upsert: false}, function (err) {
                 if (err) {

@@ -39,6 +39,12 @@ var Article = React.createClass({
         this.refs.showArticle.show();
     },
 
+    voteArticle: function (articleId, voteValue) {
+        var votedBy = sessionStorage.getItem('user_id');
+
+        WebAPIUtils.voteArticle(articleId, voteValue, votedBy);
+    },
+
     render: function () {
         var standardActions = [
               { text: 'Cancel' }
@@ -75,8 +81,8 @@ var Article = React.createClass({
                                 {this.props.content}
                               </CardText>
                               <CardActions expandable={true}>
-                                <FlatButton label="Vote Up"/>
-                                <FlatButton label="Vote Down"/>
+                                <FlatButton label="Vote Up" onClick={this.voteArticle(this.props.articleId, 1)}/>
+                                <FlatButton label="Vote Down" onClick={this.voteArticle(this.props.articleId, -1)}/>
                                 <FlatButton label="+ Favorites"/>
                               </CardActions>
                         </Card>
