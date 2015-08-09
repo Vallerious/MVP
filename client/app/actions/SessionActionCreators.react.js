@@ -13,6 +13,7 @@ module.exports = {
             username: username,
             password: password
         });
+
         WebAPIUtils.signup(email, username, password);
     },
 
@@ -22,6 +23,7 @@ module.exports = {
             username: username,
             password: password
         });
+
         WebAPIUtils.login(username, password);
     },
 

@@ -20869,7 +20869,8 @@
 	        LOGIN: APIRoot + "/login",
 	        REGISTRATION: APIRoot + "/register",
 	        ARTICLES: APIRoot + "/article/list?page=",
-	        CREATE_ARTICLE: APIRoot + "/article/add"
+	        CREATE_ARTICLE: APIRoot + "/article/add",
+	        VOTE_ARTICLE: APIRoot + "/article/vote"
 	    },
 
 	    PayloadSources: {
@@ -20891,7 +20892,9 @@
 	        RECEIVE_ARTICLE: 'RECEIVE_ARTICLE',
 	        CREATE_ARTICLE: 'CREATE_ARTICLE',
 	        RECEIVE_CREATED_ARTICLE: 'RECEIVE_CREATED_ARTICLE',
-	        RECIEVE_PAGE_COUNT: 'RECIEVE_PAGE_COUNT'
+	        RECIEVE_PAGE_COUNT: 'RECIEVE_PAGE_COUNT',
+	        VOTE_ARTICLE: 'VOTE_ARTICLE',
+	        RECIEVE_VOTED_ARTICLE: 'RECIEVE_VOTED_ARTICLE'
 	    }
 
 	};
@@ -21290,6 +21293,7 @@
 	// a 'remember me' using localSgorage
 	var _accessToken = sessionStorage.getItem('accessToken');
 	var _username = sessionStorage.getItem('username');
+	var _id = sessionStorage.getItem('user_id');
 	var _errors = [];
 
 	var SessionStore = assign({}, EventEmitter.prototype, {
@@ -21332,22 +21336,31 @@
 	            if (action.json && action.json.token) {
 	                _accessToken = action.json.token;
 	                _username = action.json.payload.username;
+	                _id = action.json.payload._id;
+
 	                // Token will always live in the session, so that the API can grab it with no hassle
 	                sessionStorage.setItem('accessToken', _accessToken);
 	                sessionStorage.setItem('username', _username);
+	                sessionStorage.setItem('user_id', _id);
 	            }
+
 	            if (action.errors) {
 	                _errors = action.errors;
 	            }
+
 	            SessionStore.emitChange();
 	            break;
 
 	        case ActionTypes.LOGOUT:
 	            _accessToken = null;
 	            _username = null;
+
 	            sessionStorage.removeItem('accessToken');
 	            sessionStorage.removeItem('username');
+	            sessionStorage.removeItem('user_id');
+
 	            SessionStore.emitChange();
+
 	            break;
 
 	        default:
@@ -21519,10 +21532,10 @@
 	        });
 	    },
 
-	    createArticle: function createArticle(title, content, tags, categories) {
+	    createArticle: function createArticle(title, content, createdBy, tags, categories) {
 	        request.post(APIEndpoints.CREATE_ARTICLE).set('Accept', 'application/json')
 	        //.set('Authorization', sessionStorage.getItem('accessToken'))
-	        .send({ article: { title: title, content: content, tags: tags, categories: categories } }).end(function (error, res) {
+	        .send({ article: { title: title, content: content, createdBy: createdBy, tags: tags, categories: categories } }).end(function (error, res) {
 	            if (res) {
 	                if (res.error) {
 	                    var errorMsgs = _getErrors(res);
@@ -21531,6 +21544,18 @@
 	                    json = JSON.parse(res.body.payload);
 	                    ServerActionCreators.receiveCreatedArticle(json, null);
 	                }
+	            }
+	        });
+	    },
+
+	    voteArticle: function voteArticle(articleId, voteValue, user) {
+	        request.post(APIEndpoints.VOTE_ARTICLE).set('Accept', 'application/json').send({ article: { articleId: articleId, voteValue: voteValue, user: user } }).end(function (error, res) {
+	            if (res.error) {
+	                var errorMsgs = _getErrors(res);
+	                ServerActionCreators.reciveVotedArticle(null, errorMsgs);
+	            } else {
+	                json = JSON.parse(res.body.payload);
+	                ServerActionCreators.reciveVotedArticle(json, null);
 	            }
 	        });
 	    }
@@ -21574,6 +21599,14 @@
 	    receiveCreatedArticle: function receiveCreatedArticle(json, errors) {
 	        AppDispatcher.handleServerAction({
 	            type: ActionTypes.RECEIVE_CREATED_ARTICLE,
+	            json: json,
+	            errors: errors
+	        });
+	    },
+
+	    recieveVotedArticle: function recieveVotedArticle(json, errors) {
+	        AppDispatcher.handleServerAction({
+	            type: ActionTypes.RECIEVE_VOTED_ARTICLE,
 	            json: json,
 	            errors: errors
 	        });
@@ -26139,7 +26172,7 @@
 	        this.setState({
 	            articles: ArticleStore.getAllArticles().data,
 	            total: ArticleStore.getAllArticles().pageCount,
-	            visiblePages: ArticleStore.getAllArticles().pageCount,
+	            visiblePages: 3,
 	            errors: ArticleStore.getErrors()
 	        });
 	    },
@@ -26151,7 +26184,7 @@
 	    },
 	    render: function render() {
 	        var articles = this.state.articles.map(function (article, idx) {
-	            return React.createElement(Article, { title: article.title, content: article.content, date: article.createdOn });
+	            return React.createElement(Article, { title: article.title, content: article.content, date: article.createdOn, articleId: article._id });
 	        });
 	        var errors = this.state.errors.length > 0 ? React.createElement(ErrorNotice, { errors: this.state.errors }) : React.createElement('div', null);
 	        return React.createElement(
@@ -26283,6 +26316,12 @@
 	        this.refs.showArticle.show();
 	    },
 
+	    voteArticle: function voteArticle(articleId, voteValue) {
+	        var votedBy = sessionStorage.getItem('user_id');
+
+	        WebAPIUtils.voteArticle(articleId, voteValue, votedBy);
+	    },
+
 	    render: function render() {
 	        var standardActions = [{ text: 'Cancel' }];
 
@@ -26333,8 +26372,8 @@
 	                        React.createElement(
 	                            CardActions,
 	                            { expandable: true },
-	                            React.createElement(FlatButton, { label: 'Vote Up' }),
-	                            React.createElement(FlatButton, { label: 'Vote Down' }),
+	                            React.createElement(FlatButton, { label: 'Vote Up', onClick: this.voteArticle(this.props.articleId, 1) }),
+	                            React.createElement(FlatButton, { label: 'Vote Down', onClick: this.voteArticle(this.props.articleId, -1) }),
 	                            React.createElement(FlatButton, { label: '+ Favorites' })
 	                        )
 	                    )
@@ -26372,18 +26411,32 @@
 	            type: ActionTypes.LOAD_ARTICLE,
 	            articleId: articleId
 	        });
+
 	        WebAPIUtils.loadArticle(articleId);
 	    },
 
-	    createArticle: function createArticle(title, content, tags, categories) {
+	    createArticle: function createArticle(title, content, createdBy, tags, categories) {
 	        AppDispatcher.handleViewAction({
 	            type: ActionTypes.CREATE_ARTICLE,
 	            title: title,
 	            content: content,
 	            tags: tags,
-	            categories: categories
+	            categories: categories,
+	            createdBy: createdBy
 	        });
-	        WebAPIUtils.createArticle(title, content, tags, categories);
+
+	        WebAPIUtils.createArticle(title, content, createdBy, tags, categories);
+	    },
+
+	    voteArticle: function voteArticle(articleId, voteValue, user) {
+	        AppDispatcher.handleViewAction({
+	            type: ActionTypes.VOTE_ARTICLE,
+	            articleId: articleId,
+	            voteValue: voteValue,
+	            user: user
+	        });
+
+	        WebAPIUtils.voteArticle(articleId, voteValue, user);
 	    }
 	};
 
@@ -46601,6 +46654,7 @@
 	            username: username,
 	            password: password
 	        });
+
 	        WebAPIUtils.signup(email, username, password);
 	    },
 
@@ -46610,6 +46664,7 @@
 	            username: username,
 	            password: password
 	        });
+
 	        WebAPIUtils.login(username, password);
 	    },
 
@@ -46668,13 +46723,44 @@
 
 	    _onSubmit: function _onSubmit(e) {
 	        e.preventDefault();
-	        this.setState({ errors: [] });
 	        var username = this.refs.username.getValue();
 	        var password = this.refs.password.getValue();
-	        SessionActionCreators.login(username, password);
+
+	        if (!username || !username.length) {
+	            this.refs.username.setErrorText('Please, fill in you username');
+	        }if (!password || !password.length) {
+	            this.refs.password.setErrorText('Please, fill in your password');
+	        } else if (username.length > 0 && password.length > 0) {
+	            this.setState({ errors: [] });
+	            SessionActionCreators.login(username, password);
+	        }
+	    },
+
+	    clearUsernameError: function clearUsernameError() {
+	        this.refs.username.setErrorText(null);
+	    },
+
+	    clearPasswordError: function clearPasswordError() {
+	        this.refs.password.setErrorText(null);
 	    },
 
 	    render: function render() {
+
+	        var username = React.createElement(TextField, {
+	            ref: 'username',
+	            hintText: 'Enter your username',
+	            floatingLabelText: 'Username',
+	            fullWidth: true,
+	            onChange: this.clearUsernameError });
+
+	        var password = React.createElement(TextField, {
+	            className: 'mb20',
+	            ref: 'password',
+	            hintText: 'Enter your password',
+	            floatingLabelText: 'Password',
+	            fullWidth: true,
+	            type: 'password',
+	            onChange: this.clearPasswordError });
 
 	        return React.createElement(
 	            'div',
@@ -46696,22 +46782,13 @@
 	                                { className: 'form-heading' },
 	                                'Sign In'
 	                            ),
-	                            React.createElement(TextField, {
-	                                ref: 'username',
-	                                hintText: 'Enter your username',
-	                                floatingLabelText: 'Username',
-	                                fullWidth: true }),
-	                            React.createElement(TextField, {
-	                                className: 'mb20',
-	                                ref: 'password',
-	                                hintText: 'Enter your password',
-	                                floatingLabelText: 'Password',
-	                                fullWidth: true,
-	                                type: 'password' }),
+	                            username,
+	                            password,
 	                            React.createElement(RaisedButton, {
 	                                type: 'submit',
 	                                label: 'Login',
-	                                secondary: true })
+	                                secondary: true
+	                            })
 	                        )
 	                    )
 	                )
@@ -46835,7 +46912,8 @@
 	        var content = this.refs.content.getValue();
 	        var tags = this.refs.tags.getTags();
 	        var categories = this.refs.categories.getTags();
-	        ArticleActionCreators.createArticle(title, content, tags, categories);
+	        var createdBy = sessionStorage.getItem('user_id');
+	        ArticleActionCreators.createArticle(title, content, createdBy, tags, categories);
 	        RouteActionCreators.redirect('main');
 	    },
 
@@ -46904,7 +46982,7 @@
 	                        'Place image upload here'
 	                    )
 	                ),
-	                React.createElement(RaisedButton, { type: 'submit', className: 'pull-right', label: 'Publish', secondary: true })
+	                React.createElement(RaisedButton, { type: 'submit', className: 'pull-right', label: 'Publish', secondary: true, onClick: this._onSubmit })
 	            )
 	        );
 	    }

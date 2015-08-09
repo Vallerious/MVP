@@ -62,7 +62,8 @@ var ArticleNew = React.createClass({
         var content = this.refs.content.getValue();
         var tags = this.refs.tags.getTags();
         var categories = this.refs.categories.getTags();
-        ArticleActionCreators.createArticle(title, content, tags, categories);
+        var createdBy = sessionStorage.getItem('user_id');
+        ArticleActionCreators.createArticle(title, content, createdBy, tags, categories);
         RouteActionCreators.redirect('main');
     },
 
@@ -106,7 +107,7 @@ var ArticleNew = React.createClass({
                             Place image upload here
                         </p>
                     </div>
-                    <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true}/>
+                    <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true} onClick={this._onSubmit} />
                 </Tab>
             </Tabs>
         );

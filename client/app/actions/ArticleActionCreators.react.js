@@ -18,17 +18,31 @@ module.exports = {
             type: ActionTypes.LOAD_ARTICLE,
             articleId: articleId
         });
+
         WebAPIUtils.loadArticle(articleId);
     },
 
-    createArticle: function (title, content, tags, categories) {
+    createArticle: function (title, content, createdBy, tags, categories) {
         AppDispatcher.handleViewAction({
             type: ActionTypes.CREATE_ARTICLE,
             title: title,
             content: content,
             tags: tags,
-            categories: categories
+            categories: categories,
+            createdBy: createdBy
         });
-        WebAPIUtils.createArticle(title, content, tags, categories);
+
+        WebAPIUtils.createArticle(title, content, createdBy, tags, categories);
+    },
+
+    voteArticle: function (articleId, voteValue, user) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.VOTE_ARTICLE,
+            articleId: articleId,
+            voteValue: voteValue,
+            user: user
+        });
+
+        WebAPIUtils.voteArticle(articleId, voteValue, user);
     }
 };

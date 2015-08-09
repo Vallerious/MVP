@@ -38,13 +38,50 @@ var LoginPage = React.createClass({
 
     _onSubmit: function (e) {
         e.preventDefault();
-        this.setState({ errors: [] });
         var username = this.refs.username.getValue();
         var password = this.refs.password.getValue();
-        SessionActionCreators.login(username, password);
+
+        if (username.length > 0 && password.length > 0) {
+          this.setState({ errors: [] });
+          SessionActionCreators.login(username, password);
+        } else {
+          if (!username || !username.length) {
+            this.refs.username.setErrorText('Please, fill in you username');
+          } if (!password || !password.length) {
+            this.refs.password.setErrorText('Please, fill in your password');
+          }
+        }
+    },
+
+    clearUsernameError: function() {
+      this.refs.username.setErrorText(null);
+    },
+
+    clearPasswordError: function() {
+      this.refs.password.setErrorText(null);
     },
 
     render: function () {
+
+        var username = (
+          <TextField
+              ref="username"
+              hintText="Enter your username"
+              floatingLabelText="Username"
+              fullWidth={true}
+              onChange={this.clearUsernameError}/>
+        );
+
+        var password = (
+          <TextField
+              className="mb20"
+              ref="password"
+              hintText="Enter your password"
+              floatingLabelText="Password"
+              fullWidth={true}
+              type="password"
+              onChange={this.clearPasswordError}/>
+        );
 
         return (
             <div>
@@ -53,23 +90,13 @@ var LoginPage = React.createClass({
                   <Paper className="form-container" zDepth={2}>
                     <form onSubmit={this._onSubmit}>
                         <h1 className="form-heading">Sign In</h1>
-                        <TextField
-                            ref="username"
-                            hintText="Enter your username"
-                            floatingLabelText="Username"
-                            fullWidth={true}/>
-                        <TextField
-                            className="mb20"
-                            ref="password"
-                            hintText="Enter your password"
-                            floatingLabelText="Password"
-                            fullWidth={true}
-                            type="password">
-                        </TextField>
+                        {username}
+                        {password}
                         <RaisedButton
                             type="submit"
                             label="Login"
-                            secondary={true}/>
+                            secondary={true}
+                            />
                     </form>
                   </Paper>
                 </div>

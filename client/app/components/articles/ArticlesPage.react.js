@@ -73,7 +73,7 @@ var ArticlesPage = React.createClass({
         this.setState({
             articles: ArticleStore.getAllArticles().data,
             total: ArticleStore.getAllArticles().pageCount,
-            visiblePages: ArticleStore.getAllArticles().pageCount,
+            visiblePages: 3,
             errors: ArticleStore.getErrors()
         });
     },
@@ -85,7 +85,7 @@ var ArticlesPage = React.createClass({
     },
     render: function () {
         var articles = this.state.articles.map(function (article, idx) {
-            return <Article title={article.title} content={article.content} date={article.createdOn} />
+            return <Article title={article.title} content={article.content} date={article.createdOn} articleId={article._id} />
         });
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;
         return (
