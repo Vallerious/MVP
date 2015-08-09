@@ -46630,7 +46630,6 @@
 	var React = __webpack_require__(1);
 	var SessionActionCreators = __webpack_require__(372);
 	var SessionStore = __webpack_require__(165);
-	var ErrorNotice = __webpack_require__(213);
 
 	var mui = __webpack_require__(216),
 	    ThemeManager = new mui.Styles.ThemeManager(),
@@ -46676,11 +46675,10 @@
 	    },
 
 	    render: function render() {
-	        var errors = this.state.errors.length > 0 ? React.createElement(ErrorNotice, { errors: this.state.errors }) : React.createElement('div', null);
+
 	        return React.createElement(
 	            'div',
 	            null,
-	            errors,
 	            React.createElement(
 	                'div',
 	                { className: 'row' },

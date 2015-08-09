@@ -1,7 +1,6 @@
 var React = require('react');
 var SessionActionCreators = require('../../actions/SessionActionCreators.react.js');
 var SessionStore = require('../../stores/SessionStore.react.js');
-var ErrorNotice = require('../../components/common/ErrorNotice.react.js');
 
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
@@ -46,10 +45,9 @@ var LoginPage = React.createClass({
     },
 
     render: function () {
-        var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
+
         return (
             <div>
-              {errors}
               <div className="row">
                 <div className="col-md-6 col-md-offset-3">
                   <Paper className="form-container" zDepth={2}>
