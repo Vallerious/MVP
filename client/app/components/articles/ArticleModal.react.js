@@ -64,14 +64,22 @@ var ArticleModal = React.createClass({
         };
     },
 
+    componentDidMount: function () {
+        ArticleStore.addChangeListener(this._onChange);
+    },
+
+    componentWillUnmount: function () {
+        ArticleStore.removeChangeListener(this._onChange);
+    },
+
     _onChange: function () {
         this.setState(getStateFromStores());
+        this.setState({votes: ArticleStore.getVotes()});
     },
 
     voteArticle: function (articleId) {
         var userId = sessionStorage.getItem('user_id');
         ArticleActionCreators.voteArticle(articleId, userId);
-        this.setState({votes: ArticleStore.getVotes()});
     },
 
     render: function () {
