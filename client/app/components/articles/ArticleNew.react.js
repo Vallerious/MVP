@@ -8,6 +8,8 @@ var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
 var MenuList = require('../common/MenuList.react.js');
 var TagsInput = require('react-tagsinput');
 
+var Dropzone = require('react-dropzone');
+
 //Theme dependencies:
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
@@ -31,7 +33,8 @@ var ArticleNew = React.createClass({
     getInitialState: function () {
         return {
             tags: "",
-            categories: ""
+            categories: "",
+            image: null
         }
     },
 
@@ -63,8 +66,14 @@ var ArticleNew = React.createClass({
         var tags = this.refs.tags.getTags();
         var categories = this.refs.categories.getTags();
         var createdBy = sessionStorage.getItem('user_id');
-        ArticleActionCreators.createArticle(title, content, createdBy, tags, categories);
+        var image = this.state.image;
+        ArticleActionCreators.createArticle(title, content, image, createdBy, tags, categories);
         RouteActionCreators.redirect('main');
+    },
+
+    onDrop: function (files) {
+      this.state.image = files[0];
+      console.log(this.state.image)
     },
 
     render: function () {
@@ -87,25 +96,22 @@ var ArticleNew = React.createClass({
                 <Tab label="Tags & Categories">
                     <div>
                         <h2>Tags</h2>
-
                         <p>
                             <TagsInput ref="tags"/>
                         </p>
 
                         <h2>Categories</h2>
-
                         <p>
                             <TagsInput ref="categories"/>
                         </p>
                     </div>
                 </Tab>
                 <Tab label="Cover Photo">
-                    <div>
+                    <div className="dropzone-container">
                         <h2>Upload Photo</h2>
-
-                        <p>
-                            Place image upload here
-                        </p>
+                        <Dropzone onDrop={this.onDrop} width={150} height={100}>
+                          <div>Drag an image here, or click to select one.</div>
+                        </Dropzone>
                     </div>
                     <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true} onClick={this._onSubmit} />
                 </Tab>

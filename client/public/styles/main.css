@@ -30,3 +30,9 @@ body {
 .avatar {
   margin: 7px 0 7px 0;
 }
+
+/*Add Article*/
+
+.dropzone-container {
+  margin-bottom: 20px;
+}
