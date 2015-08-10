@@ -2,6 +2,8 @@ var ServerActionCreators = require('../actions/ServerActionCreators.react.js');
 var AppConstants = require('../constants/AppConstants.js');
 var request = require('superagent');
 
+var json;
+
 function _getErrors(res) {
     var errorMsgs = ["Something went wrong, please try again"];
     if (json = res.body) {
@@ -98,17 +100,17 @@ module.exports = {
             });
     },
 
-    voteArticle: function (articleId, voteValue, user) {
+    voteArticle: function (articleId, user) {
         request.post(APIEndpoints.VOTE_ARTICLE)
         .set('Accept', 'application/json')
-        .send({ article: {articleId: articleId, voteValue: voteValue, user: user}})
+        .send({ article: {articleId: articleId, user: user}})
         .end(function (error, res) {
             if (res.error) {
                 var errorMsgs = _getErrors(res);
-                ServerActionCreators.reciveVotedArticle(null, errorMsgs);
+                ServerActionCreators.receiveVotedArticle(null, errorMsgs);
             } else {
-                json = JSON.parse(res.body.payload);
-                ServerActionCreators.reciveVotedArticle(json, null);
+                json = res.body.payload;
+                ServerActionCreators.receiveVotedArticle(json, null);
             }
         })
     }

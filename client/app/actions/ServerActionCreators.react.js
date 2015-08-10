@@ -35,7 +35,7 @@ module.exports = {
         });
     },
 
-    recieveVotedArticle: function (json, errors) {
+    receiveVotedArticle: function (json, errors) {
         AppDispatcher.handleServerAction({
             type: ActionTypes.RECIEVE_VOTED_ARTICLE,
             json: json,

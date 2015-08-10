@@ -141,22 +141,23 @@ var deleteArticle = function (req, res) {
  * @version 0.1 Beta
  */
 var voteArticle = function (req, res) {
+    var error = new Error();
+
     try {
         var articleData = req.body.article;
 
-        if (articleData.articleId && articleData.votedBy) {
+        if (articleData.articleId && articleData.user) {
             var articleId = articleData.articleId;
-            var votedBy = articleData.votedBy;
-            var increment = articleData.voteValue;
+            var votedBy = articleData.user;
 
-            Article.update({_id: articleId}, {$inc: {votes: increment}}, {upsert: false}, function (err) {
+            Article.findByIdAndUpdate(articleId, {$inc: {votes: 1}}, {upsert: false}, function (err, article) {
                 if (err) {
                     err.status = 500;
                     throw err;
                 } else {
                     res.status(200).json({
                         success: true,
-                        payload: {},
+                        payload: {votes: article.votes + 1},
                         error: null
                     });
                 }

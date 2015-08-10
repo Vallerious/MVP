@@ -35,14 +35,13 @@ module.exports = {
         WebAPIUtils.createArticle(title, content, createdBy, tags, categories);
     },
 
-    voteArticle: function (articleId, voteValue, user) {
+    voteArticle: function (articleId, user) {
         AppDispatcher.handleViewAction({
             type: ActionTypes.VOTE_ARTICLE,
             articleId: articleId,
-            voteValue: voteValue,
             user: user
         });
 
-        WebAPIUtils.voteArticle(articleId, voteValue, user);
+        WebAPIUtils.voteArticle(articleId, user);
     }
 };

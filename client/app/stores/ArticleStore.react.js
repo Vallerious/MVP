@@ -10,6 +10,7 @@ var CHANGE_EVENT = 'change';
 var _articles = [];
 var _errors = [];
 var _article = {title: ""};
+var _votes = 0;
 
 var ArticleStore = assign({}, EventEmitter.prototype, {
 
@@ -31,6 +32,10 @@ var ArticleStore = assign({}, EventEmitter.prototype, {
 
     getArticle: function () {
         return _article;
+    },
+
+    getVotes: function () {
+        return _votes;
     },
 
     getErrors: function () {
@@ -62,6 +67,17 @@ ArticleStore.dispatchToken = AppDispatcher.register(function (payload) {
         case ActionTypes.RECEIVE_ARTICLE:
             if (action.json) {
                 _article = action.json;
+                _errors = [];
+            }
+            if (action.errors) {
+                _errors = action.errors;
+            }
+            ArticleStore.emitChange();
+            break;
+
+        case ActionTypes.RECIEVE_VOTED_ARTICLE:
+            if (action.json) {
+                _votes = action.json.votes;
                 _errors = [];
             }
             if (action.errors) {

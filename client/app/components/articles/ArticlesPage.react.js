@@ -73,7 +73,7 @@ var ArticlesPage = React.createClass({
         this.setState({
             articles: ArticleStore.getAllArticles().data,
             total: ArticleStore.getAllArticles().pageCount,
-            visiblePages: 3,
+            visiblePages: ArticleStore.getAllArticles().pageCount,
             errors: ArticleStore.getErrors()
         });
     },
@@ -85,26 +85,12 @@ var ArticlesPage = React.createClass({
     },
     render: function () {
         var articles = this.state.articles.map(function (article, idx) {
-            return <Article title={article.title} content={article.content} date={article.createdOn} articleId={article._id} />
+            return <Article title={article.title} content={article.content} date={article.createdOn} articleId={article._id} votes={article.votes} comments={[{content: "asd", key: idx}]} keyId={idx} />
         });
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;
         return (
             <div>
                 <div className="row">
-                    <div className="col-md-3">
-                        <DropDownMenu ref="sortBy" menuItems={this.state.sortingMenuItems} />
-                    </div>
-                    <div className="col-md-2">
-                        <RadioButtonGroup name="articleOrder" defaultSelected="1" ref="articleOrder">
-                            <RadioButton
-                                value="1"
-                                label="Ascending"
-                                style={{marginBottom:16}}/>
-                            <RadioButton
-                                value="-1"
-                                label="Descending"/>
-                        </RadioButtonGroup>
-                    </div>
                     <div className="col-md-3 col-md-offset-1">
                         <DatePicker
                             ref="createdOn"

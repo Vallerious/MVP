@@ -3,6 +3,9 @@ var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var ArticleStore = require('../../stores/ArticleStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var State = require('react-router').State;
+var SessionStore = require('../../stores/SessionStore.react');
+
+var ArticleModal = require('./ArticleModal.react');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -20,9 +23,7 @@ var mui = require('material-ui'),
 var Article = React.createClass({
 
     getInitialState: function () {
-        return {
-
-        }
+        return {};
     },
 
     childContextTypes: {
@@ -35,20 +36,28 @@ var Article = React.createClass({
         };
     },
 
-    openArticleModal: function () {
-        this.refs.showArticle.show();
+    componentDidMount: function () {
+        ArticleStore.addChangeListener(this._onChange);
+        ArticleActionCreators.loadArticles();
     },
 
-    voteArticle: function (articleId, voteValue) {
-        var votedBy = sessionStorage.getItem('user_id');
-
-        WebAPIUtils.voteArticle(articleId, voteValue, votedBy);
+    toggleArticleModal: function () {
+        this.setState({show: !this.state.show});
     },
 
     render: function () {
         var standardActions = [
               { text: 'Cancel' }
         ];
+
+        var buttonBar = this.state.isLoggedIn ?
+            <CardActions expandable={true}>
+                <FlatButton label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)} onClick={this.voteArticle.bind(null, this.props.articleId, this.props.votes)} />
+            </CardActions> : '';
+
+
+        var modal = this.state.show ?
+            <ArticleModal closeHandler={this.toggleArticleModal} articleId={this.props.articleId} title={this.props.title} content={this.props.content} date={this.props.date} keyId={this.props.keyId} votes={this.props.votes} comments={this.props.comments} /> : '';
 
         return (
             <Card initiallyExpanded={true} className="mb15">
@@ -61,33 +70,9 @@ var Article = React.createClass({
                     {this.props.content.substring(0, 140) + "..."}
                 </CardText>
                 <CardActions expandable={true}>
-                    <FlatButton label="Read more..." onClick={this.openArticleModal}/>
+                    <FlatButton label="Read more..." onClick={this.toggleArticleModal}/>
                 </CardActions>
-                <Dialog
-                    ref="showArticle"
-                    actions={standardActions}
-                    autoDetectWindowHeight={true} autoScrollBodyContent={true}>
-                    <div style={{height: 'auto'}}>
-                        <Card initiallyExpanded={true}>
-                              <CardHeader
-                                title={this.props.title}
-                                subtitle={new Date(this.props.date).toDateString()}
-                                avatar="http://lorempixel.com/600/337/nature/"
-                                showExpandableButton={false} />
-                                <CardMedia overlay={<CardTitle title={this.props.title} subtitle={new Date(this.props.date).toDateString()} />}>
-                                    <img src="http://lorempixel.com/600/337/nature/"/>
-                                </CardMedia>
-                              <CardText expandable={true}>
-                                {this.props.content}
-                              </CardText>
-                              <CardActions expandable={true}>
-                                <FlatButton label="Vote Up" onClick={this.voteArticle(this.props.articleId, 1)}/>
-                                <FlatButton label="Vote Down" onClick={this.voteArticle(this.props.articleId, -1)}/>
-                                <FlatButton label="+ Favorites"/>
-                              </CardActions>
-                        </Card>
-                    </div>
-                </Dialog>
+                {modal}
             </Card>
         );
     }
