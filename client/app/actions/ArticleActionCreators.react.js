@@ -27,6 +27,7 @@ module.exports = {
             type: ActionTypes.CREATE_ARTICLE,
             title: title,
             content: content,
+            image: image,
             tags: tags,
             categories: categories,
             createdBy: createdBy
@@ -41,7 +42,6 @@ module.exports = {
             articleId: articleId,
             user: user
         });
-
         WebAPIUtils.voteArticle(articleId, user);
-    }
+    },
 };

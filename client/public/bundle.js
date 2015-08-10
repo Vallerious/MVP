@@ -21390,6 +21390,7 @@
 	var _errors = [];
 	var _article = { title: "" };
 	var _votes = 0;
+	var _image = "";
 
 	var ArticleStore = assign({}, EventEmitter.prototype, {
 
@@ -21419,6 +21420,10 @@
 
 	    getErrors: function getErrors() {
 	        return _errors;
+	    },
+
+	    getImagePreview: function getImagePreview() {
+	        return _image;
 	    }
 	});
 
@@ -26392,6 +26397,7 @@
 	            type: ActionTypes.CREATE_ARTICLE,
 	            title: title,
 	            content: content,
+	            image: image,
 	            tags: tags,
 	            categories: categories,
 	            createdBy: createdBy
@@ -26406,7 +26412,6 @@
 	            articleId: articleId,
 	            user: user
 	        });
-
 	        WebAPIUtils.voteArticle(articleId, user);
 	    }
 	};
@@ -47002,6 +47007,13 @@
 	    margin: '0 auto'
 	};
 
+	function getStateFromStores() {
+	    return {
+	        previewImage: ArticleStore.getImagePreview(),
+	        errors: SessionStore.getErrors()
+	    };
+	}
+
 	var ArticleNew = React.createClass({
 	    displayName: 'ArticleNew',
 
@@ -47021,15 +47033,17 @@
 	        return {
 	            muiTheme: ThemeManager.getCurrentTheme()
 	        };
+	        ArticleStore.addChangeListener(this._onChange);
 	    },
 
 	    _onChange: function _onChange() {
-	        this.setState({ errors: SessionStore.getErrors() });
+	        this.setState({ previewImage: this.state.image.preview });
+	        console.log(this.state.previewImage);
 	    },
 
 	    componentDidMount: function componentDidMount() {
 	        if (!SessionStore.isLoggedIn()) {
-	            //RouteActionCreators.redirect('main');
+	            RouteActionCreators.redirect('main');
 	        }
 	    },
 
@@ -47048,10 +47062,17 @@
 
 	    onDrop: function onDrop(files) {
 	        this.state.image = files[0];
-	        console.log(this.state.image);
+	        this._onChange();
 	    },
 
 	    render: function render() {
+
+	        var previewImage = this.state.previewImage ? React.createElement('img', { className: 'previewImage', src: this.state.previewImage }) : React.createElement(
+	            'span',
+	            null,
+	            'Drop an image here'
+	        );
+
 	        return React.createElement(
 	            Tabs,
 	            null,
@@ -47112,12 +47133,13 @@
 	                    ),
 	                    React.createElement(
 	                        Dropzone,
-	                        { onDrop: this.onDrop, width: 150, height: 100 },
+	                        { onDrop: this.onDrop, multiple: false, width: 600, height: 300 },
 	                        React.createElement(
 	                            'div',
 	                            null,
-	                            'Drag an image here, or click to select one.'
-	                        )
+	                            previewImage
+	                        ),
+	                        React.createElement('div', { className: 'clear' })
 	                    )
 	                ),
 	                React.createElement(RaisedButton, { type: 'submit', className: 'pull-right', label: 'Publish', secondary: true, onClick: this._onSubmit })

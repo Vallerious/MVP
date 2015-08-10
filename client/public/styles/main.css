@@ -36,3 +36,13 @@ body {
 .dropzone-container {
   margin-bottom: 20px;
 }
+
+.previewImage {
+  width: 80%;
+  height:auto;
+}
+
+.dropzone {
+  vertical-align: middle;
+  text-align: center;
+}

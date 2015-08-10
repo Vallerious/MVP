@@ -28,6 +28,13 @@ var articleBox = {
     margin: '0 auto'
 };
 
+function getStateFromStores() {
+    return {
+      previewImage: ArticleStore.getImagePreview(),
+      errors: SessionStore.getErrors()
+    };
+}
+
 var ArticleNew = React.createClass({
 
     getInitialState: function () {
@@ -46,16 +53,19 @@ var ArticleNew = React.createClass({
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };
+        ArticleStore.addChangeListener(this._onChange);
     },
 
     _onChange: function () {
-        this.setState({errors: SessionStore.getErrors()});
+        this.setState({previewImage: this.state.image.preview});
+        console.log(this.state.previewImage)
     },
 
     componentDidMount: function () {
         if (!SessionStore.isLoggedIn()) {
-            //RouteActionCreators.redirect('main');
+            RouteActionCreators.redirect('main');
         }
+
     },
 
     _onSubmit: function (e) {
@@ -73,10 +83,15 @@ var ArticleNew = React.createClass({
 
     onDrop: function (files) {
       this.state.image = files[0];
-      console.log(this.state.image)
+      this._onChange();
     },
 
     render: function () {
+
+        var previewImage = this.state.previewImage ? (
+          <img className="previewImage" src={this.state.previewImage} />
+        ) : (<span>Drop an image here</span>);
+
         return (
             <Tabs>
                 <Tab label="Title & Content">
@@ -109,10 +124,12 @@ var ArticleNew = React.createClass({
                 <Tab label="Cover Photo">
                     <div className="dropzone-container">
                         <h2>Upload Photo</h2>
-                        <Dropzone onDrop={this.onDrop} width={150} height={100}>
-                          <div>Drag an image here, or click to select one.</div>
+                        <Dropzone onDrop={this.onDrop} multiple={false} width={600} height={300}>
+                          <div>{previewImage}</div>
+                          <div className="clear"></div>
                         </Dropzone>
                     </div>
+
                     <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true} onClick={this._onSubmit} />
                 </Tab>
             </Tabs>
