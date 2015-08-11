@@ -9,6 +9,7 @@ var ArticleSchema = new mongoose.Schema({
     title_normalized: String,
     content: String,
     content_normalized: String,
+    image: String,
     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
