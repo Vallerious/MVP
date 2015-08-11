@@ -1,3 +1,4 @@
+var fs = require('fs');
 var mongoose = require('mongoose');
 var when = require('when');
 var db = require('./../helpers/mongodbConnect');
@@ -21,11 +22,13 @@ var addEditArticle = function (req, res) {
 
     try {
         if (articleData.title && articleData.content && articleData.createdBy) {
+
             var newArticle = new Article({
                 title: articleData.title,
                 title_normalized: articleData.title.toLowerCase(),
                 content: articleData.content,
                 content_normalized: articleData.content.toLowerCase(),
+                image: articleData.image.preview,
                 postedBy: articleData.createdBy,
                 comments: [], // add the Comment schema in the array after it`s created : )
                 createdOn: Date.now(),
