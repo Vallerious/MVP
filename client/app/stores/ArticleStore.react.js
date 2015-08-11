@@ -9,69 +9,90 @@ var CHANGE_EVENT = 'change';
 
 var _articles = [];
 var _errors = [];
-var _article = { title: "" };
+var _article = {title: ""};
+var _votes = 0;
+var _image = "";
 
 var ArticleStore = assign({}, EventEmitter.prototype, {
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+    emitChange: function () {
+        this.emit(CHANGE_EVENT);
+    },
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
 
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
 
-  getAllArticles: function() {
-    return _articles;
-  },
+    getAllArticles: function () {
+        return _articles;
+    },
 
-  getArticle: function() {
-    return _article;
-  },
+    getArticle: function () {
+        return _article;
+    },
 
-  getErrors: function() {
-    return _errors;
-  }
+    getVotes: function () {
+        return _votes;
+    },
+
+    getErrors: function () {
+        return _errors;
+    },
+
+    getImagePreview: function () {
+      return _image;
+    }
 });
 
-ArticleStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
+ArticleStore.dispatchToken = AppDispatcher.register(function (payload) {
+    var action = payload.action;
 
-  switch(action.type) {
+    switch (action.type) {
 
-    case ActionTypes.RECEIVE_ARTICLES:
-      _articles = action.json;
-      ArticleStore.emitChange();
-      break;
+        case ActionTypes.RECEIVE_ARTICLES:
+            _articles = action.json;
+            ArticleStore.emitChange();
+            break;
 
-    case ActionTypes.RECEIVE_CREATED_ARTICLE:
-      if (action.json) {
-        _articles.unshift(action.json);
-        _errors = [];
-      }
-      if (action.errors) {
-        _errors = action.errors;
-      }
-      ArticleStore.emitChange();
-      break;
+        case ActionTypes.RECEIVE_CREATED_ARTICLE:
+            if (action.json) {
+                _articles.unshift(action.json);
+                _errors = [];
+            }
+            if (action.errors) {
+                _errors = action.errors;
+            }
+            ArticleStore.emitChange();
+            break;
 
-    case ActionTypes.RECEIVE_ARTICLE:
-      if (action.json) {
-        _article = action.json;
-        _errors = [];
-      }
-      if (action.errors) {
-        _errors = action.errors;
-      }
-      ArticleStore.emitChange();
-      break;
-  }
+        case ActionTypes.RECEIVE_ARTICLE:
+            if (action.json) {
+                _article = action.json;
+                _errors = [];
+            }
+            if (action.errors) {
+                _errors = action.errors;
+            }
+            ArticleStore.emitChange();
+            break;
 
-  return true;
+        case ActionTypes.RECIEVE_VOTED_ARTICLE:
+            if (action.json) {
+                _votes = action.json.votes;
+                _errors = [];
+            }
+            if (action.errors) {
+                _errors = action.errors;
+            }
+            ArticleStore.emitChange();
+            break;
+    }
+
+    return true;
 });
 
 module.exports = ArticleStore;

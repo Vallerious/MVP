@@ -11,12 +11,12 @@ var ArticleNew = require('./components/articles/ArticleNew.react.js');
 var SignupPage = require('./components/session/SignupPage.react.js');
 
 module.exports = (
-  <Route name="main" path="/" handler={MainPage}>
-    <DefaultRoute handler={ArticlesPage} />
-    <Route name="login" path="/login" handler={LoginPage}/>
-    <Route name="signup" path="/signup" handler={SignupPage}/>
-    <Route name="articles" path="/articles" handler={ArticlesPage}/>
-    <Route name="article" path="/articles/:articleId" handler={ArticlePage} />
-    <Route name="new-article" path="/article/new" handler={ArticleNew}/>
-  </Route>
+    <Route name="main" path="/" handler={MainPage}>
+        <DefaultRoute handler={ArticlesPage}/>
+        <Route name="login" path="/login" handler={LoginPage}/>
+        <Route name="signup" path="/signup" handler={SignupPage}/>
+        <Route name="articles" path="/articles" handler={ArticlesPage}/>
+        <Route name="article" path="/articles/:articleId" handler={ArticlePage}/>
+        <Route name="new-article" path="/article/new" handler={ArticleNew}/>
+    </Route>
 );

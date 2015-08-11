@@ -9,72 +9,81 @@ var CHANGE_EVENT = 'change';
 // Load an access token from the session storage, you might want to implement
 // a 'remember me' using localSgorage
 var _accessToken = sessionStorage.getItem('accessToken');
-var _email = sessionStorage.getItem('email');
+var _username = sessionStorage.getItem('username');
+var _id = sessionStorage.getItem('user_id');
 var _errors = [];
 
 var SessionStore = assign({}, EventEmitter.prototype, {
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+    emitChange: function () {
+        this.emit(CHANGE_EVENT);
+    },
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
 
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
 
-  isLoggedIn: function() {
-    return _accessToken ? true : false;
-  },
+    isLoggedIn: function () {
+        return _accessToken ? true : false;
+    },
 
-  getAccessToken: function() {
-    return _accessToken;
-  },
+    getAccessToken: function () {
+        return _accessToken;
+    },
 
-  getEmail: function() {
-    return _email;
-  },
+    getUsername: function () {
+        return _username;
+    },
 
-  getErrors: function() {
-    return _errors;
-  }
+    getErrors: function () {
+        return _errors;
+    }
 
 });
 
-SessionStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
+SessionStore.dispatchToken = AppDispatcher.register(function (payload) {
+    var action = payload.action;
 
-  switch(action.type) {
+    switch (action.type) {
+        case ActionTypes.LOGIN_RESPONSE:
+            if (action.json && action.json.token) {
+                _accessToken = action.json.token;
+                _username = action.json.payload.username;
+                _id = action.json.payload._id;
 
-    case ActionTypes.LOGIN_RESPONSE:
-      if (action.json && action.json.access_token) {
-        _accessToken = action.json.access_token;
-        _email = action.json.email;
-        // Token will always live in the session, so that the API can grab it with no hassle
-        sessionStorage.setItem('accessToken', _accessToken);
-        sessionStorage.setItem('email', _email);
-      }
-      if (action.errors) {
-        _errors = action.errors;
-      }
-      SessionStore.emitChange();
-      break;
+                // Token will always live in the session, so that the API can grab it with no hassle
+                sessionStorage.setItem('accessToken', _accessToken);
+                sessionStorage.setItem('username', _username);
+                sessionStorage.setItem('user_id', _id);
+            }
 
-    case ActionTypes.LOGOUT:
-      _accessToken = null;
-      _email = null;
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('email');
-      SessionStore.emitChange();
-      break;
+            if (action.errors) {
+                _errors = action.errors;
+            }
 
-    default:
-  }
+            SessionStore.emitChange();
+            break;
 
-  return true;
+        case ActionTypes.LOGOUT:
+            _accessToken = null;
+            _username = null;
+
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('user_id');
+
+            SessionStore.emitChange();
+
+            break;
+
+        default:
+    }
+
+    return true;
 });
 
 module.exports = SessionStore;

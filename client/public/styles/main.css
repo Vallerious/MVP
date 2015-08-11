@@ -1,109 +1,48 @@
 body {
-  padding-top: 70px;
-  font-family: 'Roboto', sans-serif;
-  background-color: #ffffff;
+    padding-top: 70px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #e8f0f5;
+    position: relative;
+    max-height: 100%;
+    padding-bottom: 77px;
 }
 
-.new-story {
-  margin-top: 20px;
+.bootstrap-tagsinput {
+    width: 100% !important;
 }
 
-.new-story__title {
-  input {
-   border: none;
-   box-shadow: none;
-   border-bottom: 2px solid #ccc;
-  }
+.btn-numbered-page, .btn-first-page, .btn-last-page, .btn-prev-page, .btn-next-page  {
+    cursor: pointer;
 }
 
-.new-story__body {
-  textarea {
-   background-color: #fafafa;
-   border: none;
-   box-shadow: none;
-  }
-}
-.new-story__submit {
+/*Login page*/
 
+.form-container {
+    padding: 50px;
 }
 
-.story {
-  list-style: none;
-  padding: 10px;
-  margin-top: 10px;
-  font-family: 'Raleway', sans-serif;
+.form-heading {
+    color: rgb(0, 188, 212);
 }
 
-.story__title {
-  text-decoration: none;
-  font-weight: 700;
-  font-size: rem-calc(24);
-  a {
-    color: black;
-  }
+/*Header*/
+
+.avatar {
+  margin: 7px 0 7px 0;
 }
 
-.story__body {
-  font-weight: 400;
-  font-size: rem-calc(14);
-  color: #333;
-  font-style: italic;
+/*Add Article*/
+
+.dropzone-container {
+  margin-bottom: 20px;
 }
 
-.story__user {
-  font-weight: 400;
-  font-size: rem-calc(12);
-  color: #2E8BA9;
+.previewImage {
+  width: auto;
+  height:80%;
 }
 
-.story__date {
-  color: #aaa;
-  font-size: rem-calc(12);
-}
-
-.card {
-  margin-bottom: 1em;
-  padding: 20px;
-  background-color: #ECF0F1;
-  border-bottom: 4px solid #D4D7D8;
-  ul {
-    margin-bottom: 0;
-  }
-}
-
-.card--login {
-  margin-top: 20px;
-}
-
-.card--login__field {
-  label {
-    font-family: lato-light;
-  }
-  input {
-    border-width: 0px;
-    border-left: 4px solid #c2c2c2;
-    box-shadow: none;
-  }
-}
-
-.card--login__submit {
-  width: 100%;
-  margin: 0;
-  margin-top: 10px;
-  font-family: 'Lato'
-}
-
-.error-notice {
-  position: absolute;
-  top: $topbar-height;
-  width: 100%;
-  z-index: 9999;
-  background-color: #E44646;
-  color: white;
+.dropzone {
+  vertical-align: middle;
   text-align: center;
-  padding: 5px;
-  ul {
-    list-style: none;
-    margin: 0;
-  }
 }

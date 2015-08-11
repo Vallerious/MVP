@@ -8,90 +8,96 @@ var ReactPropTypes = React.PropTypes;
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
     RaisedButton = mui.RaisedButton,
-    TextField = mui.TextField;
+    TextField = mui.TextField,
+    Paper = mui.Paper;
 
 var SignupPage = React.createClass({
 
-  childContextTypes: {
-    muiTheme: React.PropTypes.object
-  },
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  },
+    getChildContext() {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
 
-  getInitialState: function() {
-    return {
-      errors: []
-     };
-  },
+    getInitialState: function () {
+        return {
+            errors: []
+        };
+    },
 
-  componentDidMount: function() {
-    SessionStore.addChangeListener(this._onChange);
-  },
+    componentDidMount: function () {
+        SessionStore.addChangeListener(this._onChange);
+    },
 
-  componentWillUnmount: function() {
-    SessionStore.removeChangeListener(this._onChange);
-  },
+    componentWillUnmount: function () {
+        SessionStore.removeChangeListener(this._onChange);
+    },
 
-  _onChange: function() {
-    this.setState({ errors: SessionStore.getErrors() });
-  },
+    _onChange: function () {
+        this.setState({errors: SessionStore.getErrors()});
+    },
 
-  _onSubmit: function(e) {
-    e.preventDefault();
-    this.setState({ errors: [] });
-    var email = this.refs.email.getDOMNode().value;
-    var username = this.refs.username.getDOMNode().value;
-    var password = this.refs.password.getDOMNode().value;
-    var passwordConfirmation = this.refs.passwordConfirmation.getDOMNode().value;
-    if (password !== passwordConfirmation) {
-      this.setState({ errors: ['Password and password confirmation should match']});
-    } else {
-      SessionActionCreators.signup(email, username, password, passwordConfirmation);
+    _onSubmit: function (e) {
+        e.preventDefault();
+        this.setState({errors: []});
+        var email = this.refs.email.getValue();
+        var username = this.refs.username.getValue();
+        var password = this.refs.password.getValue();
+        //validate if pass and repPass match
+        SessionActionCreators.signup(email, username, password);
+    },
+
+    render: function () {
+        var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
+        return (
+            <div>
+                {errors}
+                <div className="row">
+                    <div className="col-md-6 col-md-offset-3">
+                        <Paper className="form-container" zDepth={2}>
+                            <form onSubmit={this._onSubmit}>
+                                <h1 className="form-heading">Sign Up</h1>
+                                <TextField
+                                    ref="username"
+                                    hintText="Enter a new username"
+                                    floatingLabelText="Username"
+                                    fullWidth={true}/>
+                                <TextField
+                                    ref="email"
+                                    hintText="Enter your E-mail"
+                                    floatingLabelText="E-mail"
+                                    fullWidth={true}
+                                    />
+                                <TextField
+                                    ref="password"
+                                    hintText="Enter a new password"
+                                    floatingLabelText="Password"
+                                    fullWidth={true}
+                                    type="password">
+                                </TextField>
+                                <TextField
+                                    className="mb20"
+                                    ref="passwordConfirmation"
+                                    hintText="Repeat the new password"
+                                    floatingLabelText="Repeat password"
+                                    fullWidth={true}
+                                    type="password">
+                                </TextField>
+                                <RaisedButton
+                                    type="submit"
+                                    label="Sign Up"
+                                    secondary={true}/>
+                            </form>
+                        </Paper>
+                    </div>
+                </div>
+            </div>
+        );
     }
-  },
-
-  render: function() {
-    var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors}/> : <div></div>;
-    return (
-      <div>
-        {errors}
-        <div className="row">
-          <div className="col-md-6 col-md-offset-3">
-            <form onSubmit={this._onSubmit}>
-              <TextField
-                hintText="Enter a new username"
-                floatingLabelText="Username"
-                fullWidth={true} />
-              <TextField
-                hintText="Enter your E-mail"
-                floatingLabelText="E-mail"
-                fullWidth={true}
-                 />
-              <TextField
-                hintText="Enter a new password"
-                floatingLabelText="Password"
-                fullWidth={true} >
-                  <input type="password" />
-              </TextField>
-              <TextField
-                hintText="Repeat the new password"
-                floatingLabelText="Repeat password"
-                fullWidth={true}>
-                  <input type="password" />
-              </TextField>
-
-              <RaisedButton
-                label="Submit" />
-            </form>
-          </div>
-        </div>
-      </div>
-    );
-  }
 });
 
 module.exports = SignupPage;

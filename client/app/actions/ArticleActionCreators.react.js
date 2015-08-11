@@ -6,27 +6,42 @@ var ActionTypes = AppConstants.ActionTypes;
 
 module.exports = {
 
-  loadArticles: function() {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.LOAD_ARTICLES
-    });
-    WebAPIUtils.loadArticles();
-  },
+    loadArticles: function (pageNum) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOAD_ARTICLES
+        });
+        WebAPIUtils.loadArticles(pageNum);
+    },
 
-  loadArticle: function(articleId) {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.LOAD_ARTICLE,
-      articleId: articleId
-    });
-    WebAPIUtils.loadArticle(articleId);
-  },
+    loadArticle: function (articleId) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOAD_ARTICLE,
+            articleId: articleId
+        });
 
-  createArticle: function(title) {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.CREATE_ARTICLE,
-      title: title
-    });
-    WebAPIUtils.createArticle(title);
-  }
+        WebAPIUtils.loadArticle(articleId);
+    },
 
+    createArticle: function (title, content, image, createdBy, tags, categories) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.CREATE_ARTICLE,
+            title: title,
+            content: content,
+            image: image,
+            tags: tags,
+            categories: categories,
+            createdBy: createdBy
+        });
+
+        WebAPIUtils.createArticle(title, content, image, createdBy, tags, categories);
+    },
+
+    voteArticle: function (articleId, user) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.VOTE_ARTICLE,
+            articleId: articleId,
+            user: user
+        });
+        WebAPIUtils.voteArticle(articleId, user);
+    },
 };

@@ -6,9 +6,9 @@ var CommentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    date: String,
-    likes: Number,
-    // add additional properties...
+    createdOn: String,
+    editedOn: String,
+    likes: Number
 });
 
 module.exports = mongoose.model("Comments", CommentSchema);

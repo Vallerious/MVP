@@ -6,30 +6,31 @@ var ActionTypes = AppConstants.ActionTypes;
 
 module.exports = {
 
-  signup: function(email, username, password, passwordConfirmation) {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.SIGNUP_REQUEST,
-      email: email,
-      username: username,
-      password: password,
-      passwordConfirmation: passwordConfirmation
-    });
-    WebAPIUtils.signup(email, username, password, passwordConfirmation);
-  },
+    signup: function (email, username, password) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.SIGNUP_REQUEST,
+            email: email,
+            username: username,
+            password: password
+        });
 
-  login: function(email, password) {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.LOGIN_REQUEST,
-      email: email,
-      password: password
-    });
-    WebAPIUtils.login(email, password);
-  },
+        WebAPIUtils.signup(email, username, password);
+    },
 
-  logout: function() {
-    AppDispatcher.handleViewAction({
-      type: ActionTypes.LOGOUT
-    });
-  }
+    login: function (username, password) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOGIN_REQUEST,
+            username: username,
+            password: password
+        });
+
+        WebAPIUtils.login(username, password);
+    },
+
+    logout: function () {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOGOUT
+        });
+    }
 
 };
