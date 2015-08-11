@@ -31,6 +31,7 @@ var addEditArticle = function (req, res) {
                 createdOn: Date.now(),
                 editedOn: "",
                 votes: 0,
+                profilesVoted: [],
                 tags: articleData.tags,
                 categories: articleData.categories
             });
@@ -56,6 +57,7 @@ var addEditArticle = function (req, res) {
                 delete newArticle.date;
                 delete newArticle.comments;
                 delete newArticle.postedBy;
+                delete newArticle.profilesVoted;
 
                 Article.update({_id: articleData._id}, newArticle, {multi: false}, function (err, article) {
                     if (!err) {
@@ -150,15 +152,32 @@ var voteArticle = function (req, res) {
             var articleId = articleData.articleId;
             var votedBy = articleData.user;
 
-            Article.findByIdAndUpdate(articleId, {$inc: {votes: 1}}, {upsert: false}, function (err, article) {
+            Article.findById(articleId, function (err, article) {
                 if (err) {
                     err.status = 500;
                     throw err;
                 } else {
-                    res.status(200).json({
-                        success: true,
-                        payload: {votes: article.votes + 1},
-                        error: null
+                    var idx = article.profilesVoted.indexOf(votedBy);
+
+                    if ( idx > -1 ) { // found
+                        article.profilesVoted.splice(idx, 1);
+                        article.votes -= 1;
+                    } else {
+                        article.profilesVoted.push(votedBy);
+                        article.votes += 1;
+                    }
+
+                    article.save(function (err) {
+                        if ( err ) {
+                            err.status = 500;
+                            throw err;
+                        }
+
+                        res.status(200).json({
+                            success: true,
+                            payload: {votes: article.votes},
+                            error: null
+                        });
                     });
                 }
             });
@@ -193,22 +212,21 @@ var getAllArticles = function (req, res) {
     try {
         var articlesPerPage = config.articlesPerPage;
         var pageNumber = req.query.page;
-        var sortBy = {field: 'content', order: 1}; // Object - name of the field and -1 or 1 for asc and desc
+        //var sortBy = {field: 'content', order: 1};
 
-        if (sortBy.field == "content" || sortBy.field == "title") {
-            sortBy.field += "_normalized";
-        }
+        //if (sortBy.field == "content" || sortBy.field == "title") {
+        //    sortBy.field += "_normalized";
+        //}
 
-        var mongoSortObj = {};
-
-        if (sortBy.field) {
-            mongoSortObj[sortBy.field] = sortBy.order;
-        }
+        //var mongoSortObj = {};
+        //
+        //if (sortBy.field) {
+        //    mongoSortObj[sortBy.field] = sortBy.order;
+        //}
 
         Article.paginate({}, {
             page: pageNumber,
-            limit: articlesPerPage,
-            sortBy: mongoSortObj
+            limit: articlesPerPage
         }, function (err, results, pageCount, itemCount) {
             if (!err) {
                 res.status(200).json({

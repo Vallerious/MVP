@@ -43,6 +43,10 @@ var Article = React.createClass({
 
     toggleArticleModal: function () {
         this.setState({show: !this.state.show});
+
+        if ( window.pageYOffset != 0 ) {
+            $("html, body").animate({ scrollTop: "0px" }, 1000);
+        }
     },
 
     render: function () {
@@ -50,14 +54,15 @@ var Article = React.createClass({
               { text: 'Cancel' }
         ];
 
-        var buttonBar = this.state.isLoggedIn ?
-            <CardActions expandable={true}>
-                <FlatButton label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)} onClick={this.voteArticle.bind(null, this.props.articleId, this.props.votes)} />
-            </CardActions> : '';
-
-
         var modal = this.state.show ?
-            <ArticleModal closeHandler={this.toggleArticleModal} articleId={this.props.articleId} title={this.props.title} content={this.props.content} date={this.props.date} keyId={this.props.keyId} votes={this.props.votes} comments={this.props.comments} /> : '';
+            <ArticleModal closeHandler={this.toggleArticleModal}
+                          articleId={this.props.articleId}
+                          title={this.props.title}
+                          content={this.props.content}
+                          date={this.props.date}
+                          keyId={this.props.keyId}
+                          votes={this.props.votes}
+                          comments={this.props.comments} /> : '';
 
         return (
             <Card initiallyExpanded={true} className="mb15">

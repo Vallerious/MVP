@@ -27,8 +27,9 @@ var ArticleSchema = new mongoose.Schema({
     createdOn: Number,
     editedOn: String,
     votes: Number,
-    tags: [],
-    categories: []
+    profilesVoted: [String],
+    tags: [String],
+    categories: [String]
 });
 
 ArticleSchema.plugin(mongoosePaging);

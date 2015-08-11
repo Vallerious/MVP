@@ -3,6 +3,7 @@ var AppDispatcher = require('../../dispatcher/AppDispatcher.js');
 var AppConstants = require('../../constants/AppConstants.js');
 var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var SessionStore = require('../../stores/SessionStore.react.js');
+var ArticleStore = require('../../stores/ArticleStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
 var MenuList = require('../common/MenuList.react.js');
@@ -53,12 +54,10 @@ var ArticleNew = React.createClass({
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };
-        ArticleStore.addChangeListener(this._onChange);
     },
 
     _onChange: function () {
         this.setState({previewImage: this.state.image.preview});
-        console.log(this.state.previewImage)
     },
 
     componentDidMount: function () {
@@ -66,6 +65,7 @@ var ArticleNew = React.createClass({
             RouteActionCreators.redirect('main');
         }
 
+        ArticleStore.addChangeListener(this._onChange);
     },
 
     _onSubmit: function (e) {
@@ -130,7 +130,11 @@ var ArticleNew = React.createClass({
                         </Dropzone>
                     </div>
 
-                    <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true} onClick={this._onSubmit} />
+                    <RaisedButton type="submit"
+                                  className="pull-right"
+                                  label="Publish"
+                                  secondary={true}
+                                  onClick={this._onSubmit} />
                 </Tab>
             </Tabs>
         );
