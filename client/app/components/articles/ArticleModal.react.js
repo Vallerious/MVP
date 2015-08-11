@@ -109,8 +109,8 @@ var ArticleModal = React.createClass({
         var comments = this.props.comments.map(function (comment) {
             return <ArticleComment content={comment.content}
                                    date={comment.createdOn}
-                                   username={comment.postedBy}
-                                   avatar={comment.userImage}
+                                   username={comment.postedBy.username}
+                                   avatar={comment.postedBy.image}
                                    key={comment._id} />
         });
 

@@ -26159,7 +26159,7 @@
 	                date: article.createdOn,
 	                articleId: article._id,
 	                votes: article.votes,
-	                comments: [{ content: "asd", createdOn: "2015-01-01", postedBy: "Valio", userImage: "http://4.bp.blogspot.com/_lk7UuB0a4a4/TTIumNlvyeI/AAAAAAAAACE/2xH-cB6oL80/s1600/lateralus_inside.jpg", key: article._id }],
+	                comments: article.comments,
 	                keyId: article._id });
 	        });
 	        var errors = this.state.errors.length > 0 ? React.createElement(ErrorNotice, { errors: this.state.errors }) : React.createElement('div', null);
@@ -26495,8 +26495,8 @@
 	        var comments = this.props.comments.map(function (comment) {
 	            return React.createElement(ArticleComment, { content: comment.content,
 	                date: comment.createdOn,
-	                username: comment.postedBy,
-	                avatar: comment.userImage,
+	                username: comment.postedBy.username,
+	                avatar: comment.postedBy.image,
 	                key: comment._id });
 	        });
 
@@ -26564,7 +26564,7 @@
 	            React.createElement(
 	                'div',
 	                { className: "col-xs-1 col-xs-offset-1" },
-	                React.createElement('img', { src: this.props.avatar, alt: "avatar", width: "30", height: "30" })
+	                React.createElement('img', { src: this.props.avatar ? this.props.avatar : "./images/default-user-icon.png", alt: "avatar", width: "30", height: "30" })
 	            ),
 	            React.createElement(
 	                'div',

@@ -17,8 +17,12 @@ var ArticleSchema = new mongoose.Schema({
         content: String,
         content_normalized: String,
         postedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Users'
+            _id: String,
+            username: String,
+            password: String,
+            email: String,
+            roleId: String,
+            image: String
         },
         createdOn: Number,
         editedOn: String,

@@ -90,7 +90,7 @@ var ArticlesPage = React.createClass({
                             date={article.createdOn}
                             articleId={article._id}
                             votes={article.votes}
-                            comments={[{content: "asd", createdOn: "2015-01-01", postedBy: "Valio", userImage: "http://4.bp.blogspot.com/_lk7UuB0a4a4/TTIumNlvyeI/AAAAAAAAACE/2xH-cB6oL80/s1600/lateralus_inside.jpg", key: article._id}]}
+                            comments={article.comments}
                             keyId={article._id} />
         });
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;

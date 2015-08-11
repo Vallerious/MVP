@@ -2,39 +2,53 @@ var mongoose = require('mongoose');
 var when = require('when');
 var db = require('./../helpers/mongodbConnect');
 var Post = require('./../models/article');
+var User = require('./../models/user');
 var Comment = require('./../models/comment');
 
 var addEditComment = function (req, res) {
-    var commentData = req.body.comment;
+    var commentData = req.body;
     var error = new Error();
 
     try {
-        if (commentData.postId && commentData.content && commentData.postedBy) { // postId should be sent from the front-end
+        if (commentData.articleId && commentData.content && commentData.postedBy) { // postId should be sent from the front-end
+
             var newComment = new Comment({
                 content: commentData.content,
                 postedBy: commentData.postedBy,
-                date: Date.now(),
+                createdOn: Date.now(),
                 likes: 0
             });
 
             if (!commentData.commentId) {
-                Post.findByIdAndUpdate(
-                    commentData.postId,
-                    {$push: {"comments": newComment}},
-                    {new: true},
-                    function (err, model) {
-                        if (err) {
-                            err.status = 500;
-                            throw err;
-                        } else {
-                            res.status(200).json({
-                                success: true,
-                                payload: {},
-                                error: null
-                            });
-                        }
+                User.findById(commentData.postedBy, function (err, user) {
+                    if ( err ) {
+                        err.status = 500;
+                        throw err;
+                    } else {
+                        var commentingUser = user.toObject();
+                        delete commentingUser.password;
+
+                        newComment.postedBy = commentingUser;
+
+                        Post.findByIdAndUpdate(
+                            commentData.articleId,
+                            {$push: {"comments": newComment}},
+                            {new: true},
+                            function (err, model) {
+                                if (err) {
+                                    err.status = 500;
+                                    throw err;
+                                } else {
+                                    res.status(200).json({
+                                        success: true,
+                                        payload: {},
+                                        error: null
+                                    });
+                                }
+                            }
+                        );
                     }
-                );
+                });
             } else { // edit comment
                 Post.update({'comments._id': commentData.commentId}, {
                     '$set': {
