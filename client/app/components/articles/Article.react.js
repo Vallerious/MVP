@@ -58,6 +58,7 @@ var Article = React.createClass({
             <ArticleModal closeHandler={this.toggleArticleModal}
                           articleId={this.props.articleId}
                           title={this.props.title}
+                          image={this.props.image}
                           content={this.props.content}
                           date={this.props.date}
                           keyId={this.props.keyId}
@@ -69,7 +70,7 @@ var Article = React.createClass({
                 <CardHeader
                     title={this.props.title}
                     subtitle={new Date(this.props.date).toDateString()}
-                    avatar="http://lorempixel.com/600/337/nature/">
+                    avatar={this.props.image}>
                 </CardHeader>
                 <CardText expandable={true}>
                     {this.props.content.substring(0, 140) + "..."}

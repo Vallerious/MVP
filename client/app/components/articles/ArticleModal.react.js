@@ -126,11 +126,11 @@ var ArticleModal = React.createClass({
                         <CardHeader
                             title={this.props.title}
                             subtitle={new Date(this.props.date).toDateString()}
-                            avatar="http://lorempixel.com/600/337/nature/"
+                            avatar={this.props.image}
                             showExpandableButton={false} />
                         <CardMedia overlay={<CardTitle title={this.props.title}
                                    subtitle={new Date(this.props.date).toDateString()} />}>
-                            <img src="http://lorempixel.com/600/337/nature/"/>
+                            <img src={this.props.image}/>
                         </CardMedia>
                         <CardText expandable={true}>
                             {this.props.content}

@@ -88,6 +88,7 @@ var ArticlesPage = React.createClass({
             return <Article title={article.title}
                             content={article.content}
                             date={article.createdOn}
+                            image={article.image}
                             articleId={article._id}
                             votes={article.votes}
                             comments={article.comments}
