@@ -20,7 +20,7 @@ var ArticleComment = React.createClass({
                <div className="col-xs-10">
                    <div><strong>{this.props.username}</strong></div>
                    <div style={{color: '#87CEFA'}}>{DateUtils.formatCommentDate(this.props.date)}</div>
-                   <div style={{width: '80%'}}>{this.props.content}</div>
+                   <div style={{width: '80%', wordWrap: 'break-word'}}>{this.props.content}</div>
                </div>
            </div>
        )

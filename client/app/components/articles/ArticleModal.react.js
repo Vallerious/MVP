@@ -96,15 +96,19 @@ var ArticleModal = React.createClass({
         ArticleActionCreators.voteArticle(articleId, userId);
     },
 
+    openNewCommentBox: function () {
+        this.setState({openNewCommentBox: !this.state.openNewCommentBox});
+    },
+
     render: function () {
 
         var buttonBar = this.state.isLoggedIn ?
-            <CardActions expandable={true}>
+
                 <RaisedButton secondary={!this.state.activeVoteBtnStyle}
                               primary={this.state.activeVoteBtnStyle}
                               label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)}
                               onClick={this.voteArticle.bind(null, this.props.articleId)} />
-            </CardActions> : '';
+             : '';
 
         var comments = this.props.comments.map(function (comment) {
             return <ArticleComment content={comment.content}
@@ -131,7 +135,12 @@ var ArticleModal = React.createClass({
                         <CardText expandable={true}>
                             {this.props.content}
                         </CardText>
-                        {buttonBar}
+                        <CardActions expandable={true}>
+                            {buttonBar}
+                            <div>
+                            {!this.state.openNewCommentBox && comments.length == 0 ? <input type="text" placeholder="Add a comment..." onClick={this.openNewCommentBox}/> : ''}
+                            </div>
+                        </CardActions>
                         {comments}
                     </Card>
                 </div>
