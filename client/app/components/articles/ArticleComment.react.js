@@ -15,12 +15,12 @@ var ArticleComment = React.createClass({
        return (
            <div className="row" style={commentBox}>
                <div className="col-xs-1 col-xs-offset-1">
-                   <img src={this.props.avatar} alt="avatar" width="30" height="30" />
+                   <img src={this.props.avatar ? this.props.avatar : "./images/default-user-icon.png"} alt="avatar" width="30" height="30" />
                </div>
                <div className="col-xs-10">
                    <div><strong>{this.props.username}</strong></div>
                    <div style={{color: '#87CEFA'}}>{DateUtils.formatCommentDate(this.props.date)}</div>
-                   <div>{this.props.content}</div>
+                   <div style={{width: '80%'}}>{this.props.content}</div>
                </div>
            </div>
        )

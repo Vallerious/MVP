@@ -1,10 +1,15 @@
 var mongoose = require('mongoose');
+var User = require('./user');
 
 var CommentSchema = new mongoose.Schema({
     content: String,
     postedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users'
+        _id: String,
+        username: String,
+        password: String,
+        email: String,
+        roleId: String,
+        image: String
     },
     createdOn: String,
     editedOn: String,
