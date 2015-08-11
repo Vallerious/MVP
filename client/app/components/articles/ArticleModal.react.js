@@ -4,6 +4,7 @@ var ArticleStore = require('../../stores/ArticleStore.react.js');
 var SessionStore = require('../../stores/SessionStore.react');
 
 var ArticleComment = require('./ArticleComment.react');
+var NewCommentBox = require('./ArticleNewCommentBox.react');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -126,11 +127,11 @@ var ArticleModal = React.createClass({
                         <CardHeader
                             title={this.props.title}
                             subtitle={new Date(this.props.date).toDateString()}
-                            avatar={this.props.image}
+                            avatar={this.props.image ? this.props.image : './images/default-user-icon.png'}
                             showExpandableButton={false} />
                         <CardMedia overlay={<CardTitle title={this.props.title}
                                    subtitle={new Date(this.props.date).toDateString()} />}>
-                            <img src={this.props.image}/>
+                            <img src={this.props.image ? this.props.image : './images/default-user-icon.png'} />
                         </CardMedia>
                         <CardText expandable={true}>
                             {this.props.content}
@@ -142,6 +143,7 @@ var ArticleModal = React.createClass({
                             </div>
                         </CardActions>
                         {comments}
+                        {this.state.openNewCommentBox ? <NewCommentBox /> : ''}
                     </Card>
                 </div>
             </div>

@@ -9,7 +9,6 @@ var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
 var MenuList = require('../common/MenuList.react.js');
 var TagsInput = require('react-tagsinput');
 
-var Dropzone = require('react-dropzone');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -31,7 +30,6 @@ var articleBox = {
 
 function getStateFromStores() {
     return {
-      previewImage: ArticleStore.getImagePreview(),
       errors: SessionStore.getErrors()
     };
 }
@@ -81,16 +79,21 @@ var ArticleNew = React.createClass({
         RouteActionCreators.redirect('main');
     },
 
-    onDrop: function (files) {
-      this.state.image = files[0];
-      this._onChange();
+    handleFile: function (e) {
+        var self = this;
+        var reader = new FileReader();
+        var file = e.target.files[0];
+
+        reader.onload = function(upload) {
+            self.setState({
+                image: upload.target.result
+            });
+        }
+
+        reader.readAsDataURL(file);
     },
 
     render: function () {
-
-        var previewImage = this.state.previewImage ? (
-          <img className="previewImage" src={this.state.previewImage} />
-        ) : (<span>Drop an image here</span>);
 
         return (
             <Tabs>
@@ -124,12 +127,9 @@ var ArticleNew = React.createClass({
                 <Tab label="Cover Photo">
                     <div className="dropzone-container">
                         <h2>Upload Photo</h2>
-                        <Dropzone onDrop={this.onDrop} multiple={false} width={600} height={300}>
-                          <div>{previewImage}</div>
-                          <div className="clear"></div>
-                        </Dropzone>
+                        <input type='file' ref="articleImageUpload" onChange={this.handleFile} />
+                        <img id="articleImage" src="" />
                     </div>
-
                     <RaisedButton type="submit"
                                   className="pull-right"
                                   label="Publish"

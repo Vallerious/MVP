@@ -11,7 +11,6 @@ var _articles = [];
 var _errors = [];
 var _article = {title: ""};
 var _votes = 0;
-var _image = "";
 
 var ArticleStore = assign({}, EventEmitter.prototype, {
 
@@ -41,10 +40,6 @@ var ArticleStore = assign({}, EventEmitter.prototype, {
 
     getErrors: function () {
         return _errors;
-    },
-
-    getImagePreview: function () {
-      return _image;
     }
 });
 

@@ -28,7 +28,7 @@ var addEditArticle = function (req, res) {
                 title_normalized: articleData.title.toLowerCase(),
                 content: articleData.content,
                 content_normalized: articleData.content.toLowerCase(),
-                image: articleData.image.preview,
+                image: articleData.image,
                 postedBy: articleData.createdBy,
                 comments: [], // add the Comment schema in the array after it`s created : )
                 createdOn: Date.now(),
