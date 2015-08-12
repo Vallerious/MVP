@@ -94,7 +94,9 @@ var ArticlesPage = React.createClass({
                             comments={article.comments}
                             keyId={article._id} />
         });
+
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;
+
         return (
             <div>
                 <div className="row">
@@ -114,7 +116,6 @@ var ArticlesPage = React.createClass({
                        onPageChanged={this.handlePageChanged}/>
                 </div>
             </div>
-
         );
     }
 });

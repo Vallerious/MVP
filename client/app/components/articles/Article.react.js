@@ -44,7 +44,7 @@ var Article = React.createClass({
     toggleArticleModal: function () {
         this.setState({show: !this.state.show});
 
-        if ( window.pageYOffset != 0 ) {
+        if ( window.pageYOffset > 400 ) {
             $("html, body").animate({ scrollTop: "0px" }, 1000);
         }
     },

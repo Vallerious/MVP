@@ -7,7 +7,8 @@ module.exports = {
         REGISTRATION: APIRoot + "/register",
         ARTICLES: APIRoot + "/article/list?page=",
         CREATE_ARTICLE: APIRoot + "/article/add",
-        VOTE_ARTICLE: APIRoot + "/article/vote"
+        VOTE_ARTICLE: APIRoot + "/article/vote",
+        ADD_COMMENT: APIRoot + "/article/comment/add"
     },
 
     PayloadSources: {
@@ -23,15 +24,20 @@ module.exports = {
         // Routes
         REDIRECT: 'REDIRECT',
 
+        // Articles
         LOAD_ARTICLES: 'LOAD_ARTICLES',
         RECEIVE_ARTICLES: 'RECEIVE_ARTICLES',
         LOAD_ARTICLE: 'LOAD_ARTICLE',
         RECEIVE_ARTICLE: 'RECEIVE_ARTICLE',
         CREATE_ARTICLE: 'CREATE_ARTICLE',
         RECEIVE_CREATED_ARTICLE: 'RECEIVE_CREATED_ARTICLE',
-        RECIEVE_PAGE_COUNT: 'RECIEVE_PAGE_COUNT',
+        RECEIVE_PAGE_COUNT: 'RECEIVE_PAGE_COUNT',
         VOTE_ARTICLE: 'VOTE_ARTICLE',
-        RECIEVE_VOTED_ARTICLE: 'RECIEVE_VOTED_ARTICLE'
+        RECEIVE_VOTED_ARTICLE: 'RECEIVE_VOTED_ARTICLE',
+
+        // Comments
+        ADD_COMMENT: 'ADD_COMMENT',
+        RECEIVE_ADD_COMMENT: 'RECEIVE_ADD_COMMENT'
     }
 
 };

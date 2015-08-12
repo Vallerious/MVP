@@ -53,10 +53,12 @@ function getStateFromStores() {
 var ArticleModal = React.createClass({
 
     getInitialState: function () {
-        var state = getStateFromStores();
-        state.votes = this.props.votes;
-        state.activeVoteBtnStyle = false;
-        return state;
+        var initState = getStateFromStores();
+
+        initState.votes = this.props.votes;
+        initState.activeVoteBtnStyle = false;
+
+        return initState;
     },
 
     componentDidMount: function () {
@@ -109,7 +111,7 @@ var ArticleModal = React.createClass({
                               primary={this.state.activeVoteBtnStyle}
                               label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)}
                               onClick={this.voteArticle.bind(null, this.props.articleId)} />
-             : '';
+             : <span></span>;
 
         var comments = this.props.comments.map(function (comment) {
             return <ArticleComment content={comment.content}
@@ -118,6 +120,9 @@ var ArticleModal = React.createClass({
                                    avatar={comment.postedBy.image}
                                    key={comment._id} />
         });
+
+        var commentInput = (!this.state.openNewCommentBox && comments.length == 0 && this.state.isLoggedIn) ?
+            <input type="text" placeholder="Add a comment..." onClick={this.openNewCommentBox} style={{padding: "6px"}} /> : <span></span>;
 
         return (
             <div style={mask}>
@@ -138,12 +143,11 @@ var ArticleModal = React.createClass({
                         </CardText>
                         <CardActions expandable={true}>
                             {buttonBar}
+                            {commentInput}
                             <div>
-                            {!this.state.openNewCommentBox && comments.length == 0 ? <input type="text" placeholder="Add a comment..." onClick={this.openNewCommentBox}/> : ''}
+                                {this.state.openNewCommentBox ? <NewCommentBox articleId={this.props.articleId} /> : <span></span>}
                             </div>
                         </CardActions>
-                        {comments}
-                        {this.state.openNewCommentBox ? <NewCommentBox /> : ''}
                     </Card>
                 </div>
             </div>

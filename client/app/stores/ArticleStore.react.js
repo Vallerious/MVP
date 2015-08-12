@@ -75,7 +75,7 @@ ArticleStore.dispatchToken = AppDispatcher.register(function (payload) {
             ArticleStore.emitChange();
             break;
 
-        case ActionTypes.RECIEVE_VOTED_ARTICLE:
+        case ActionTypes.RECEIVE_VOTED_ARTICLE:
             if (action.json) {
                 _votes = action.json.votes;
                 _errors = [];
@@ -83,6 +83,13 @@ ArticleStore.dispatchToken = AppDispatcher.register(function (payload) {
             if (action.errors) {
                 _errors = action.errors;
             }
+            ArticleStore.emitChange();
+            break;
+        case ActionTypes.RECEIVE_ADD_COMMENT:
+            if (action.errors) {
+                _errors = action.errors;
+            }
+
             ArticleStore.emitChange();
             break;
     }
