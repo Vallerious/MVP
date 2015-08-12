@@ -73,6 +73,7 @@ var register = function (req, res) {
                             username: userData.username,
                             password: passHash.generate(userData.password),
                             email: userData.email,
+                            image: userData.image,
                             roleId: ''
                         });
 

@@ -20,13 +20,15 @@ var APIEndpoints = AppConstants.APIEndpoints;
 
 module.exports = {
 
-    signup: function (email, username, password) {
-        request.post(APIEndpoints.REGISTRATION)
+    signup: function (email, username, password, image) {
+        request
+            .post(APIEndpoints.REGISTRATION)
             .send({
                 user: {
                     email: email,
                     username: username,
-                    password: password
+                    password: password,
+                    image: image
                 }
             })
             .set('Accept', 'application/json')

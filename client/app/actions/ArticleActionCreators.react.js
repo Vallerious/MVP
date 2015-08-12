@@ -43,5 +43,5 @@ module.exports = {
             user: user
         });
         WebAPIUtils.voteArticle(articleId, user);
-    },
+    }
 };

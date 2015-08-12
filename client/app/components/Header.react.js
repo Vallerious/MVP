@@ -35,7 +35,7 @@ var Header = React.createClass({
 
         var rightNav = this.props.isLoggedIn ? (
           <ul className="nav navbar-nav navbar-right">
-            <li><Avatar className="avatar" src="images/kenny.jpg" /></li>
+            <li><Avatar className="avatar" src={sessionStorage.getItem('userImage')} /></li>
             <li><a href="#">{this.props.username}</a></li>
             <li><a href='#' onClick={this.logout}>Logout</a></li>
           </ul>
