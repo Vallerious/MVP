@@ -39,6 +39,10 @@ var SessionStore = assign({}, EventEmitter.prototype, {
         return _username;
     },
 
+    getUserId: function () {
+        return _id;
+    },
+
     getErrors: function () {
         return _errors;
     }

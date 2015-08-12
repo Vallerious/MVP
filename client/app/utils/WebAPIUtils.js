@@ -113,5 +113,20 @@ module.exports = {
                 ServerActionCreators.receiveVotedArticle(json, null);
             }
         })
+    },
+
+    addComment: function (articleId, content, postedBy) {
+        request.post(APIEndpoints.ADD_COMMENT)
+            .set('Accept', 'application/json')
+            .send({ comment: {articleId: articleId, content: content, postedBy: postedBy}})
+            .end(function (error, res) {
+                if (res.error) {
+                    var errorMsgs = _getErrors(res);
+                    ServerActionCreators.receiveAddedComment(null, errorMsgs);
+                } else {
+                    json = res.body.payload;
+                    ServerActionCreators.receiveAddedComment(json, null);
+                }
+            })
     }
 };

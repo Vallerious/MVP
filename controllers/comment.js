@@ -6,7 +6,7 @@ var User = require('./../models/user');
 var Comment = require('./../models/comment');
 
 var addEditComment = function (req, res) {
-    var commentData = req.body;
+    var commentData = req.body.comment;
     var error = new Error();
 
     try {
