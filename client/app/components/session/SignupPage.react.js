@@ -11,6 +11,8 @@ var mui = require('material-ui'),
     TextField = mui.TextField,
     Paper = mui.Paper;
 
+var FileInput = require('react-file-input');
+
 var SignupPage = React.createClass({
 
     childContextTypes: {
@@ -25,7 +27,8 @@ var SignupPage = React.createClass({
 
     getInitialState: function () {
         return {
-            errors: []
+            errors: [],
+            image: null
         };
     },
 
@@ -47,8 +50,22 @@ var SignupPage = React.createClass({
         var email = this.refs.email.getValue();
         var username = this.refs.username.getValue();
         var password = this.refs.password.getValue();
+        var image = this.state.image;
         //validate if pass and repPass match
-        SessionActionCreators.signup(email, username, password);
+        SessionActionCreators.signup(email, username, password, image);
+    },
+
+    getImage: function(e) {
+        var self = this;
+        var reader = new FileReader();
+        var file = e.target.files[0];
+
+        reader.onload = function(upload) {
+            self.setState({
+                image: upload.target.result
+            });
+        };
+        reader.readAsDataURL(file);
     },
 
     render: function () {
@@ -87,6 +104,10 @@ var SignupPage = React.createClass({
                                     fullWidth={true}
                                     type="password">
                                 </TextField>
+                                <div className="">
+                                    <h2>Upload Photo</h2>
+                                    <input type='file' ref="image" onChange={this.getImage} />
+                                </div>
                                 <RaisedButton
                                     type="submit"
                                     label="Sign Up"

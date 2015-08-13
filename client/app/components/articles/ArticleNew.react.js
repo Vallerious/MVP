@@ -9,7 +9,6 @@ var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
 var MenuList = require('../common/MenuList.react.js');
 var TagsInput = require('react-tagsinput');
 
-
 //Theme dependencies:
 var mui = require('material-ui'),
     ThemeManager = new mui.Styles.ThemeManager(),
@@ -55,7 +54,7 @@ var ArticleNew = React.createClass({
     },
 
     _onChange: function () {
-        this.setState({previewImage: this.state.image.preview});
+
     },
 
     componentDidMount: function () {
@@ -79,7 +78,7 @@ var ArticleNew = React.createClass({
         RouteActionCreators.redirect('main');
     },
 
-    handleFile: function (e) {
+    getImage: function(e) {
         var self = this;
         var reader = new FileReader();
         var file = e.target.files[0];
@@ -88,8 +87,7 @@ var ArticleNew = React.createClass({
             self.setState({
                 image: upload.target.result
             });
-        }
-
+        };
         reader.readAsDataURL(file);
     },
 
@@ -126,9 +124,8 @@ var ArticleNew = React.createClass({
                 </Tab>
                 <Tab label="Cover Photo">
                     <div className="dropzone-container">
-                        <h2>Upload Photo</h2>
-                        <input type='file' ref="articleImageUpload" onChange={this.handleFile} />
-                        <img id="articleImage" src="" />
+                        <h2>Upload heading image</h2>
+                        <input type='file' ref="image" onChange={this.getImage} />
                     </div>
                     <RaisedButton type="submit"
                                   className="pull-right"

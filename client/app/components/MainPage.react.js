@@ -7,7 +7,8 @@ var RouteStore = require('../stores/RouteStore.react.js');
 function getStateFromStores() {
     return {
       isLoggedIn: SessionStore.isLoggedIn(),
-      username: SessionStore.getUsername()
+      username: SessionStore.getUsername(),
+      image: SessionStore.getImage()
     };
 }
 
@@ -34,7 +35,8 @@ var MainPage = React.createClass({
             <div className="main">
                 <Header
                     isLoggedIn={this.state.isLoggedIn}
-                    username={this.state.username}/>
+                    username={this.state.username}
+                    avatar={this.state.image}/>
 
                 <div className="container">
                     <RouteHandler/>
