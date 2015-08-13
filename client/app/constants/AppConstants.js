@@ -8,7 +8,8 @@ module.exports = {
         ARTICLES: APIRoot + "/article/list?page=",
         CREATE_ARTICLE: APIRoot + "/article/add",
         VOTE_ARTICLE: APIRoot + "/article/vote",
-        ADD_COMMENT: APIRoot + "/article/comment/add"
+        ADD_COMMENT: APIRoot + "/article/comment/add",
+        LIST_COMMENTS: APIRoot + "/article/comment/list"
     },
 
     PayloadSources: {
@@ -36,6 +37,8 @@ module.exports = {
         RECEIVE_VOTED_ARTICLE: 'RECEIVE_VOTED_ARTICLE',
 
         // Comments
+        LOAD_COMMENTS: 'LOAD_COMMENTS',
+        RECEIVE_COMMENTS: 'RECIEVE_COMMENTS',
         ADD_COMMENT: 'ADD_COMMENT',
         RECEIVE_ADD_COMMENT: 'RECEIVE_ADD_COMMENT'
     }

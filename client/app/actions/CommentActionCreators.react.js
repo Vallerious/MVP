@@ -13,6 +13,15 @@ module.exports = {
             articleId: articleId
         });
 
-        WebAPIUtils.createArticle(title, content, image, createdBy, tags, categories);
+        WebAPIUtils.addComment(articleId, content, postedBy);
+    },
+
+    getCommentsByArticle: function (id) {
+        AppDispatcher.handleViewAction({
+            type: ActionTypes.LOAD_COMMENTS,
+            id: id
+        });
+
+        WebAPIUtils.getCommentsByArticle(id);
     }
 };

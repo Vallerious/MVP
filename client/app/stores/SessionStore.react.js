@@ -45,8 +45,15 @@ var SessionStore = assign({}, EventEmitter.prototype, {
 
     getErrors: function () {
         return _errors;
-    }
+    },
 
+    getUserData: function () {
+        return {
+            userId: this.getUserId(),
+            username: this.getUsername(),
+            isLoggedIn: this.isLoggedIn()
+        }
+    }
 });
 
 SessionStore.dispatchToken = AppDispatcher.register(function (payload) {

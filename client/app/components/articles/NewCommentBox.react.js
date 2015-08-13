@@ -1,5 +1,5 @@
 var React = require('react');
-var WebAPIUtils = require('../../utils/WebAPIUtils.js');
+var CommentActionCreators = require('../../actions/CommentActionCreators.react.js');
 var SessionStore = require('../../stores/SessionStore.react');
 
 var mui = require('material-ui'),
@@ -7,7 +7,7 @@ var mui = require('material-ui'),
     RaisedButton = mui.RaisedButton;
 
 // Styles
-var newCommentBox = {
+var p10 = {
     padding: '10px'
 };
 
@@ -36,12 +36,12 @@ var NewCommentBox = React.createClass({
         var postedBy = SessionStore.getUserId();
         var articleId = this.props.articleId;
 
-        WebAPIUtils.addComment(articleId, content, postedBy);
+        CommentActionCreators.addComment(articleId, content, postedBy);
     },
 
     render: function () {
         return (
-            <div className="row" style={newCommentBox}>
+            <div className="row" style={p10}>
                 <div className="col-xs-1">
                     <img src={this.props.avatar ?  this.props.avatar : './images/default-user-icon.png'} width="30" height="30" alt="avatar" style={avatar} />
                 </div>

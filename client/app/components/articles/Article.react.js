@@ -1,9 +1,7 @@
 var React = require('react');
-var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var ArticleStore = require('../../stores/ArticleStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var State = require('react-router').State;
-var SessionStore = require('../../stores/SessionStore.react');
 
 var ArticleModal = require('./ArticleModal.react');
 

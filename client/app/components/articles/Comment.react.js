@@ -7,7 +7,7 @@ var commentBox = {
     marginBottom: '5px'
 };
 
-var ArticleComment = React.createClass({
+var Comment = React.createClass({
    render: function () {
 
        // TODO: implement "yesterday" 14:30" type of date display from timestamp
@@ -27,4 +27,4 @@ var ArticleComment = React.createClass({
    }
 });
 
-module.exports = ArticleComment;
+module.exports = Comment;

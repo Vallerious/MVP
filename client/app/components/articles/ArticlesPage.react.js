@@ -91,7 +91,6 @@ var ArticlesPage = React.createClass({
                             image={article.image}
                             articleId={article._id}
                             votes={article.votes}
-                            comments={article.comments}
                             keyId={article._id} />
         });
 
@@ -113,7 +112,7 @@ var ArticlesPage = React.createClass({
                     <Pager total={this.state.total}
                        current={this.state.current}
                        visiblePages={this.state.visiblePages}
-                       onPageChanged={this.handlePageChanged}/>
+                       onPageChanged={this.handlePageChanged} />
                 </div>
             </div>
         );

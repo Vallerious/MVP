@@ -49,5 +49,13 @@ module.exports = {
             json: json,
             errors: errors
         });
+    },
+
+    receiveComments: function (json, errors) {
+        AppDispatcher.handleServerAction({
+            type: ActionTypes.RECEIVE_COMMENTS,
+            json: json,
+            errors: errors
+        });
     }
 };

@@ -128,5 +128,21 @@ module.exports = {
                     ServerActionCreators.receiveAddedComment(json, null);
                 }
             })
+    },
+
+    getCommentsByArticle: function (id) {
+        request
+            .get(APIEndpoints.LIST_COMMENTS)
+            .query({id: id})
+            .set('Accept', 'application/json')
+            .end(function (err, res) {
+                if (res.error) {
+                    var errorMsgs = _getErrors(res);
+                    ServerActionCreators.receiveComments(null, errorMsgs);
+                } else {
+                    json = res.body.payload;
+                    ServerActionCreators.receiveComments(json, null);
+                }
+            });
     }
 };

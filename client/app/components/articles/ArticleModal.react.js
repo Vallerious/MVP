@@ -1,10 +1,9 @@
 var React = require('react');
-var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
-var ArticleStore = require('../../stores/ArticleStore.react.js');
+var ArticleActionCreators = require('../../actions/ArticleActionCreators.react');
+var ArticleStore = require('../../stores/ArticleStore.react');
 var SessionStore = require('../../stores/SessionStore.react');
 
-var ArticleComment = require('./ArticleComment.react');
-var NewCommentBox = require('./ArticleNewCommentBox.react');
+var CommentContainer = require('./CommentContainer.react');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -40,8 +39,6 @@ var mask = {
     height: '100%',
     backgroundColor: 'rgba(88,88,88, 0.8)'
 };
-
-var activeVoteBtn = {};
 
 function getStateFromStores() {
     return {
@@ -99,10 +96,6 @@ var ArticleModal = React.createClass({
         ArticleActionCreators.voteArticle(articleId, userId);
     },
 
-    openNewCommentBox: function () {
-        this.setState({openNewCommentBox: !this.state.openNewCommentBox});
-    },
-
     render: function () {
 
         var buttonBar = this.state.isLoggedIn ?
@@ -112,17 +105,6 @@ var ArticleModal = React.createClass({
                               label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)}
                               onClick={this.voteArticle.bind(null, this.props.articleId)} />
              : <span></span>;
-
-        var comments = this.props.comments.map(function (comment) {
-            return <ArticleComment content={comment.content}
-                                   date={comment.createdOn}
-                                   username={comment.postedBy.username}
-                                   avatar={comment.postedBy.image}
-                                   key={comment._id} />
-        });
-
-        var commentInput = (!this.state.openNewCommentBox && comments.length == 0 && this.state.isLoggedIn) ?
-            <input type="text" placeholder="Add a comment..." onClick={this.openNewCommentBox} style={{padding: "6px"}} /> : <span></span>;
 
         return (
             <div style={mask}>
@@ -143,11 +125,8 @@ var ArticleModal = React.createClass({
                         </CardText>
                         <CardActions expandable={true}>
                             {buttonBar}
-                            {commentInput}
-                            <div>
-                                {this.state.openNewCommentBox ? <NewCommentBox articleId={this.props.articleId} /> : <span></span>}
-                            </div>
                         </CardActions>
+                        <CommentContainer articleId={this.props.articleId} />
                     </Card>
                 </div>
             </div>

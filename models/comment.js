@@ -4,16 +4,16 @@ var User = require('./user');
 var CommentSchema = new mongoose.Schema({
     content: String,
     postedBy: {
-        _id: String,
-        username: String,
-        password: String,
-        email: String,
-        roleId: String,
-        image: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users'
+    },
+    articleId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Articles'
     },
     createdOn: String,
-    editedOn: String,
-    likes: Number
+    likes: Number,
+    likedBy: [String]
 });
 
 module.exports = mongoose.model("Comments", CommentSchema);
