@@ -38,7 +38,8 @@ var ArticleNew = React.createClass({
     getInitialState: function () {
         return {
             tags: "",
-            categories: ""
+            categories: "",
+            image: null
         }
     },
 
@@ -77,6 +78,19 @@ var ArticleNew = React.createClass({
         RouteActionCreators.redirect('main');
     },
 
+    getImage: function(e) {
+        var self = this;
+        var reader = new FileReader();
+        var file = e.target.files[0];
+
+        reader.onload = function(upload) {
+            self.setState({
+                image: upload.target.result
+            });
+        };
+        reader.readAsDataURL(file);
+    },
+
     render: function () {
 
         return (
@@ -110,8 +124,8 @@ var ArticleNew = React.createClass({
                 </Tab>
                 <Tab label="Cover Photo">
                     <div className="dropzone-container">
-                        <h2>Upload Photo</h2>
-
+                        <h2>Upload heading image</h2>
+                        <input type='file' ref="image" onChange={this.getImage} />
                     </div>
                     <RaisedButton type="submit"
                                   className="pull-right"
