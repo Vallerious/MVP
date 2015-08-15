@@ -1,9 +1,7 @@
 var React = require('react');
-var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var ArticleStore = require('../../stores/ArticleStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var State = require('react-router').State;
-var SessionStore = require('../../stores/SessionStore.react');
 
 var ArticleModal = require('./ArticleModal.react');
 
@@ -43,6 +41,10 @@ var Article = React.createClass({
 
     toggleArticleModal: function () {
         this.setState({show: !this.state.show});
+
+        if ( window.pageYOffset > 400 ) {
+            $("html, body").animate({ scrollTop: "0px" }, 1000);
+        }
     },
 
     render: function () {
@@ -50,21 +52,23 @@ var Article = React.createClass({
               { text: 'Cancel' }
         ];
 
-        var buttonBar = this.state.isLoggedIn ?
-            <CardActions expandable={true}>
-                <FlatButton label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)} onClick={this.voteArticle.bind(null, this.props.articleId, this.props.votes)} />
-            </CardActions> : '';
-
-
         var modal = this.state.show ?
-            <ArticleModal closeHandler={this.toggleArticleModal} articleId={this.props.articleId} title={this.props.title} content={this.props.content} date={this.props.date} keyId={this.props.keyId} votes={this.props.votes} comments={this.props.comments} /> : '';
+            <ArticleModal closeHandler={this.toggleArticleModal}
+                          articleId={this.props.articleId}
+                          title={this.props.title}
+                          image={this.props.image}
+                          content={this.props.content}
+                          date={this.props.date}
+                          keyId={this.props.keyId}
+                          votes={this.props.votes}
+                          comments={this.props.comments} /> : <span></span>;
 
         return (
             <Card initiallyExpanded={true} className="mb15">
                 <CardHeader
                     title={this.props.title}
                     subtitle={new Date(this.props.date).toDateString()}
-                    avatar="http://lorempixel.com/600/337/nature/">
+                    avatar={this.props.image}>
                 </CardHeader>
                 <CardText expandable={true}>
                     {this.props.content.substring(0, 140) + "..."}

@@ -20,13 +20,15 @@ var APIEndpoints = AppConstants.APIEndpoints;
 
 module.exports = {
 
-    signup: function (email, username, password) {
-        request.post(APIEndpoints.REGISTRATION)
+    signup: function (email, username, password, image) {
+        request
+            .post(APIEndpoints.REGISTRATION)
             .send({
                 user: {
                     email: email,
                     username: username,
-                    password: password
+                    password: password,
+                    image: image
                 }
             })
             .set('Accept', 'application/json')
@@ -82,11 +84,11 @@ module.exports = {
             });
     },
 
-    createArticle: function (title, content, createdBy, tags, categories) {
+    createArticle: function (title, content, image, createdBy, tags, categories) {
         request.post(APIEndpoints.CREATE_ARTICLE)
             .set('Accept', 'application/json')
             //.set('Authorization', sessionStorage.getItem('accessToken'))
-            .send({article: {title: title, content: content, createdBy: createdBy, tags: tags, categories: categories}})
+            .send({article: {title: title, content: content, image: image, createdBy: createdBy, tags: tags, categories: categories}})
             .end(function (error, res) {
                 if (res) {
                     if (res.error) {
@@ -113,5 +115,36 @@ module.exports = {
                 ServerActionCreators.receiveVotedArticle(json, null);
             }
         })
+    },
+
+    addComment: function (articleId, content, postedBy) {
+        request.post(APIEndpoints.ADD_COMMENT)
+            .set('Accept', 'application/json')
+            .send({ comment: {articleId: articleId, content: content, postedBy: postedBy}})
+            .end(function (error, res) {
+                if (res.error) {
+                    var errorMsgs = _getErrors(res);
+                    ServerActionCreators.receiveAddedComment(null, errorMsgs);
+                } else {
+                    json = res.body.payload;
+                    ServerActionCreators.receiveAddedComment(json, null);
+                }
+            })
+    },
+
+    getCommentsByArticle: function (id) {
+        request
+            .get(APIEndpoints.LIST_COMMENTS)
+            .query({id: id})
+            .set('Accept', 'application/json')
+            .end(function (err, res) {
+                if (res.error) {
+                    var errorMsgs = _getErrors(res);
+                    ServerActionCreators.receiveComments(null, errorMsgs);
+                } else {
+                    json = res.body.payload.comments;
+                    ServerActionCreators.receiveComments(json, null);
+                }
+            });
     }
 };

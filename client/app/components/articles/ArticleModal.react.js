@@ -1,9 +1,9 @@
 var React = require('react');
-var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
-var ArticleStore = require('../../stores/ArticleStore.react.js');
+var ArticleActionCreators = require('../../actions/ArticleActionCreators.react');
+var ArticleStore = require('../../stores/ArticleStore.react');
 var SessionStore = require('../../stores/SessionStore.react');
 
-var ArticleComment = require('./ArticleComment.react');
+var CommentContainer = require('./../comments/CommentContainer.react');
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -18,15 +18,21 @@ var mui = require('material-ui'),
     Avatar = mui.Avatar,
     Dialog = mui.Dialog,
     FloatingActionButton = mui.FloatingActionButton,
-    FontIcon = mui.FontIcon;
+    FontIcon = mui.FontIcon,
+    RaisedButton = mui.RaisedButton;
 
 // Styles
 var modalWindow = {
     position: 'absolute',
     top: '10%',
-    left: '50%',
+    left: '10%',
+    padding: '15px',
+    width: '80%',
+    height: '80%',
+    maxHeight: '80%',
+    maxWidth: '80%',
     zIndex: '10000',
-    marginLeft: '-300px'
+    overflowY: 'hidden'
 };
 
 var mask = {
@@ -36,8 +42,13 @@ var mask = {
     zIndex: '10001',
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(160,160,160, 0.8)'
+    backgroundColor: 'rgba(0,0,0, 0.8)'
 };
+
+var mainPane = {
+    height: '394px',
+    overflowY: 'auto'
+}
 
 function getStateFromStores() {
     return {
@@ -49,9 +60,28 @@ function getStateFromStores() {
 var ArticleModal = React.createClass({
 
     getInitialState: function () {
-        var storeStates = getStateFromStores();
-        storeStates.votes = this.props.votes;
-        return storeStates;
+        var initState = getStateFromStores();
+
+        initState.votes = this.props.votes;
+        initState.activeVoteBtnStyle = false;
+
+        return initState;
+    },
+
+    componentDidMount: function () {
+        var self = this;
+        ArticleStore.addChangeListener(this._onChange);
+        $("html, body").css("overflow-y", "hidden");
+        $(document).keyup(function (e) {
+            if (e.which == 27) {
+                self.closeModal();
+            }
+        });
+    },
+
+    componentWillUnmount: function () {
+        ArticleStore.removeChangeListener(this._onChange);
+        $("html, body").css("overflow-y", "auto");
     },
 
     childContextTypes: {
@@ -64,16 +94,18 @@ var ArticleModal = React.createClass({
         };
     },
 
-    componentDidMount: function () {
-        ArticleStore.addChangeListener(this._onChange);
-    },
-
-    componentWillUnmount: function () {
-        ArticleStore.removeChangeListener(this._onChange);
-    },
-
     _onChange: function () {
         this.setState(getStateFromStores());
+
+        var prevVotes = this.state.votes;
+        var currVotes = ArticleStore.getVotes();
+
+        if ( prevVotes < currVotes ) { // red
+            this.setState({activeVoteBtnStyle: true});
+        } else { // normal
+            this.setState({activeVoteBtnStyle: false});
+        }
+
         this.setState({votes: ArticleStore.getVotes()});
     },
 
@@ -82,38 +114,53 @@ var ArticleModal = React.createClass({
         ArticleActionCreators.voteArticle(articleId, userId);
     },
 
+    renderButtonBar: function () {
+        return (
+            this.state.isLoggedIn ?
+                <RaisedButton secondary={!this.state.activeVoteBtnStyle}
+                              primary={this.state.activeVoteBtnStyle}
+                              label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)}
+                              onClick={this.voteArticle.bind(null, this.props.articleId)} />
+             : <span></span>
+            );
+    },
+
+    closeModal: function () {
+        this.props.closeHandler();
+    },
+
     render: function () {
-
-        var buttonBar = this.state.isLoggedIn ?
-            <CardActions expandable={true}>
-                <FlatButton primary={true} label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)} onClick={this.voteArticle.bind(null, this.props.articleId)} />
-            </CardActions> : '';
-
-        var comments = this.props.comments.map(function (comment, idx) {
-            return <ArticleComment content={comment.content} key={idx + "comment"} />
-        });
-
         return (
             <div style={mask}>
-            <div style={modalWindow}>
-                <FlatButton label="Close" onClick={this.props.closeHandler} />
-                <Card initiallyExpanded={true}>
-                    <CardHeader
-                        title={this.props.title}
-                        subtitle={new Date(this.props.date).toDateString()}
-                        avatar="http://lorempixel.com/600/337/nature/"
-                        showExpandableButton={false} />
-                    <CardMedia overlay={<CardTitle title={this.props.title} subtitle={new Date(this.props.date).toDateString()} />}>
-                        <img src="http://lorempixel.com/600/337/nature/"/>
-                    </CardMedia>
-                    <CardText expandable={true}>
-                        {this.props.content}
-                    </CardText>
-                    {buttonBar}
-                    {comments}
-                </Card>
-
-            </div></div>
+                <span className="glyphicon glyphicon-remove btn--close-article" onClick={this.closeModal}></span>
+                <div style={modalWindow}>
+                    <Card initiallyExpanded={true} style={{padding: '15px'}}>
+                        <div className="col-md-5">
+                            <CardMedia overlay={<CardTitle title={this.props.title}
+                                    subtitle={new Date(this.props.date).toDateString()} />}>
+                                <img src={this.props.image ? this.props.image : './images/default-user-icon.png'} />
+                            </CardMedia>
+                        </div>
+                        <div className="col-md-7">
+                            <div style={mainPane} className="cool-scroll-black">
+                                <CardHeader
+                                    title={this.props.title}
+                                    subtitle={new Date(this.props.date).toDateString()}
+                                    avatar={this.props.image ? this.props.image : './images/default-user-icon.png'}
+                                    showExpandableButton={false} />
+                                
+                                <CardText expandable={true} style={{wordWrap: 'break-word'}}>
+                                    {this.props.content}
+                                </CardText>
+                                <CardActions expandable={true}>
+                                    {this.renderButtonBar()}
+                                </CardActions>
+                                <CommentContainer articleId={this.props.articleId} />
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            </div>
         )
     }
 });

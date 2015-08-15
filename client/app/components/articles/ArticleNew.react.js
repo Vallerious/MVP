@@ -3,6 +3,7 @@ var AppDispatcher = require('../../dispatcher/AppDispatcher.js');
 var AppConstants = require('../../constants/AppConstants.js');
 var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var SessionStore = require('../../stores/SessionStore.react.js');
+var ArticleStore = require('../../stores/ArticleStore.react.js');
 var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
 var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
 var MenuList = require('../common/MenuList.react.js');
@@ -26,12 +27,19 @@ var articleBox = {
     margin: '0 auto'
 };
 
+function getStateFromStores() {
+    return {
+      errors: SessionStore.getErrors()
+    };
+}
+
 var ArticleNew = React.createClass({
 
     getInitialState: function () {
         return {
             tags: "",
-            categories: ""
+            categories: "",
+            image: null
         }
     },
 
@@ -46,13 +54,15 @@ var ArticleNew = React.createClass({
     },
 
     _onChange: function () {
-        this.setState({errors: SessionStore.getErrors()});
+
     },
 
     componentDidMount: function () {
         if (!SessionStore.isLoggedIn()) {
-            //RouteActionCreators.redirect('main');
+            RouteActionCreators.redirect('main');
         }
+
+        ArticleStore.addChangeListener(this._onChange);
     },
 
     _onSubmit: function (e) {
@@ -63,11 +73,27 @@ var ArticleNew = React.createClass({
         var tags = this.refs.tags.getTags();
         var categories = this.refs.categories.getTags();
         var createdBy = sessionStorage.getItem('user_id');
-        ArticleActionCreators.createArticle(title, content, createdBy, tags, categories);
+        var image = this.state.image;
+        
+        ArticleActionCreators.createArticle(title, content, image, createdBy, tags, categories);
         RouteActionCreators.redirect('main');
     },
 
+    getImage: function(e) {
+        var self = this;
+        var reader = new FileReader();
+        var file = e.target.files[0];
+
+        reader.onload = function(upload) {
+            self.setState({
+                image: upload.target.result
+            });
+        };
+        reader.readAsDataURL(file);
+    },
+
     render: function () {
+
         return (
             <Tabs>
                 <Tab label="Title & Content">
@@ -87,27 +113,26 @@ var ArticleNew = React.createClass({
                 <Tab label="Tags & Categories">
                     <div>
                         <h2>Tags</h2>
-
                         <p>
                             <TagsInput ref="tags"/>
                         </p>
 
                         <h2>Categories</h2>
-
                         <p>
                             <TagsInput ref="categories"/>
                         </p>
                     </div>
                 </Tab>
                 <Tab label="Cover Photo">
-                    <div>
-                        <h2>Upload Photo</h2>
-
-                        <p>
-                            Place image upload here
-                        </p>
+                    <div className="dropzone-container">
+                        <h2>Upload heading image</h2>
+                        <input type='file' ref="image" onChange={this.getImage} />
                     </div>
-                    <RaisedButton type="submit" className="pull-right" label="Publish" secondary={true} onClick={this._onSubmit} />
+                    <RaisedButton type="submit"
+                                  className="pull-right"
+                                  label="Publish"
+                                  secondary={true}
+                                  onClick={this._onSubmit} />
                 </Tab>
             </Tabs>
         );

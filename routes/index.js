@@ -35,7 +35,6 @@ router.post('/register', userController.register);
 //});
 
 router.get('/article/list', articleController.getAllArticles);
-router.get('/article/filter', articleController.filterArticles);
 router.post('/article/add', articleController.addEditArticle);
 router.post('/article/edit', articleController.addEditArticle);
 router.post('/article/delete', articleController.deleteArticle);
@@ -44,5 +43,6 @@ router.post('/article/comment/add', commentController.addEditComment);
 router.post('/article/comment/edit', commentController.addEditComment);
 router.post('/article/comment/like', commentController.likeComment);
 router.post('/article/comment/delete', commentController.deleteComment);
+router.get('/article/comment/list', commentController.getCommentsByArticle);
 
 module.exports = router;

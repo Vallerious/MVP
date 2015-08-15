@@ -84,10 +84,18 @@ var ArticlesPage = React.createClass({
         });
     },
     render: function () {
-        var articles = this.state.articles.map(function (article, idx) {
-            return <Article title={article.title} content={article.content} date={article.createdOn} articleId={article._id} votes={article.votes} comments={[{content: "asd", key: idx}]} keyId={idx} />
+        var articles = this.state.articles.map(function (article) {
+            return <Article title={article.title}
+                            content={article.content}
+                            date={article.createdOn}
+                            image={article.image}
+                            articleId={article._id}
+                            votes={article.votes}
+                            keyId={article._id} />
         });
+
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;
+
         return (
             <div>
                 <div className="row">
@@ -104,10 +112,9 @@ var ArticlesPage = React.createClass({
                     <Pager total={this.state.total}
                        current={this.state.current}
                        visiblePages={this.state.visiblePages}
-                       onPageChanged={this.handlePageChanged}/>
+                       onPageChanged={this.handlePageChanged} />
                 </div>
             </div>
-
         );
     }
 });

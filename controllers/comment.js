@@ -4,55 +4,88 @@ var db = require('./../helpers/mongodbConnect');
 var Post = require('./../models/article');
 var Comment = require('./../models/comment');
 
+var getCommentsByArticle = function (req, res) {
+    var error = new Error();
+
+    try {
+        var articleId = req.query.id;
+
+        if ( articleId ) {
+            Comment.find({articleId: articleId}, function (err, comments) {
+                if ( err ) {
+                    err.status = 500;
+                    throw err;
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        payload: {comments: comments},
+                        error: null
+                    });
+                }
+            })
+        } else {
+            error.status = 400;
+            error.code = 124;
+            error.message = "Article ID is needed to get comments!";
+            throw error;
+        }
+    } catch (err) {
+        res.status(err.status || 400).json({
+            success: false,
+            payload: {},
+            error: {
+                code: err.code || 666,
+                message: err.message
+            }
+        });
+    }
+};
+
 var addEditComment = function (req, res) {
     var commentData = req.body.comment;
     var error = new Error();
 
     try {
-        if (commentData.postId && commentData.content && commentData.postedBy) { // postId should be sent from the front-end
+        if (commentData.articleId && commentData.content && commentData.postedBy) { // postId should be sent from the front-end
+
             var newComment = new Comment({
                 content: commentData.content,
                 postedBy: commentData.postedBy,
-                date: Date.now(),
-                likes: 0
+                articleId: commentData.articleId,
+                createdOn: Date.now(),
+                likes: 0,
+                likedBy: []
             });
 
-            if (!commentData.commentId) {
-                Post.findByIdAndUpdate(
-                    commentData.postId,
-                    {$push: {"comments": newComment}},
-                    {new: true},
-                    function (err, model) {
-                        if (err) {
-                            err.status = 500;
-                            throw err;
-                        } else {
-                            res.status(200).json({
-                                success: true,
-                                payload: {},
-                                error: null
-                            });
-                        }
-                    }
-                );
-            } else { // edit comment
-                Post.update({'comments._id': commentData.commentId}, {
-                    '$set': {
-                        'comments.$.content': commentData.content,
-                        'comments.&.editedOn': Date.now()
-                    }
-                }, {upsert: true}, function (err) {
+            if (!commentData.commentId) { // add comment
+                newComment.save(function (err, comment) {
                     if (err) {
                         err.status = 500;
                         throw err;
                     } else {
                         res.status(200).json({
                             success: true,
-                            payload: {},
+                            payload: {comment: comment},
                             error: null
                         });
                     }
                 });
+            } else { // edit comment
+                Comment.findByIdAndUpdate(commentData.commentId, {
+                    content: commentData.content,
+                    createdOn: Date.now()
+                }, function (err, comment) {
+                    if (err) {
+                        err.status = 500;
+                        throw err;
+                    } else {
+                        res.status(200).json({
+                            success: true,
+                            payload: {comment: comment},
+                            error: null
+                        });
+                    }
+                })
             }
         } else {
             error.status = 400;
@@ -76,27 +109,23 @@ var deleteComment = function (req, res) {
     var commentData = req.body.comment;
 
     try {
-        if (commentData.commentId && commentData.postId) {
-            Post.update(
-                {'_id': commentData.postId},
-                {$pull: {"comments": {_id: commentData.commentId}}},
-                function (err) {
-                    if (err) {
-                        err.status = 500;
-                        throw err;
-                    } else {
-                        res.status(200).json({
-                            success: true,
-                            payload: {},
-                            error: null
-                        });
-                    }
+        if (commentData.commentId) {
+            Comment.remove({_id: commentData.commentId}, function (err, comment) {
+                if (err) {
+                    err.status = 500;
+                    throw err;
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        payload: {comment: comment},
+                        error: null
+                    });
                 }
-            );
+            });
         } else {
             error.status = 400;
             error.code = 124;
-            error.message = "Invalid input data!";
+            error.message = "Comment ID is needed to delete a comment!";
             throw error;
         }
     } catch (err) {
@@ -114,36 +143,43 @@ var deleteComment = function (req, res) {
 var likeComment = function (req, res) {
     try {
         var commentData = req.body.comment;
+        var user = commentData.userId;
+        var commentId = commentData.commentId;
 
-        if (commentData.postId && commentData.commentId) {
-            var postId = commentData.postId;
-            var commentId = commentData.commentId;
-            var increment = 1;
-
-            if (commentData.voteDown) {
-                increment = -1;
-            }
-
-            Post.update({'comments._id': commentId}, {
-                '$inc': {
-                    'comments.$.likes': increment
-                }
-            }, {upsert: false}, function (err) {
+        if (commentId) {
+            Comment.findById(commentId, function (err, comment) {
                 if (err) {
                     err.status = 500;
                     throw err;
                 } else {
-                    res.status(200).json({
-                        success: true,
-                        payload: {},
-                        error: null
+                    var idx = comment.likedBy.indexOf(user);
+
+                    if (idx > -1) { // found
+                        comment.votedBy.splice(idx, 1);
+                        comment.votes -= 1;
+                    } else {
+                        comment.votedBy.push(user);
+                        comment.votes += 1;
+                    }
+
+                    comment.save(function (err) {
+                        if (err) {
+                            err.status = 500;
+                            throw err;
+                        }
+
+                        res.status(200).json({
+                            success: true,
+                            payload: {votes: comment.likes},
+                            error: null
+                        });
                     });
                 }
             });
         } else {
             error.status = 400;
             error.code = 124;
-            error.message = "Invalid input data!";
+            error.message = "Comment ID is needed to like a comment!";
             throw error;
         }
     } catch (err) {
@@ -161,5 +197,6 @@ var likeComment = function (req, res) {
 module.exports = {
     addEditComment: addEditComment,
     deleteComment: deleteComment,
-    likeComment: likeComment
+    likeComment: likeComment,
+    getCommentsByArticle: getCommentsByArticle
 };

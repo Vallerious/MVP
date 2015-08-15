@@ -1,3 +1,4 @@
+var fs = require('fs');
 var mongoose = require('mongoose');
 var when = require('when');
 var db = require('./../helpers/mongodbConnect');
@@ -21,21 +22,21 @@ var addEditArticle = function (req, res) {
 
     try {
         if (articleData.title && articleData.content && articleData.createdBy) {
-            var newArticle = new Article({
-                title: articleData.title,
-                title_normalized: articleData.title.toLowerCase(),
-                content: articleData.content,
-                content_normalized: articleData.content.toLowerCase(),
-                postedBy: articleData.createdBy,
-                comments: [], // add the Comment schema in the array after it`s created : )
-                createdOn: Date.now(),
-                editedOn: "",
-                votes: 0,
-                tags: articleData.tags,
-                categories: articleData.categories
-            });
 
             if (!articleData._id) { // no id? add new article
+                var newArticle = new Article({
+                    title: articleData.title,
+                    content: articleData.content,
+                    image: articleData.image,
+                    postedBy: articleData.createdBy,
+                    createdOn: Date.now(),
+                    editedOn: "",
+                    votes: 0,
+                    votedBy: [],
+                    tags: articleData.tags,
+                    categories: articleData.categories
+                });
+
                 newArticle.save(function (err) {
                     if (err) {
                         err.status = 500;
@@ -49,19 +50,20 @@ var addEditArticle = function (req, res) {
                     }
                 });
             } else { // id provided, editing existing article
-                newArticle = newArticle.toObject();
-                newArticle.editedOn = Date.now();
-                delete newArticle._id;
-                delete newArticle.votes;
-                delete newArticle.date;
-                delete newArticle.comments;
-                delete newArticle.postedBy;
+                var newArticle = {
+                    title: articleData.title,
+                    content: articleData.content,
+                    image: articleData.image,
+                    editedOn: "",
+                    tags: articleData.tags,
+                    categories: articleData.categories
+                };
 
-                Article.update({_id: articleData._id}, newArticle, {multi: false}, function (err, article) {
+                Article.findByIdAndUpdate(articleData.articleId, newArticle, {multi: false}, function (err, article) {
                     if (!err) {
                         res.status(200).json({
                             success: true,
-                            payload: {},
+                            payload: {article: article},
                             error: null
                         });
                     } else {
@@ -150,15 +152,32 @@ var voteArticle = function (req, res) {
             var articleId = articleData.articleId;
             var votedBy = articleData.user;
 
-            Article.findByIdAndUpdate(articleId, {$inc: {votes: 1}}, {upsert: false}, function (err, article) {
+            Article.findById(articleId, function (err, article) {
                 if (err) {
                     err.status = 500;
                     throw err;
                 } else {
-                    res.status(200).json({
-                        success: true,
-                        payload: {votes: article.votes + 1},
-                        error: null
+                    var idx = article.votedBy.indexOf(votedBy);
+
+                    if ( idx > -1 ) { // found
+                        article.votedBy.splice(idx, 1);
+                        article.votes -= 1;
+                    } else {
+                        article.votedBy.push(votedBy);
+                        article.votes += 1;
+                    }
+
+                    article.save(function (err) {
+                        if ( err ) {
+                            err.status = 500;
+                            throw err;
+                        }
+
+                        res.status(200).json({
+                            success: true,
+                            payload: {votes: article.votes},
+                            error: null
+                        });
                     });
                 }
             });
@@ -180,11 +199,9 @@ var voteArticle = function (req, res) {
 };
 
 /**
- * Gets all Posts/Articles from mongoDB.
+ * Gets all Posts/Articles from mongoDB with pagination.
  *
  * @author Valeri Hristov
- * @param {Number} req.body.dataParams.pageNumber - the number of the required page
- * @param {Object} req.body.dataParams.sortBy - {field: 'content', order: 1}
  * @returns {HTTP.RESPONSE}
  * @public
  * @version 0.1 Beta
@@ -193,22 +210,10 @@ var getAllArticles = function (req, res) {
     try {
         var articlesPerPage = config.articlesPerPage;
         var pageNumber = req.query.page;
-        var sortBy = {field: 'content', order: 1}; // Object - name of the field and -1 or 1 for asc and desc
-
-        if (sortBy.field == "content" || sortBy.field == "title") {
-            sortBy.field += "_normalized";
-        }
-
-        var mongoSortObj = {};
-
-        if (sortBy.field) {
-            mongoSortObj[sortBy.field] = sortBy.order;
-        }
 
         Article.paginate({}, {
             page: pageNumber,
-            limit: articlesPerPage,
-            sortBy: mongoSortObj
+            limit: articlesPerPage
         }, function (err, results, pageCount, itemCount) {
             if (!err) {
                 res.status(200).json({
@@ -237,38 +242,9 @@ var getAllArticles = function (req, res) {
     }
 };
 
-var filterArticles = function (req, res) {
-    try {
-        var filterText = req.query.filterText;
-
-        Article.find({title_normalized: new RegExp(filterText, "i")}, function (err, articles) {
-            if (!err) {
-                res.status(200).json({
-                    success: true,
-                    payload: articles,
-                    error: null
-                });
-            } else {
-                err.status = 500;
-                throw err;
-            }
-        });
-    } catch (err) {
-        res.status(err.status || 400).json({
-            success: false,
-            payload: {},
-            error: {
-                code: err.code || 666,
-                message: err.message
-            }
-        });
-    }
-};
-
 module.exports = {
     addEditArticle: addEditArticle,
     deleteArticle: deleteArticle,
     voteArticle: voteArticle,
-    getAllArticles: getAllArticles,
-    filterArticles: filterArticles
+    getAllArticles: getAllArticles
 };

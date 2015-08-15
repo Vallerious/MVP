@@ -22,17 +22,18 @@ module.exports = {
         WebAPIUtils.loadArticle(articleId);
     },
 
-    createArticle: function (title, content, createdBy, tags, categories) {
+    createArticle: function (title, content, image, createdBy, tags, categories) {
         AppDispatcher.handleViewAction({
             type: ActionTypes.CREATE_ARTICLE,
             title: title,
             content: content,
+            image: image,
             tags: tags,
             categories: categories,
             createdBy: createdBy
         });
 
-        WebAPIUtils.createArticle(title, content, createdBy, tags, categories);
+        WebAPIUtils.createArticle(title, content, image, createdBy, tags, categories);
     },
 
     voteArticle: function (articleId, user) {
@@ -41,7 +42,6 @@ module.exports = {
             articleId: articleId,
             user: user
         });
-
         WebAPIUtils.voteArticle(articleId, user);
     }
 };

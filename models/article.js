@@ -6,29 +6,18 @@ var mongoosePaging = require('mongoose-paginate');
 
 var ArticleSchema = new mongoose.Schema({
     title: String,
-    title_normalized: String,
     content: String,
-    content_normalized: String,
+    image: String,
     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    comments: [{
-        content: String,
-        content_normalized: String,
-        postedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Users'
-        },
-        createdOn: Number,
-        editedOn: String,
-        likes: Number
-    }],
     createdOn: Number,
     editedOn: String,
     votes: Number,
-    tags: [],
-    categories: []
+    votedBy: [String],
+    tags: [String],
+    categories: [String]
 });
 
 ArticleSchema.plugin(mongoosePaging);

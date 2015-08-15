@@ -37,7 +37,23 @@ module.exports = {
 
     receiveVotedArticle: function (json, errors) {
         AppDispatcher.handleServerAction({
-            type: ActionTypes.RECIEVE_VOTED_ARTICLE,
+            type: ActionTypes.RECEIVE_VOTED_ARTICLE,
+            json: json,
+            errors: errors
+        });
+    },
+
+    receiveAddedComment: function (json, errors) {
+        AppDispatcher.handleServerAction({
+            type: ActionTypes.RECEIVE_ADD_COMMENT,
+            json: json,
+            errors: errors
+        });
+    },
+
+    receiveComments: function (json, errors) {
+        AppDispatcher.handleServerAction({
+            type: ActionTypes.RECEIVE_COMMENTS,
             json: json,
             errors: errors
         });
