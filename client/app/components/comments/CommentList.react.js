@@ -1,5 +1,5 @@
 var React = require('react');
-var CommentActionCreators = require('../../actions/CommentActionCreators.react');
+var CommentActionCreators = require('../../actions/CommentActionCreators');
 var CommentStore = require('../../stores/CommentStore.react');
 var Comment = require('./Comment.react');
 

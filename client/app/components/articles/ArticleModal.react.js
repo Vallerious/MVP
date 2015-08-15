@@ -1,9 +1,9 @@
 var React = require('react');
-var ArticleActionCreators = require('../../actions/ArticleActionCreators.react');
 var ArticleStore = require('../../stores/ArticleStore.react');
 var SessionStore = require('../../stores/SessionStore.react');
 
 var CommentContainer = require('./../comments/CommentContainer.react');
+import VoteBar from './../common/VoteBar.react';
 
 //Theme dependencies:
 var mui = require('material-ui'),
@@ -51,10 +51,7 @@ var mainPane = {
 }
 
 function getStateFromStores() {
-    return {
-        isLoggedIn: SessionStore.isLoggedIn(),
-        username: SessionStore.getUsername()
-    };
+    return SessionStore.getUserData();
 }
 
 var ArticleModal = React.createClass({
@@ -62,16 +59,15 @@ var ArticleModal = React.createClass({
     getInitialState: function () {
         var initState = getStateFromStores();
 
-        initState.votes = this.props.votes;
-        initState.activeVoteBtnStyle = false;
-
         return initState;
     },
 
     componentDidMount: function () {
         var self = this;
         ArticleStore.addChangeListener(this._onChange);
+
         $("html, body").css("overflow-y", "hidden");
+
         $(document).keyup(function (e) {
             if (e.which == 27) {
                 self.closeModal();
@@ -96,33 +92,6 @@ var ArticleModal = React.createClass({
 
     _onChange: function () {
         this.setState(getStateFromStores());
-
-        var prevVotes = this.state.votes;
-        var currVotes = ArticleStore.getVotes();
-
-        if ( prevVotes < currVotes ) { // red
-            this.setState({activeVoteBtnStyle: true});
-        } else { // normal
-            this.setState({activeVoteBtnStyle: false});
-        }
-
-        this.setState({votes: ArticleStore.getVotes()});
-    },
-
-    voteArticle: function (articleId) {
-        var userId = sessionStorage.getItem('user_id');
-        ArticleActionCreators.voteArticle(articleId, userId);
-    },
-
-    renderButtonBar: function () {
-        return (
-            this.state.isLoggedIn ?
-                <RaisedButton secondary={!this.state.activeVoteBtnStyle}
-                              primary={this.state.activeVoteBtnStyle}
-                              label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)}
-                              onClick={this.voteArticle.bind(null, this.props.articleId)} />
-             : <span></span>
-            );
     },
 
     closeModal: function () {
@@ -153,7 +122,7 @@ var ArticleModal = React.createClass({
                                     {this.props.content}
                                 </CardText>
                                 <CardActions expandable={true}>
-                                    {this.renderButtonBar()}
+                                    <VoteBar votes={this.props.votes} articleId={this.props.articleId} />
                                 </CardActions>
                                 <CommentContainer articleId={this.props.articleId} />
                             </div>

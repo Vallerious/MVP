@@ -3,7 +3,7 @@ var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var ArticleStore = require('../../stores/ArticleStore.react.js');
 var ErrorNotice = require('../../components/common/ErrorNotice.react.js');
 var Article = require('../../components/articles/Article.react.js');
-var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
+var ArticleActionCreators = require('../../actions/ArticleActionCreators.js');
 var Router = require('react-router');
 var Link = Router.Link;
 

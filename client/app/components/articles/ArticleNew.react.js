@@ -4,8 +4,8 @@ var AppConstants = require('../../constants/AppConstants.js');
 var WebAPIUtils = require('../../utils/WebAPIUtils.js');
 var SessionStore = require('../../stores/SessionStore.react.js');
 var ArticleStore = require('../../stores/ArticleStore.react.js');
-var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
-var RouteActionCreators = require('../../actions/RouteActionCreators.react.js');
+var ArticleActionCreators = require('../../actions/ArticleActionCreators.js');
+var RouteActionCreators = require('../../actions/RouteActionCreators.js');
 var MenuList = require('../common/MenuList.react.js');
 var TagsInput = require('react-tagsinput');
 
@@ -74,7 +74,7 @@ var ArticleNew = React.createClass({
         var categories = this.refs.categories.getTags();
         var createdBy = sessionStorage.getItem('user_id');
         var image = this.state.image;
-        
+
         ArticleActionCreators.createArticle(title, content, image, createdBy, tags, categories);
         RouteActionCreators.redirect('main');
     },

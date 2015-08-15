@@ -1,5 +1,5 @@
 var React = require('react');
-var SessionActionCreators = require('../../actions/SessionActionCreators.react.js');
+var SessionActionCreators = require('../../actions/SessionActionCreators');
 var SessionStore = require('../../stores/SessionStore.react.js');
 var ErrorNotice = require('../../components/common/ErrorNotice.react.js');
 var ReactPropTypes = React.PropTypes;

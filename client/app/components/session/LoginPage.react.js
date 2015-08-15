@@ -1,5 +1,5 @@
 var React = require('react');
-var SessionActionCreators = require('../../actions/SessionActionCreators.react.js');
+var SessionActionCreators = require('../../actions/SessionActionCreators');
 var SessionStore = require('../../stores/SessionStore.react.js');
 
 var mui = require('material-ui'),

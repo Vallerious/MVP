@@ -1,5 +1,5 @@
 var React = require('react');
-var CommentActionCreators = require('../../actions/CommentActionCreators.react.js');
+var CommentActionCreators = require('../../actions/CommentActionCreators');
 var SessionStore = require('../../stores/SessionStore.react');
 
 var mui = require('material-ui'),

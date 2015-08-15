@@ -1,4 +1,4 @@
-var ServerActionCreators = require('../actions/ServerActionCreators.react.js');
+var ServerActionCreators = require('../actions/ServerActionCreators');
 var AppConstants = require('../constants/AppConstants.js');
 var request = require('superagent');
 

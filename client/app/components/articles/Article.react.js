@@ -1,6 +1,6 @@
 var React = require('react');
 var ArticleStore = require('../../stores/ArticleStore.react.js');
-var ArticleActionCreators = require('../../actions/ArticleActionCreators.react.js');
+var ArticleActionCreators = require('../../actions/ArticleActionCreators.js');
 var State = require('react-router').State;
 
 var ArticleModal = require('./ArticleModal.react');
