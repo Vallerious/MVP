@@ -5,7 +5,7 @@ var WebAPIUtils = require('../utils/WebAPIUtils.js');
 var ActionTypes = AppConstants.ActionTypes;
 
 module.exports = {
-    addComment: function (articleId, content, postedBy) {
+    addEditComment: function (articleId, content, postedBy, commentId) {
         AppDispatcher.handleViewAction({
             type: ActionTypes.ADD_COMMENT,
             postedBy: postedBy,
@@ -13,11 +13,14 @@ module.exports = {
             articleId: articleId
         });
 
-        WebAPIUtils.addComment(articleId, content, postedBy);
-        WebAPIUtils.getCommentsByArticle(articleId);
+        WebAPIUtils.addEditComment(articleId, content, postedBy, commentId);
     },
 
     getCommentsByArticle: function (id) {
         WebAPIUtils.getCommentsByArticle(id);
+    },
+
+    deleteComment: function (id) {
+        WebAPIUtils.deleteComment(id);
     }
 };

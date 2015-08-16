@@ -57,5 +57,13 @@ module.exports = {
             json: json,
             errors: errors
         });
+    },
+
+    recieveDeletedComments: function (json, errors) {
+        AppDispatcher.handleServerAction({
+            type: ActionTypes.RECIEVE_DELETED_COMMENT,
+            json: json,
+            errors: errors
+        });
     }
 };

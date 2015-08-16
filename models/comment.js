@@ -3,10 +3,7 @@ var User = require('./user');
 
 var CommentSchema = new mongoose.Schema({
     content: String,
-    postedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users'
-    },
+    postedBy: String,
     articleId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Articles'

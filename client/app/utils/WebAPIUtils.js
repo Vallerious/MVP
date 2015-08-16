@@ -1,4 +1,4 @@
-var ServerActionCreators = require('../actions/ServerActionCreators');
+var ServerActionCreators = require('./../actions/ServerActionCreators');
 var AppConstants = require('../constants/AppConstants.js');
 var request = require('superagent');
 
@@ -66,7 +66,7 @@ module.exports = {
             .set('Accept', 'application/json')
             .end(function (error, res) {
                 if (res) {
-                    var json = res.body.payload;
+                    json = res.body.payload;
                     ServerActionCreators.receiveArticles(json);
                 }
             });
@@ -117,10 +117,10 @@ module.exports = {
         })
     },
 
-    addComment: function (articleId, content, postedBy) {
-        request.post(APIEndpoints.ADD_COMMENT)
+    addEditComment: function (articleId, content, postedBy, commentId) {
+        request.post(APIEndpoints.ADD_EDIT_COMMENT)
             .set('Accept', 'application/json')
-            .send({ comment: {articleId: articleId, content: content, postedBy: postedBy}})
+            .send({ comment: {articleId: articleId, content: content, postedBy: postedBy, commentId: commentId}})
             .end(function (error, res) {
                 if (res.error) {
                     var errorMsgs = _getErrors(res);
@@ -144,6 +144,21 @@ module.exports = {
                 } else {
                     json = res.body.payload.comments;
                     ServerActionCreators.receiveComments(json, null);
+                }
+            });
+    },
+
+    deleteComment: function (id) {
+        request
+            .post(APIEndpoints.DELETE_COMMENT)
+            .send({comment: {id : id}})
+            .end(function (error, res) {
+                if (res.error) {
+                    var errorMsgs = _getErrors(res);
+                    ServerActionCreators.recieveDeletedComments(null, errorMsgs);
+                } else {
+                    json = res.body.payload;
+                    ServerActionCreators.recieveDeletedComments(json, null);
                 }
             });
     }

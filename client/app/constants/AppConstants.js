@@ -8,8 +8,9 @@ module.exports = {
         ARTICLES: APIRoot + "/article/list?page=",
         CREATE_ARTICLE: APIRoot + "/article/add",
         VOTE_ARTICLE: APIRoot + "/article/vote",
-        ADD_COMMENT: APIRoot + "/article/comment/add",
-        LIST_COMMENTS: APIRoot + "/article/comment/list"
+        ADD_EDIT_COMMENT: APIRoot + "/article/comment/add",
+        LIST_COMMENTS: APIRoot + "/article/comment/list",
+        DELETE_COMMENT: APIRoot + "/article/comment/delete"
     },
 
     PayloadSources: {
@@ -39,7 +40,8 @@ module.exports = {
         // Comments
         RECEIVE_COMMENTS: 'RECEIVE_COMMENTS',
         ADD_COMMENT: 'ADD_COMMENT',
-        RECEIVE_ADD_COMMENT: 'RECEIVE_ADD_COMMENT'
+        RECEIVE_ADD_COMMENT: 'RECEIVE_ADD_COMMENT',
+        RECIEVE_DELETED_COMMENT: 'RECIEVE_DELETED_COMMENT'
     }
 
 };

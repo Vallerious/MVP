@@ -11,8 +11,8 @@ var _comments = [];
 var _errors = [];
 
 var CommentStore = assign({}, EventEmitter.prototype, {
-    emitChange: function () {
-        this.emit(CHANGE_EVENT);
+    emitChange: function (actionType) {
+        this.emit(CHANGE_EVENT, actionType);
     },
 
     addChangeListener: function (callback) {
@@ -38,9 +38,11 @@ CommentStore.dispatchToken = AppDispatcher.register(function (payload) {
     switch (action.type) {
         case ActionTypes.RECEIVE_COMMENTS:
             _comments = action.json;
-            CommentStore.emitChange();
+            CommentStore.emitChange(action.type);
             break;
     }
+
+    return true;
 });
 
 module.exports = CommentStore;

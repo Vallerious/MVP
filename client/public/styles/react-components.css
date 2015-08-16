@@ -1,6 +1,7 @@
 .btn-link {
 	vertical-align: middle;
 	margin-right: 3px;
+	cursor: pointer;
 }
 
 .btn-link:hover {
@@ -15,7 +16,7 @@
 	color: #A8A8A8;
 	margin-top: 10px;
 	margin-right: 10px;
-	pointer: cursor;
+	cursor: pointer;
 }
 
 .btn--close-article:hover {

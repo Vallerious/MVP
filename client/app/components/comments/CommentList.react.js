@@ -25,13 +25,28 @@ var CommentList = React.createClass({
         this.setState({comments: CommentStore.getAllCommentsByArticle()});
     },
 
+    propagedeAction: function (params) {
+        var action = params[0];
+
+        if (action == "comment.delete") {
+            CommentActionCreators.deleteComment(params[2]);
+            CommentActionCreators.getCommentsByArticle(this.props.articleId);
+        } else {
+            this.props.propagedeAction(params);
+        }
+    },
+
     render: function () {
+        var self = this;
         var comments = this.state.comments.map(function (comment) {
             return <Comment content={comment.content}
                             date={comment.createdOn}
                             username={comment.postedBy}
                             avatar={comment.image}
-                            key={comment._id} />
+                            articleId={comment.articleId}
+                            key={comment._id}
+                            commentId={comment._id}
+                            propagedeAction={self.propagedeAction} />
         });
 
         return (

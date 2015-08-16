@@ -53,7 +53,8 @@ class VoteBar extends React.Component {
 				 <RaisedButton secondary={!this.state.hasVoted}
                               primary={this.state.hasVoted}
                               label={"+ " + (this.state.votes == 0 ? 1 : this.state.votes)} 
-                              onClick={this.voteArticle.bind(this, this.props.articleId)} />
+                              onClick={this.voteArticle.bind(this, this.props.articleId)}
+                              disabled={!this.state.isLoggedIn} />
 			</div>
 			);
 	}

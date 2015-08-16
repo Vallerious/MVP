@@ -1,9 +1,12 @@
 var fs = require('fs');
 var mongoose = require('mongoose');
 var when = require('when');
+
 var db = require('./../helpers/mongodbConnect');
 var config = require('./../config');
+
 var Article = require('./../models/article');
+var User = require('./../models/user');
 
 /**
  * Adds a Post/Article to mongoDB. If an Id is provided the method will edit the article.
@@ -157,33 +160,62 @@ var voteArticle = function (req, res) {
                     err.status = 500;
                     throw err;
                 } else {
-                    var idx = article.votedBy.indexOf(votedBy);
+                    if (article) {
+                        User.findById(votedBy, function(err, user) {
+                        if (err) {
+                            res.status(500).json({
+                                success: false,
+                                payload: {},
+                                error: err
+                            });
+                        } else {
+                            if (user) {
+                                var idx = article.votedBy.indexOf(votedBy);
 
-                    if ( idx > -1 ) { // found
-                        article.votedBy.splice(idx, 1);
-                        article.votes -= 1;
-                    } else {
-                        article.votedBy.push(votedBy);
-                        article.votes += 1;
-                    }
+                                if ( idx > -1 ) { // found
+                                    article.votedBy.splice(idx, 1);
+                                    article.votes -= 1;
+                                } else {
+                                    article.votedBy.push(votedBy);
+                                    article.votes += 1;
+                                }
 
-                    article.save(function (err) {
-                        if ( err ) {
-                            err.status = 500;
-                            throw err;
+                                article.save(function (err) {
+                                    if ( err ) {
+                                        err.status = 500;
+                                        throw err;
+                                    }
+
+                                    res.status(200).json({
+                                        success: true,
+                                        payload: {votes: article.votes},
+                                        error: null
+                                    });
+                                });
+                            } else {
+                                error.message = "Voting with a non-existent user!";
+
+                                res.status(400).json({
+                                success: false,
+                                payload: {},
+                                error: error
+                            });
+                            }
                         }
-
-                        res.status(200).json({
-                            success: true,
-                            payload: {votes: article.votes},
-                            error: null
-                        });
                     });
+                    } else {
+                        error.message = "Article with that ID does not exist";
+                        res.status(400).json({
+                                success: false,
+                                payload: {},
+                                error: error
+                            });
+                    }
                 }
             });
         } else {
             error.code = 124;
-            error.message = "Id is required to vote an article!";
+            error.message = "ArticleId and userId is required to vote an article!";
             throw error;
         }
     } catch (err) {

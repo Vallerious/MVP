@@ -1,7 +1,9 @@
 var React = require('react');
-var ArticleStore = require('../../stores/ArticleStore.react');
+
+// Stores
 var SessionStore = require('../../stores/SessionStore.react');
 
+// Components
 var CommentContainer = require('./../comments/CommentContainer.react');
 import VoteBar from './../common/VoteBar.react';
 
@@ -14,23 +16,18 @@ var mui = require('material-ui'),
     CardText = mui.CardText,
     CardTitle = mui.CardTitle,
     CardMedia = mui.CardMedia,
-    FlatButton = mui.FlatButton,
-    Avatar = mui.Avatar,
-    Dialog = mui.Dialog,
-    FloatingActionButton = mui.FloatingActionButton,
-    FontIcon = mui.FontIcon,
     RaisedButton = mui.RaisedButton;
 
 // Styles
 var modalWindow = {
     position: 'absolute',
-    top: '10%',
-    left: '10%',
+    top: '5%',
+    left: '5%',
     padding: '15px',
-    width: '80%',
-    height: '80%',
-    maxHeight: '80%',
-    maxWidth: '80%',
+    width: '90%',
+    height: '90%',
+    maxHeight: '90%',
+    maxWidth: '90%',
     zIndex: '10000',
     overflowY: 'hidden'
 };
@@ -47,38 +44,12 @@ var mask = {
 
 var mainPane = {
     height: '394px',
-    overflowY: 'auto'
-}
-
-function getStateFromStores() {
-    return SessionStore.getUserData();
+    width: '100%',
+    margin: '0 auto',
+    overflowY: 'auto',
 }
 
 var ArticleModal = React.createClass({
-
-    getInitialState: function () {
-        var initState = getStateFromStores();
-
-        return initState;
-    },
-
-    componentDidMount: function () {
-        var self = this;
-        ArticleStore.addChangeListener(this._onChange);
-
-        $("html, body").css("overflow-y", "hidden");
-
-        $(document).keyup(function (e) {
-            if (e.which == 27) {
-                self.closeModal();
-            }
-        });
-    },
-
-    componentWillUnmount: function () {
-        ArticleStore.removeChangeListener(this._onChange);
-        $("html, body").css("overflow-y", "auto");
-    },
 
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -90,9 +61,27 @@ var ArticleModal = React.createClass({
         };
     },
 
-    _onChange: function () {
-        this.setState(getStateFromStores());
+    getInitialState: function () {
+        return SessionStore.getUserData();
     },
+
+    componentDidMount: function () {
+        var self = this;
+
+        $("html, body").css("overflow-y", "hidden");
+
+        $(document).keyup(function (e) {
+            if (e.which == 27) {
+                self.closeModal();
+            }
+        });
+    },
+
+    componentWillUnmount: function () {
+        $("html, body").css("overflow-y", "auto");
+    },
+
+    _onChange: function () {},
 
     closeModal: function () {
         this.props.closeHandler();

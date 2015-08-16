@@ -91,7 +91,7 @@ var ArticlesPage = React.createClass({
                             image={article.image}
                             articleId={article._id}
                             votes={article.votes}
-                            keyId={article._id} />
+                            key={article._id} />
         });
 
         var errors = (this.state.errors.length > 0) ? <ErrorNotice errors={this.state.errors} /> : <div></div>;

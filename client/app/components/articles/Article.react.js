@@ -34,11 +34,6 @@ var Article = React.createClass({
         };
     },
 
-    componentDidMount: function () {
-        ArticleStore.addChangeListener(this._onChange);
-        ArticleActionCreators.loadArticles();
-    },
-
     toggleArticleModal: function () {
         this.setState({show: !this.state.show});
 

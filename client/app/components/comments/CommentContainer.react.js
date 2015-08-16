@@ -46,6 +46,22 @@ var CommentContainer = React.createClass({
         this.setState({openNewCommentBox: !this.state.openNewCommentBox});
     },
 
+    propagedeAction: function (params) {
+        var action = params[0];
+
+        if (action == "comment.edit") {
+            this.setState({openNewCommentBox: true});
+            this.setState({commentId: params[2]});
+            this.setState({content: params[3]});
+        }
+    },
+
+    closeNewCommentBox: function () {
+        this.setState({content: ""});
+        this.setState({commentId: ""});
+        this.setState({openNewCommentBox: false});
+    },
+
     renderShowCommentsBtn: function () {
        return (
             <div style={toggleComments} onClick={this.toggleCommentList}>
@@ -72,9 +88,13 @@ var CommentContainer = React.createClass({
         return (
             <div style={commentContainer}>
                 {this.renderShowCommentsBtn()}
-                {this.state.openCommentList ? <CommentList articleId={this.props.articleId} /> : <span></span>}
-                {this.state.openNewCommentBox && this.state.isLoggedIn ? 
-                    <NewCommentBox articleId={this.props.articleId} cancelHandler={this.toggleNewCommentWindow} /> : <span></span>}
+                {this.state.openCommentList ? 
+                    <CommentList articleId={this.props.articleId} propagedeAction={this.propagedeAction} /> : <span></span>}
+                {this.state.openNewCommentBox && this.state.isLoggedIn ?
+                    <NewCommentBox articleId={this.props.articleId}
+                                    commentId={this.state.commentId}
+                                    cancelHandler={this.closeNewCommentBox}
+                                    content={this.state.content} /> : <span></span>}
                 {(this.state.openNewCommentBox || !this.state.isLoggedIn) ? <span></span> : this.renderAddCommentsBtn()}
             </div>
         )

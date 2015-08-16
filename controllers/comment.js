@@ -3,22 +3,28 @@ var when = require('when');
 var db = require('./../helpers/mongodbConnect');
 var Post = require('./../models/article');
 var Comment = require('./../models/comment');
+var User = require('./../models/user');
 
-var getCommentsByArticle = function (req, res) {
+var getCommentsByArticle = function(req, res) {
     var error = new Error();
 
     try {
         var articleId = req.query.id;
 
-        if ( articleId ) {
-            Comment.find({articleId: articleId}, function (err, comments) {
-                if ( err ) {
+        if (articleId) {
+            Comment.find({
+                articleId: articleId
+            }, function(err, comments) {
+                if (err) {
                     err.status = 500;
                     throw err;
                 } else {
+
                     res.status(200).json({
                         success: true,
-                        payload: {comments: comments},
+                        payload: {
+                            comments: comments || []
+                        },
                         error: null
                     });
                 }
@@ -41,52 +47,72 @@ var getCommentsByArticle = function (req, res) {
     }
 };
 
-var addEditComment = function (req, res) {
+var addEditComment = function(req, res) {
     var commentData = req.body.comment;
     var error = new Error();
 
     try {
         if (commentData.articleId && commentData.content && commentData.postedBy) { // postId should be sent from the front-end
 
-            var newComment = new Comment({
-                content: commentData.content,
-                postedBy: commentData.postedBy,
-                articleId: commentData.articleId,
-                createdOn: Date.now(),
-                likes: 0,
-                likedBy: []
-            });
+            User.findById(commentData.postedBy, function(err, user) {
+                if (err) {
+                    err.status = 500;
+                    throw err;
+                } else {
+                    if (user) {
+                        var newComment = new Comment({
+                            content: commentData.content,
+                            postedBy: user.username,
+                            articleId: commentData.articleId,
+                            createdOn: Date.now(),
+                            likes: 0,
+                            likedBy: []
+                        });
 
-            if (!commentData.commentId) { // add comment
-                newComment.save(function (err, comment) {
-                    if (err) {
-                        err.status = 500;
-                        throw err;
+                        if (!commentData.commentId) { // add comment
+                            newComment.save(function(err, comment) {
+                                if (err) {
+                                    err.status = 500;
+                                    throw err;
+                                } else {
+                                    res.status(200).json({
+                                        success: true,
+                                        payload: {
+                                            comment: comment
+                                        },
+                                        error: null
+                                    });
+                                }
+                            });
+                        } else { // edit comment
+                            Comment.findByIdAndUpdate(commentData.commentId, {
+                                content: commentData.content,
+                                createdOn: Date.now()
+                            }, function(err, comment) {
+                                if (err) {
+                                    err.status = 500;
+                                    throw err;
+                                } else {
+                                    res.status(200).json({
+                                        success: true,
+                                        payload: {
+                                            comment: comment
+                                        },
+                                        error: null
+                                    });
+                                }
+                            })
+                        }
                     } else {
-                        res.status(200).json({
-                            success: true,
-                            payload: {comment: comment},
-                            error: null
+                        error.message = "Attempted to vote with non-existent user";
+                        res.status(400).json({
+                            success: false,
+                            payload: {},
+                            error: error
                         });
                     }
-                });
-            } else { // edit comment
-                Comment.findByIdAndUpdate(commentData.commentId, {
-                    content: commentData.content,
-                    createdOn: Date.now()
-                }, function (err, comment) {
-                    if (err) {
-                        err.status = 500;
-                        throw err;
-                    } else {
-                        res.status(200).json({
-                            success: true,
-                            payload: {comment: comment},
-                            error: null
-                        });
-                    }
-                })
-            }
+                }
+            })
         } else {
             error.status = 400;
             error.code = 124;
@@ -105,19 +131,24 @@ var addEditComment = function (req, res) {
     }
 };
 
-var deleteComment = function (req, res) {
+var deleteComment = function(req, res) {
+    var error = new Error();
     var commentData = req.body.comment;
 
     try {
-        if (commentData.commentId) {
-            Comment.remove({_id: commentData.commentId}, function (err, comment) {
+        if (commentData.id) {
+            Comment.remove({
+                _id: commentData.id
+            }, function(err, comment) {
                 if (err) {
                     err.status = 500;
                     throw err;
                 } else {
                     res.status(200).json({
                         success: true,
-                        payload: {comment: comment},
+                        payload: {
+                            comment: comment
+                        },
                         error: null
                     });
                 }
@@ -140,14 +171,14 @@ var deleteComment = function (req, res) {
     }
 };
 
-var likeComment = function (req, res) {
+var likeComment = function(req, res) {
     try {
         var commentData = req.body.comment;
         var user = commentData.userId;
         var commentId = commentData.commentId;
 
         if (commentId) {
-            Comment.findById(commentId, function (err, comment) {
+            Comment.findById(commentId, function(err, comment) {
                 if (err) {
                     err.status = 500;
                     throw err;
@@ -162,7 +193,7 @@ var likeComment = function (req, res) {
                         comment.votes += 1;
                     }
 
-                    comment.save(function (err) {
+                    comment.save(function(err) {
                         if (err) {
                             err.status = 500;
                             throw err;
@@ -170,7 +201,9 @@ var likeComment = function (req, res) {
 
                         res.status(200).json({
                             success: true,
-                            payload: {votes: comment.likes},
+                            payload: {
+                                votes: comment.likes
+                            },
                             error: null
                         });
                     });
