@@ -1,9 +1,8 @@
 var mongoose = require('mongoose');
 var when = require('when');
-var db = require('./../helpers/mongodbConnect');
-var Post = require('./../models/article');
-var Comment = require('./../models/comment');
-var User = require('./../models/user');
+var Post = require('./../config/mongoose/models/article');
+var Comment = require('./../config/mongoose/models/comment');
+var User = require('./../config/mongoose/models/user');
 
 var getCommentsByArticle = function(req, res) {
     var error = new Error();

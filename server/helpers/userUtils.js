@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var when = require('when');
-var db = require('./../helpers/mongodbConnect');
-var User = require('./../models/user');
+var User = require('./../config/mongoose/models/user');
 var passHash = require('password-hash');
 
 var getUser = function (username) {

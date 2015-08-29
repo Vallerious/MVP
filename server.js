@@ -1,15 +1,18 @@
 /**
  * Module dependencies.
  */
-var app = require('../app');
-var debug = require('debug')('MVP:server');
-var http = require('http');
+var express = require('./server/node_modules/express'),
+    debug = require('./server/node_modules/debug')('MVP:server'),
+    http = require('http');
 
-/**
- * Get port from environment and store in Express.
- */
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+var app = express(),
+    env = process.env.NODE_ENV || 'development',
+    config = require('./server/config/config')[env],
+    routes = require('./server/config/routes'),
+    port = config.port;
+
+require('./server/config/express')(app, config, routes);
+require('./server/config/mongoose/connect')(config.dbUrl);
 
 /**
  * Create HTTP server.
@@ -23,25 +26,6 @@ server.listen(port);
 console.log('Magic happens at http://localhost:' + port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-function normalizePort(val) {
-    var port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
-}
 
 /**
  * Event listener for HTTP server "error" event.

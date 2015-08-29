@@ -1,16 +1,16 @@
-var APIRoot = "http://127.0.0.1:3000/api";
+var APIRoot = 'http://127.0.0.1:3030/api';
 
 module.exports = {
 
     APIEndpoints: {
-        LOGIN: APIRoot + "/login",
-        REGISTRATION: APIRoot + "/register",
-        ARTICLES: APIRoot + "/article/list?page=",
-        CREATE_ARTICLE: APIRoot + "/article/add",
-        VOTE_ARTICLE: APIRoot + "/article/vote",
-        ADD_EDIT_COMMENT: APIRoot + "/article/comment/add",
-        LIST_COMMENTS: APIRoot + "/article/comment/list",
-        DELETE_COMMENT: APIRoot + "/article/comment/delete"
+        LOGIN: APIRoot + '/login',
+        REGISTRATION: APIRoot + '/register',
+        ARTICLES: APIRoot + '/article/list?page=',
+        CREATE_ARTICLE: APIRoot + '/article/add',
+        VOTE_ARTICLE: APIRoot + '/article/vote',
+        ADD_EDIT_COMMENT: APIRoot + '/article/comment/add',
+        LIST_COMMENTS: APIRoot + '/article/comment/list',
+        DELETE_COMMENT: APIRoot + '/article/comment/delete'
     },
 
     PayloadSources: {

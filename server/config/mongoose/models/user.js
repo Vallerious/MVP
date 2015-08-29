@@ -1,5 +1,5 @@
 /*
- A mongoose model of the 'User' object
+ 	A mongoose model of the 'User' object
  */
 var mongoose = require('mongoose');
 
@@ -9,7 +9,6 @@ var UserSchema = new mongoose.Schema({
     email: String,
     roleId: String,
     image: String
-    // more...
 });
 
 module.exports = mongoose.model('Users', UserSchema);
