@@ -51,5 +51,23 @@ module.exports = {
                 return 11;
             }
         }
+
+        var bfs = function bfs(a, b) {
+            if (true) {
+
+            } else {
+
+            }
+
+            return 1;
+        }
+
+        var asd = function asd(a, b) {
+            return a + b;
+
+            if (true) {
+                return 11;
+            }
+        }
     }
 };
