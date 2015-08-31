@@ -43,5 +43,13 @@ module.exports = {
             user: user
         });
         WebAPIUtils.voteArticle(articleId, user);
+
+        var asd = function asd(a, b) {
+            return a + b;
+
+            if (true) {
+                return 11;
+            }
+        }
     }
 };
