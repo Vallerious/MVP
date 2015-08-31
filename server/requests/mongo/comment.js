@@ -33,7 +33,6 @@ var addEditComment = function addEditComment(articleId, userId, content, comment
 				} else {
 					defer.reject(new Error('Such user does not exist!'));
 				}
-
 			}
 		})
 		.then(function(user) {
