@@ -75,6 +75,10 @@ var ArticleModal = React.createClass({
                 self.closeModal();
             }
         });
+
+        if (true) {
+            return 11;
+        }
     },
 
     componentWillUnmount: function () {
