@@ -102,10 +102,10 @@ module.exports = {
             });
     },
 
-    voteArticle: function (articleId, user) {
-        request.post(APIEndpoints.VOTE_ARTICLE)
+    voteArticle: function (articleId, userId) {
+        request.put(APIEndpoints.VOTE_ARTICLE)
         .set('Accept', 'application/json')
-        .send({ article: {articleId: articleId, user: user}})
+        .send({ article: {articleId: articleId, userId: userId}})
         .end(function (error, res) {
             if (res.error) {
                 var errorMsgs = _getErrors(res);
@@ -142,7 +142,7 @@ module.exports = {
                     var errorMsgs = _getErrors(res);
                     ServerActionCreators.receiveComments(null, errorMsgs);
                 } else {
-                    json = res.body.payload.comments;
+                    json = res.body.payload;
                     ServerActionCreators.receiveComments(json, null);
                 }
             });

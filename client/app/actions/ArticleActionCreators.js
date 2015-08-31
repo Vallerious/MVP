@@ -10,6 +10,7 @@ module.exports = {
         AppDispatcher.handleViewAction({
             type: ActionTypes.LOAD_ARTICLES
         });
+        
         WebAPIUtils.loadArticles(pageNum);
     },
 
@@ -42,32 +43,7 @@ module.exports = {
             articleId: articleId,
             user: user
         });
+
         WebAPIUtils.voteArticle(articleId, user);
-
-        var asd = function asd(a, b) {
-            return a + b;
-
-            if (true) {
-                return 11;
-            }
-        }
-
-        var bfs = function bfs(a, b) {
-            if (true) {
-
-            } else {
-
-            }
-
-            return 1;
-        }
-
-        var asd = function asd(a, b) {
-            return a + b;
-
-            if (true) {
-                return 11;
-            }
-        }
     }
 };

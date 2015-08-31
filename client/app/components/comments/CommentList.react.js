@@ -12,9 +12,13 @@ var CommentList = React.createClass({
         }
     },
 
-    componentDidMount: function () {
+    componentWillMount: function () {
         CommentStore.addChangeListener(this._onChange);
         CommentActionCreators.getCommentsByArticle(this.props.articleId);
+    },
+
+    componentDidMount: function () {
+        this.setState({comments: CommentStore.getAllCommentsByArticle()});
     },
 
     componentWillUnmount: function () {

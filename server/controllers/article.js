@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
     mongoArticleRequests = require('./../requests/mongo/article');
 
 var addEditArticle = function(req, res) {
-    var articleData = req.body;
+    var articleData = req.body.article;
     var error = new Error();
 
     if (articleData.title && articleData.content && articleData.postedBy) {
@@ -37,7 +37,7 @@ var addEditArticle = function(req, res) {
 };
 
 var deleteArticle = function(req, res) {
-    var articleData = req.body;
+    var articleData = req.body.article;
     var error = new Error();
 
     if (articleData && articleData.articleId) {
@@ -105,9 +105,7 @@ var voteArticle = function(req, res) {
 };
 
 var getAllArticles = function(req, res) {
-    var page = req.body;
-
-    mongoArticleRequests.getAllArticles(page)
+    mongoArticleRequests.getAllArticles(req.query.page)
         .catch(function(err) {
             res.status(500).json({
                 success: false,

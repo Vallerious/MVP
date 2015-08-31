@@ -39,7 +39,7 @@ class VoteBar extends React.Component {
             this.state.hasVoted = false;
         }
 
-        this.state.votes = currVotes;
+        this.setState({votes: currVotes});
 	}
 
 	voteArticle(articleId) {

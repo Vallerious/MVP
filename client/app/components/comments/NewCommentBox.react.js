@@ -35,10 +35,6 @@ var NewCommentBox = React.createClass({
         };
     },
 
-    componentWillMount: function () {
-        console.log("New comment box mounted");
-    },
-
     addEditComment: function () {
         var content = this.refs.articleComment.getDOMNode().value;
         var postedBy = SessionStore.getUserId();
@@ -64,9 +60,17 @@ var NewCommentBox = React.createClass({
                 </div>
                 <div className="col-xs-11">
                     <div class="form-group">
-                        <textarea class="form-control" rows="5" cols="35" style={textareaComment} ref="articleComment" defaultValue={this.props.content} autoFocus></textarea>
+                        <textarea class="form-control" 
+                                  rows="5" cols="35" 
+                                  style={textareaComment} 
+                                  ref="articleComment" 
+                                  defaultValue={this.props.content} 
+                                  autoFocus></textarea>
                     </div>
-                    <RaisedButton label="Post comment" onClick={this.addEditComment} secondary={true} style={{marginRight: '10px'}} />
+                    <RaisedButton label="Post comment" 
+                                  onClick={this.addEditComment} 
+                                  secondary={true} 
+                                  style={{marginRight: '10px'}} />
                     <RaisedButton label="Cancel" onClick={this.cancelAddComment} />
                 </div>
             </div>

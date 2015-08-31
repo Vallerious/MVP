@@ -43,6 +43,6 @@ router.put('/article/vote', articleController.voteArticle);
 router.post('/article/comment/add', commentController.addEditComment);
 router.post('/article/comment/edit', commentController.addEditComment);
 router.put('/article/comment/like', commentController.likeComment);
-router.delete('/article/comment/delete', commentController.deleteComment);
+router.post('/article/comment/delete', commentController.deleteComment);
 
 module.exports = router;

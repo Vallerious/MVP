@@ -40,6 +40,10 @@ CommentStore.dispatchToken = AppDispatcher.register(function (payload) {
             _comments = action.json;
             CommentStore.emitChange(action.type);
             break;
+        case ActionTypes.RECEIVE_ADD_COMMENT:
+            _comments = action.json;
+            CommentStore.emitChange(action.type);
+            break;
     }
 
     return true;

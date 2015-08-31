@@ -24,6 +24,14 @@ var pagination = {
 
 var ArticlesPage = React.createClass({
 
+    getInitialState: function () {
+        return {
+            articles: [],
+            errors: [],
+            current: 0
+        };
+    },
+
     childContextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -45,24 +53,9 @@ var ArticlesPage = React.createClass({
         });
     },
 
-    getInitialState: function () {
-        return {
-            articles: [],
-            errors: [],
-            sortingMenuItems: [
-                {payload: '', text: 'None'},
-                {payload: 'title', text: 'Title'},
-                {payload: 'content', text: 'Content'},
-                {payload: 'createdOn', text: 'Date Created'},
-                {payload: 'votes', text: 'Votes'}
-            ],
-            current: 0
-        };
-    },
-
-    componentDidMount: function () {
+    componentWillMount: function () {
         ArticleStore.addChangeListener(this._onChange);
-        ArticleActionCreators.loadArticles();
+        ArticleActionCreators.loadArticles(1);
     },
 
     componentWillUnmount: function () {
@@ -83,6 +76,7 @@ var ArticlesPage = React.createClass({
             return a1.title.localeCompare(a2.title);
         });
     },
+
     render: function () {
         var articles = this.state.articles.map(function (article) {
             return <Article title={article.title}
@@ -98,14 +92,6 @@ var ArticlesPage = React.createClass({
 
         return (
             <div>
-                <div className="row">
-                    <div className="col-md-3 col-md-offset-1">
-                        <DatePicker
-                            ref="createdOn"
-                            hintText="Created On"
-                            mode="landscape"/>
-                    </div>
-                </div>
                 <div className="clearfix mb15"></div>
                 {articles.length ? articles : "No articles match your criteria."}
                 <div style={pagination}>

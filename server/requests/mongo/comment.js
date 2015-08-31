@@ -52,40 +52,49 @@ var addEditComment = function addEditComment(articleId, userId, content, comment
 			var user = promises[0],
 				article = promises[1];
 
-			if (user && article) {
-				var newComment = new Comment({
-					content: content,
-					postedBy: user.username,
-					articleId: articleId,
-					createdOn: Date.now(),
-					likes: 0,
-					likedBy: []
-				});
-
-				if (!commentId) { // add comment
-					newComment.save(function(err, comment) {
-						if (err) {
-							defer.reject(err);
-						} else {
-							defer.resolve(comment);
-						}
-					});
-				} else { // edit comment
-					Comment.findByIdAndUpdate(commentId, {
+			return when.promise(function(resolve, reject) {
+				if (user && article) {
+					var newComment = new Comment({
 						content: content,
-						createdOn: Date.now()
-					}, function(err, comment) {
-						if (err) {
-							defer.reject(err);
-						} else {
-							defer.resolve(comment);
-						}
+						postedBy: user.username,
+						articleId: articleId,
+						createdOn: Date.now(),
+						likes: 0,
+						likedBy: []
 					});
+
+					if (!commentId) { // add comment
+						newComment.save(function(err, comment) {
+							if (err) {
+								reject(err);
+							} else {
+								resolve(comment);
+							}
+						});
+					} else { // edit comment
+						Comment.findByIdAndUpdate(commentId, {
+							content: content,
+							createdOn: Date.now()
+						}, function(err, comment) {
+							if (err) {
+								reject(err);
+							} else {
+								resolve(comment);
+							}
+						});
+					}
 				}
-			}
+			});
+		})
+		.then(function(comment) {
+			getCommentsByArticle(articleId)
+				.then(function(comments) {
+					defer.resolve(comments);
+				});
 		}, function(err) {
 			defer.reject(err);
-		});
+		})
+
 
 	return defer.promise;
 };

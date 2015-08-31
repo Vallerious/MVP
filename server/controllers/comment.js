@@ -40,13 +40,13 @@ var addEditComment = function(req, res) {
     var commentData = req.body.comment;
     var error = new Error();
 
-    if (commentData.articleId && commentData.content && commentData.postedBy) {
+    if (commentData && commentData.articleId && commentData.content && commentData.postedBy) {
         mongoCommentRequests.addEditComment(
                 commentData.articleId, commentData.postedBy, commentData.content, commentData.commentId)
-            .then(function(comment) {
+            .then(function(comments) {
                 res.status(200).json({
                     success: true,
-                    payload: comment,
+                    payload: comments,
                     error: null
                 });
             })
